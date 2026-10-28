@@ -1,0 +1,250 @@
+{
+  "schema": "passage-public-generated-source-v1",
+  "fixtureId": "riverside-support",
+  "family": "combobox",
+  "originalRunId": "repair_35fadc03-df0c-4a9a-bc5f-babbbd31a770",
+  "candidateId": "candidate_fa12e88e-aa18-40b4-bafc-dca9ea258b4e",
+  "sourceFile": "SessionCombobox.jsx",
+  "sourceDigest": "e5d2876c2ab6426179805f753a39bc998b50adb3992a98dd1479b4a33403842c",
+  "sourceBytes": 4489,
+  "sourceUnmodified": true,
+  "generationReceipt": {
+    "provider": "fireworks",
+    "purpose": "development",
+    "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+    "generation": {
+      "responseFormat": "prompt_schema",
+      "maxOutputTokens": 32000,
+      "timeoutMs": 480000,
+      "reasoningEffort": "high"
+    },
+    "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+    "requestId": "chatcmpl-bac3bd3761a2490c9cda5d245490de8c",
+    "promptVersion": "passage-scoped-component-v8-loop-free-capabilities",
+    "temperature": 0.2,
+    "inputTokens": 8556,
+    "outputTokens": 1703,
+    "durationMs": 10692,
+    "startedAt": "2026-10-28T06:26:54.181Z",
+    "completedAt": "2026-10-28T06:27:04.873Z",
+    "live": true,
+    "finalOutputDigest": "e6b7908b545b93cf25d7f8473d2c6b50901b958bf2da8c8bbdb8932883b15888"
+  },
+  "historicalContractDigest": "614eb906c9f54c3993ea4a9cd9ec0e8c07f25fad27c74c012b29f20eaf5dea6b",
+  "historicalVerification": {
+    "verifierVersion": "passage-browser-v3",
+    "id": "911ee5e3-a3da-4929-8503-3d5eda75ef9b",
+    "kind": "candidate",
+    "sourceDigest": "e5d2876c2ab6426179805f753a39bc998b50adb3992a98dd1479b4a33403842c",
+    "contractDigest": "614eb906c9f54c3993ea4a9cd9ec0e8c07f25fad27c74c012b29f20eaf5dea6b",
+    "scenario": {
+      "id": "baseline",
+      "name": "Original conditions",
+      "description": "English labels, standard timing, and the declared appointment availability.",
+      "locale": "en",
+      "delayedValidationMs": 120,
+      "unavailableFirst": false,
+      "longLabels": false,
+      "seed": 1701
+    },
+    "status": "passed",
+    "passed": true,
+    "startedAt": "2026-10-28T06:27:04.928Z",
+    "completedAt": "2026-10-28T06:27:06.171Z",
+    "durationMs": 1243,
+    "browser": "Chromium",
+    "browserVersion": "156.0.8078.4",
+    "buildId": "3b079a8799abd568370481c6e912adabc5db9b2fa77f74632964a7ee09104ee7",
+    "limitations": [
+      "Automated keyboard and DOM evidence only; actual screen-reader output is not recorded.",
+      "No consenting participant trial or independent specialist review has been completed.",
+      "Authored development fixtures share component ancestry; these scenarios are not a held-out benchmark.",
+      "Scoped component adapter only. Arbitrary repository builds require a separate isolated worker."
+    ],
+    "checks": [
+      {
+        "id": "required_validation_preserved",
+        "label": "Keep required information required",
+        "status": "passed",
+        "expected": "Empty required name or date is rejected; no appointment is stored.",
+        "actual": "Service returned 422/422; required-field error visible; stored appointment: none.",
+        "evidenceType": "backend"
+      },
+      {
+        "id": "unavailable_slot_rejected",
+        "label": "Protect unavailable appointments",
+        "status": "passed",
+        "expected": "An unavailable date is rejected by the independent service.",
+        "actual": "Saving 2026-11-20 returned 422; no booking was created.",
+        "evidenceType": "backend"
+      },
+      {
+        "id": "control_keyboard_reachable",
+        "label": "Reach the appointment control",
+        "status": "passed",
+        "expected": "Tab reaches a named appointment control.",
+        "actual": "Tab reached \u201cChoose a session\u2304\u201d.",
+        "evidenceType": "browser"
+      },
+      {
+        "id": "dialog_escape",
+        "label": "Leave the picker with Escape",
+        "status": "passed",
+        "expected": "Opening does not commit a date; Escape closes the picker, preserves the pre-open value, and returns focus.",
+        "actual": "Opening preserved the value; picker closed; focus returned to trigger; pre-open value preserved.",
+        "evidenceType": "browser"
+      },
+      {
+        "id": "selection_keyboard_operable",
+        "label": "Choose a date with the keyboard",
+        "status": "passed",
+        "expected": "Opening preserves the prior value; actual keyboard activation commits the intended available date, 2026-11-16.",
+        "actual": "The keyboard selected 2026-11-16.",
+        "evidenceType": "browser"
+      },
+      {
+        "id": "focus_restored",
+        "label": "Keep a place in the journey",
+        "status": "passed",
+        "expected": "After choosing a date, focus returns to its appointment trigger.",
+        "actual": "The trigger is the actual activeElement after selection.",
+        "evidenceType": "browser"
+      },
+      {
+        "id": "error_announced",
+        "label": "Expose recovery messages",
+        "status": "passed",
+        "expected": "Required and late validation errors expose alert/live-region semantics.",
+        "actual": "The observed validation messages had alert semantics. Screen-reader speech has not been recorded.",
+        "evidenceType": "browser"
+      },
+      {
+        "id": "correct_outcome_persisted",
+        "label": "Store the date that was chosen",
+        "status": "passed",
+        "expected": "The protected backend record matches the requested available date, name, and source digest.",
+        "actual": "Saved 2026-11-16 for Alex Morgan; record c8f9a228-9c57-434f-9b08-30ec9d83e492; all outcome fields match.",
+        "evidenceType": "backend"
+      },
+      {
+        "id": "confirmation_focus",
+        "label": "Arrive at the confirmation",
+        "status": "passed",
+        "expected": "After a real successful save, focus lands on the confirmation heading.",
+        "actual": "The confirmation heading is the actual activeElement.",
+        "evidenceType": "browser"
+      }
+    ],
+    "savedDate": "2026-11-16"
+  },
+  "historicalChallenges": [
+    {
+      "verifierVersion": "passage-browser-v3",
+      "id": "89550150-b49c-4b8c-801b-5d407dc91b3f",
+      "kind": "challenge",
+      "sourceDigest": "e5d2876c2ab6426179805f753a39bc998b50adb3992a98dd1479b4a33403842c",
+      "contractDigest": "614eb906c9f54c3993ea4a9cd9ec0e8c07f25fad27c74c012b29f20eaf5dea6b",
+      "scenario": {
+        "id": "combined",
+        "name": "All at once",
+        "description": "German labels, late validation, long content, and an unavailable first date.",
+        "locale": "de",
+        "delayedValidationMs": 900,
+        "unavailableFirst": true,
+        "longLabels": true,
+        "seed": 6803
+      },
+      "status": "passed",
+      "passed": true,
+      "startedAt": "2026-10-28T06:27:06.254Z",
+      "completedAt": "2026-10-28T06:27:08.936Z",
+      "durationMs": 2682,
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "buildId": "3b079a8799abd568370481c6e912adabc5db9b2fa77f74632964a7ee09104ee7",
+      "limitations": [
+        "Automated keyboard and DOM evidence only; actual screen-reader output is not recorded.",
+        "No consenting participant trial or independent specialist review has been completed.",
+        "Authored development fixtures share component ancestry; these scenarios are not a held-out benchmark.",
+        "Scoped component adapter only. Arbitrary repository builds require a separate isolated worker."
+      ],
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "label": "Keep required information required",
+          "status": "passed",
+          "expected": "Empty required name or date is rejected; no appointment is stored.",
+          "actual": "Service returned 422/422; required-field error visible; stored appointment: none.",
+          "evidenceType": "backend"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "label": "Protect unavailable appointments",
+          "status": "passed",
+          "expected": "An unavailable date is rejected by the independent service.",
+          "actual": "Saving 2026-11-16 returned 422; no booking was created.",
+          "evidenceType": "backend"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "label": "Reach the appointment control",
+          "status": "passed",
+          "expected": "Tab reaches a named appointment control.",
+          "actual": "Tab reached \u201cChoose a session\u2304\u201d.",
+          "evidenceType": "browser"
+        },
+        {
+          "id": "dialog_escape",
+          "label": "Leave the picker with Escape",
+          "status": "passed",
+          "expected": "Opening does not commit a date; Escape closes the picker, preserves the pre-open value, and returns focus.",
+          "actual": "Opening preserved the value; picker closed; focus returned to trigger; pre-open value preserved.",
+          "evidenceType": "browser"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "label": "Choose a date with the keyboard",
+          "status": "passed",
+          "expected": "Opening preserves the prior value; actual keyboard activation commits the intended available date, 2026-11-17.",
+          "actual": "The keyboard selected 2026-11-17.",
+          "evidenceType": "browser"
+        },
+        {
+          "id": "focus_restored",
+          "label": "Keep a place in the journey",
+          "status": "passed",
+          "expected": "After choosing a date, focus returns to its appointment trigger.",
+          "actual": "The trigger is the actual activeElement after selection.",
+          "evidenceType": "browser"
+        },
+        {
+          "id": "error_announced",
+          "label": "Expose recovery messages",
+          "status": "passed",
+          "expected": "Required and late validation errors expose alert/live-region semantics.",
+          "actual": "The observed validation messages had alert semantics. Screen-reader speech has not been recorded.",
+          "evidenceType": "browser"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "label": "Store the date that was chosen",
+          "status": "passed",
+          "expected": "The protected backend record matches the requested available date, name, and source digest.",
+          "actual": "Saved 2026-11-17 for Alex Morgan; record 9b6f42ff-6e13-4fd4-a129-055e6146532f; all outcome fields match.",
+          "evidenceType": "backend"
+        },
+        {
+          "id": "confirmation_focus",
+          "label": "Arrive at the confirmation",
+          "status": "passed",
+          "expected": "After a real successful save, focus lands on the confirmation heading.",
+          "actual": "The confirmation heading is the actual activeElement.",
+          "evidenceType": "browser"
+        }
+      ],
+      "savedDate": "2026-11-17"
+    }
+  ],
+  "humanValidation": "not performed",
+  "note": "Actual generated source, preserved byte-for-byte. Historical results are not rewritten. The verify:source CLI creates a fresh protected default contract."
+}

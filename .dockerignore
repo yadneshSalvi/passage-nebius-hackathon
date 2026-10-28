@@ -1,0 +1,15 @@
+plans
+.env
+.env.*
+!.env.example
+.passage
+.git
+node_modules
+dist
+test-results
+playwright-report
+coverage
+*.log
+recordings
+private-study
+.DS_Store

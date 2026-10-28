@@ -2,3 +2,11 @@
 .env.*
 !.env.example
 .DS_Store
+/plans/
+/node_modules/
+/dist/
+/.passage/
+/test-results/
+/playwright-report/
+/coverage/
+*.log

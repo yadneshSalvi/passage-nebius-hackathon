@@ -1,0 +1,3125 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-10-28T05:49:01.724Z",
+  "evidenceType": "automated-development-live-model-validation",
+  "verifierVersion": "passage-browser-v2",
+  "humanTrials": 0,
+  "heldOutCases": 0,
+  "comparativeBaselineRun": false,
+  "limitations": [
+    "Authored synthetic development fixtures; four component families.",
+    "Prompts and adapter feedback were improved during these development runs; this is not an unbiased benchmark.",
+    "All failed parent runs and pre-validation development requests are retained.",
+    "Headless Chromium and developer keyboard QA do not establish real assistive-technology experience.",
+    "Costs are estimates from reported usage and verified uncached token rates, not a provider invoice."
+  ],
+  "familyValidation": [
+    {
+      "family": "date-picker",
+      "fixtureId": "northstar-appointments",
+      "runIds": [
+        "repair_6cecad94-701f-4413-b44e-4bb09203fa5d"
+      ],
+      "requestCount": 1,
+      "acceptedCandidateDigest": "bf0c296b4ad136555ffdca0710aa1f99f06ac476015e4656790d18db96eebfee",
+      "passed": true,
+      "runs": [
+        {
+          "id": "repair_6cecad94-701f-4413-b44e-4bb09203fa5d",
+          "fixtureId": "northstar-appointments",
+          "mode": "live",
+          "status": "ready",
+          "createdAt": "2026-10-28T05:41:43.422Z",
+          "contractDigest": "0fa9694d0a8dc62cea51e5d2f70f24ea13accb075744db69e5f0090abe34f4fb",
+          "baseline": {
+            "id": "c2bd1c69-186c-4cab-a212-da2050e34b35",
+            "verifierVersion": "passage-browser-v2",
+            "kind": "baseline",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+            "contractDigest": "0fa9694d0a8dc62cea51e5d2f70f24ea13accb075744db69e5f0090abe34f4fb",
+            "buildId": "bd5304d2986d4298bf13d1489e4fc6b5f206a54824acc52e91561d68748ce459",
+            "startedAt": "2026-10-28T05:41:43.444Z",
+            "completedAt": "2026-10-28T05:41:46.083Z",
+            "durationMs": 2639,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 4,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          },
+          "activeCandidateId": "candidate_cd5ce40c-32e5-4560-8097-048779ac74d3",
+          "candidates": [
+            {
+              "id": "candidate_cd5ce40c-32e5-4560-8097-048779ac74d3",
+              "revision": 1,
+              "digest": "bf0c296b4ad136555ffdca0710aa1f99f06ac476015e4656790d18db96eebfee",
+              "status": "accepted",
+              "buildId": "d12701002afee900f9275fe502a10294efddd427ad60cd3468f3470d32bb3d88",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "12171919ce274edbe4dcb3a830d48855",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 4428,
+                "outputTokens": 964,
+                "durationMs": 4533,
+                "startedAt": "2026-10-28T05:42:07.272Z",
+                "completedAt": "2026-10-28T05:42:11.805Z",
+                "live": true
+              },
+              "verification": {
+                "id": "71032b71-2613-4f43-b1b2-2e3ba67cf510",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "passed",
+                "passed": true,
+                "sourceDigest": "bf0c296b4ad136555ffdca0710aa1f99f06ac476015e4656790d18db96eebfee",
+                "contractDigest": "0fa9694d0a8dc62cea51e5d2f70f24ea13accb075744db69e5f0090abe34f4fb",
+                "buildId": "d12701002afee900f9275fe502a10294efddd427ad60cd3468f3470d32bb3d88",
+                "startedAt": "2026-10-28T05:42:11.852Z",
+                "completedAt": "2026-10-28T05:42:12.911Z",
+                "durationMs": 1059,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 9,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "passed"
+                  }
+                ],
+                "appointmentSaved": true,
+                "appointmentDate": "2026-11-16"
+              }
+            }
+          ],
+          "challenges": [
+            {
+              "id": "53c77a42-9303-4691-b16c-0174201b27cc",
+              "verifierVersion": "passage-browser-v2",
+              "kind": "challenge",
+              "status": "passed",
+              "passed": true,
+              "sourceDigest": "bf0c296b4ad136555ffdca0710aa1f99f06ac476015e4656790d18db96eebfee",
+              "contractDigest": "0fa9694d0a8dc62cea51e5d2f70f24ea13accb075744db69e5f0090abe34f4fb",
+              "buildId": "d12701002afee900f9275fe502a10294efddd427ad60cd3468f3470d32bb3d88",
+              "startedAt": "2026-10-28T05:42:27.119Z",
+              "completedAt": "2026-10-28T05:42:29.205Z",
+              "durationMs": 2086,
+              "browser": "Chromium",
+              "browserVersion": "156.0.8078.4",
+              "scenario": {
+                "id": "combined",
+                "name": "All at once",
+                "description": "German labels, late validation, long content, and an unavailable first date.",
+                "locale": "de",
+                "delayedValidationMs": 900,
+                "unavailableFirst": true,
+                "longLabels": true,
+                "seed": 6803
+              },
+              "checksPassed": 9,
+              "checksTotal": 9,
+              "checks": [
+                {
+                  "id": "required_validation_preserved",
+                  "status": "passed"
+                },
+                {
+                  "id": "unavailable_slot_rejected",
+                  "status": "passed"
+                },
+                {
+                  "id": "control_keyboard_reachable",
+                  "status": "passed"
+                },
+                {
+                  "id": "dialog_escape",
+                  "status": "passed"
+                },
+                {
+                  "id": "selection_keyboard_operable",
+                  "status": "passed"
+                },
+                {
+                  "id": "focus_restored",
+                  "status": "passed"
+                },
+                {
+                  "id": "error_announced",
+                  "status": "passed"
+                },
+                {
+                  "id": "correct_outcome_persisted",
+                  "status": "passed"
+                },
+                {
+                  "id": "confirmation_focus",
+                  "status": "passed"
+                }
+              ],
+              "appointmentSaved": true,
+              "appointmentDate": "2026-11-17"
+            }
+          ],
+          "error": null
+        }
+      ]
+    },
+    {
+      "family": "combobox",
+      "fixtureId": "riverside-support",
+      "runIds": [
+        "repair_9155c712-f22e-4354-8ffa-0dafec1a7d24"
+      ],
+      "requestCount": 2,
+      "acceptedCandidateDigest": "3574892724b4f66e2397e710fb368d31f4519e682fc86e87f71eed49d50d84dd",
+      "passed": true,
+      "runs": [
+        {
+          "id": "repair_9155c712-f22e-4354-8ffa-0dafec1a7d24",
+          "fixtureId": "riverside-support",
+          "mode": "live",
+          "status": "ready",
+          "createdAt": "2026-10-28T05:43:22.608Z",
+          "contractDigest": "46392812825e3974ee6526ae5e106f2b7df371c225a35ed8b631dd78afec7f9e",
+          "baseline": {
+            "id": "f3d36932-5ccc-46db-913a-e5eb40b6d3e0",
+            "verifierVersion": "passage-browser-v2",
+            "kind": "baseline",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "630d8620fd5b5f0a9f25bda13d3f1eb4c6dda84890681194788eb4415c6e29bf",
+            "contractDigest": "46392812825e3974ee6526ae5e106f2b7df371c225a35ed8b631dd78afec7f9e",
+            "buildId": "6acab8a30ba924b9b1312c0cb52f0b38a3a8434c2f13c7b57e8caac8ecdd9c1e",
+            "startedAt": "2026-10-28T05:43:22.641Z",
+            "completedAt": "2026-10-28T05:43:25.190Z",
+            "durationMs": 2549,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 4,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          },
+          "activeCandidateId": "candidate_0db44b11-075f-448f-b97e-10a2f6789eb1",
+          "candidates": [
+            {
+              "id": "candidate_f0cb1e7b-1404-405f-82e7-f3f0a54aecfb",
+              "revision": 1,
+              "digest": "d4ce91b02cd61b823a019a27ff1123c01fc50594a8e7a39d06cd4a77025cca3d",
+              "status": "rejected",
+              "buildId": "bf91c95b5247c74d1e447e903134e9b7abd97f40e9d9e599b314eb6fec1fb003",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "d3fcc3b77ddddad414808d31fe4e25e3",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 4061,
+                "outputTokens": 702,
+                "durationMs": 3664,
+                "startedAt": "2026-10-28T05:43:25.626Z",
+                "completedAt": "2026-10-28T05:43:29.289Z",
+                "live": true
+              },
+              "verification": {
+                "id": "6ec9b31c-68b0-40db-8d42-d451c43e371b",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "d4ce91b02cd61b823a019a27ff1123c01fc50594a8e7a39d06cd4a77025cca3d",
+                "contractDigest": "46392812825e3974ee6526ae5e106f2b7df371c225a35ed8b631dd78afec7f9e",
+                "buildId": "bf91c95b5247c74d1e447e903134e9b7abd97f40e9d9e599b314eb6fec1fb003",
+                "startedAt": "2026-10-28T05:43:29.331Z",
+                "completedAt": "2026-10-28T05:43:31.514Z",
+                "durationMs": 2183,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 4,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "failed",
+                    "actual": "Picker remained open; focus returned to trigger; value preserved."
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "failed",
+                    "actual": "Selection did not complete with the keyboard. Current value: empty."
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "failed",
+                    "actual": "Focus did not return after a completed selection because selection remained blocked."
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "failed",
+                    "actual": "No appointment was saved. The task is incomplete."
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "failed",
+                    "actual": "The confirmation heading did not receive focus."
+                  }
+                ],
+                "appointmentSaved": false,
+                "appointmentDate": null
+              }
+            },
+            {
+              "id": "candidate_0db44b11-075f-448f-b97e-10a2f6789eb1",
+              "revision": 2,
+              "digest": "3574892724b4f66e2397e710fb368d31f4519e682fc86e87f71eed49d50d84dd",
+              "status": "accepted",
+              "buildId": "2db4663ad7301a3bed4083c9d90c9834af07ad6e7892b53f2152f40bdc8941fc",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "e1d8dd14070ca9c80c0c3d5bdd87708a",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 6211,
+                "outputTokens": 766,
+                "durationMs": 4544,
+                "startedAt": "2026-10-28T05:43:31.532Z",
+                "completedAt": "2026-10-28T05:43:36.076Z",
+                "live": true
+              },
+              "verification": {
+                "id": "0e9aeee9-f364-40cf-8df0-f1170de804c4",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "passed",
+                "passed": true,
+                "sourceDigest": "3574892724b4f66e2397e710fb368d31f4519e682fc86e87f71eed49d50d84dd",
+                "contractDigest": "46392812825e3974ee6526ae5e106f2b7df371c225a35ed8b631dd78afec7f9e",
+                "buildId": "2db4663ad7301a3bed4083c9d90c9834af07ad6e7892b53f2152f40bdc8941fc",
+                "startedAt": "2026-10-28T05:43:36.108Z",
+                "completedAt": "2026-10-28T05:43:36.765Z",
+                "durationMs": 657,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 9,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "passed"
+                  }
+                ],
+                "appointmentSaved": true,
+                "appointmentDate": "2026-11-16"
+              }
+            }
+          ],
+          "challenges": [
+            {
+              "id": "3450aced-ff0a-4ad3-81a0-ae287d8c808d",
+              "verifierVersion": "passage-browser-v2",
+              "kind": "challenge",
+              "status": "passed",
+              "passed": true,
+              "sourceDigest": "3574892724b4f66e2397e710fb368d31f4519e682fc86e87f71eed49d50d84dd",
+              "contractDigest": "46392812825e3974ee6526ae5e106f2b7df371c225a35ed8b631dd78afec7f9e",
+              "buildId": "2db4663ad7301a3bed4083c9d90c9834af07ad6e7892b53f2152f40bdc8941fc",
+              "startedAt": "2026-10-28T05:43:36.925Z",
+              "completedAt": "2026-10-28T05:43:38.677Z",
+              "durationMs": 1752,
+              "browser": "Chromium",
+              "browserVersion": "156.0.8078.4",
+              "scenario": {
+                "id": "combined",
+                "name": "All at once",
+                "description": "German labels, late validation, long content, and an unavailable first date.",
+                "locale": "de",
+                "delayedValidationMs": 900,
+                "unavailableFirst": true,
+                "longLabels": true,
+                "seed": 6803
+              },
+              "checksPassed": 9,
+              "checksTotal": 9,
+              "checks": [
+                {
+                  "id": "required_validation_preserved",
+                  "status": "passed"
+                },
+                {
+                  "id": "unavailable_slot_rejected",
+                  "status": "passed"
+                },
+                {
+                  "id": "control_keyboard_reachable",
+                  "status": "passed"
+                },
+                {
+                  "id": "dialog_escape",
+                  "status": "passed"
+                },
+                {
+                  "id": "selection_keyboard_operable",
+                  "status": "passed"
+                },
+                {
+                  "id": "focus_restored",
+                  "status": "passed"
+                },
+                {
+                  "id": "error_announced",
+                  "status": "passed"
+                },
+                {
+                  "id": "correct_outcome_persisted",
+                  "status": "passed"
+                },
+                {
+                  "id": "confirmation_focus",
+                  "status": "passed"
+                }
+              ],
+              "appointmentSaved": true,
+              "appointmentDate": "2026-11-17"
+            }
+          ],
+          "error": null
+        }
+      ]
+    },
+    {
+      "family": "modal-wizard",
+      "fixtureId": "atlas-onboarding",
+      "runIds": [
+        "repair_fa341824-4d05-402b-9f49-8928792d4f3d",
+        "repair_8b7db16c-5317-4618-abb6-671f5d8b8eea"
+      ],
+      "requestCount": 4,
+      "acceptedCandidateDigest": "b0b5a3bf71ae89e0b9d9e4d0797cc068423724334dcdf8b36043eeeba21e277e",
+      "passed": true,
+      "runs": [
+        {
+          "id": "repair_fa341824-4d05-402b-9f49-8928792d4f3d",
+          "fixtureId": "atlas-onboarding",
+          "mode": "live",
+          "status": "candidate_rejected",
+          "createdAt": "2026-10-28T05:43:39.183Z",
+          "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+          "baseline": {
+            "id": "020a5193-9e68-454c-9b9e-f1def95522f3",
+            "verifierVersion": "passage-browser-v2",
+            "kind": "baseline",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "55c29d907a5a3583ed0d7699a1ee9bee6e22ae8d96fa1910c29cccbed905daf7",
+            "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+            "buildId": "69b0dc5c0848dc502a47dbf3670ce3074e28642e9f258d8cb466c6500179bd0f",
+            "startedAt": "2026-10-28T05:43:39.210Z",
+            "completedAt": "2026-10-28T05:43:41.375Z",
+            "durationMs": 2165,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 4,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          },
+          "activeCandidateId": "candidate_35cda306-4648-498b-a841-5f83718c1454",
+          "candidates": [
+            {
+              "id": "candidate_d3aec738-a734-4be7-9d8e-923e95795b60",
+              "revision": 1,
+              "digest": "2e5efb3f3b6be51c94b7aaf07e5d552778c54b4e6d38a8356942be1dafb46108",
+              "status": "rejected",
+              "buildId": "c429df6a5dac1f6ffc47f6ab9d81a17680de9640f4265b60225001b2714bf73c",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "7b217996438098074582ba1703e94f38",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 4589,
+                "outputTokens": 895,
+                "durationMs": 4660,
+                "startedAt": "2026-10-28T05:43:41.447Z",
+                "completedAt": "2026-10-28T05:43:46.108Z",
+                "live": true
+              },
+              "verification": {
+                "id": "5df494c8-1eee-4368-a371-864d5d65e9c7",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "2e5efb3f3b6be51c94b7aaf07e5d552778c54b4e6d38a8356942be1dafb46108",
+                "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+                "buildId": "c429df6a5dac1f6ffc47f6ab9d81a17680de9640f4265b60225001b2714bf73c",
+                "startedAt": "2026-10-28T05:43:46.137Z",
+                "completedAt": "2026-10-28T05:43:48.291Z",
+                "durationMs": 2154,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 4,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "failed",
+                    "actual": "Picker remained open; focus returned to trigger; value preserved."
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "failed",
+                    "actual": "Selection did not complete with the keyboard. Current value: empty."
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "failed",
+                    "actual": "Focus did not return after a completed selection because selection remained blocked."
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "failed",
+                    "actual": "No appointment was saved. The task is incomplete."
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "failed",
+                    "actual": "The confirmation heading did not receive focus."
+                  }
+                ],
+                "appointmentSaved": false,
+                "appointmentDate": null
+              }
+            },
+            {
+              "id": "candidate_c41bcb09-4396-43a1-b8aa-08758f5debc6",
+              "revision": 2,
+              "digest": "2e5efb3f3b6be51c94b7aaf07e5d552778c54b4e6d38a8356942be1dafb46108",
+              "status": "rejected",
+              "buildId": "c429df6a5dac1f6ffc47f6ab9d81a17680de9640f4265b60225001b2714bf73c",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "987d8b69599b88f15a13294fa179fcd0",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 7220,
+                "outputTokens": 891,
+                "durationMs": 4035,
+                "startedAt": "2026-10-28T05:43:48.317Z",
+                "completedAt": "2026-10-28T05:43:52.352Z",
+                "live": true
+              },
+              "verification": {
+                "id": "1de5a172-cd8b-4b96-8531-1c283ae09e78",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "2e5efb3f3b6be51c94b7aaf07e5d552778c54b4e6d38a8356942be1dafb46108",
+                "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+                "buildId": "c429df6a5dac1f6ffc47f6ab9d81a17680de9640f4265b60225001b2714bf73c",
+                "startedAt": "2026-10-28T05:43:52.367Z",
+                "completedAt": "2026-10-28T05:43:54.514Z",
+                "durationMs": 2147,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 4,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "failed",
+                    "actual": "Picker remained open; focus returned to trigger; value preserved."
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "failed",
+                    "actual": "Selection did not complete with the keyboard. Current value: empty."
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "failed",
+                    "actual": "Focus did not return after a completed selection because selection remained blocked."
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "failed",
+                    "actual": "No appointment was saved. The task is incomplete."
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "failed",
+                    "actual": "The confirmation heading did not receive focus."
+                  }
+                ],
+                "appointmentSaved": false,
+                "appointmentDate": null
+              }
+            },
+            {
+              "id": "candidate_35cda306-4648-498b-a841-5f83718c1454",
+              "revision": 3,
+              "digest": "493b2fe77631270c8601c2bc1c45e82e32642ded05440d92674299d39e7c1f54",
+              "status": "rejected",
+              "buildId": "548bc0a417cd4148a41959f266cfcb8803efde85e2e8dde486fe10abc1a50128",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "35d4479dee60b0fbcef89f849e9b0bc0",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 7220,
+                "outputTokens": 896,
+                "durationMs": 3818,
+                "startedAt": "2026-10-28T05:43:54.535Z",
+                "completedAt": "2026-10-28T05:43:58.354Z",
+                "live": true
+              },
+              "verification": {
+                "id": "5929b1e3-b4c8-4c50-b240-4987ed775bfe",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "493b2fe77631270c8601c2bc1c45e82e32642ded05440d92674299d39e7c1f54",
+                "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+                "buildId": "548bc0a417cd4148a41959f266cfcb8803efde85e2e8dde486fe10abc1a50128",
+                "startedAt": "2026-10-28T05:43:58.398Z",
+                "completedAt": "2026-10-28T05:43:59.066Z",
+                "durationMs": 668,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 8,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "failed",
+                    "actual": "Picker remained open; focus returned to trigger; value preserved."
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "passed"
+                  }
+                ],
+                "appointmentSaved": true,
+                "appointmentDate": "2026-11-16"
+              }
+            }
+          ],
+          "challenges": [],
+          "error": null
+        },
+        {
+          "id": "repair_8b7db16c-5317-4618-abb6-671f5d8b8eea",
+          "fixtureId": "atlas-onboarding",
+          "mode": "live",
+          "status": "ready",
+          "createdAt": "2026-10-28T05:47:27.746Z",
+          "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+          "baseline": {
+            "id": "458913cc-5cdf-4326-a24d-fd07bead4b99",
+            "verifierVersion": "passage-browser-v2",
+            "kind": "baseline",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "55c29d907a5a3583ed0d7699a1ee9bee6e22ae8d96fa1910c29cccbed905daf7",
+            "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+            "buildId": "7c28160d2fbe5c1a39290322da16470f004d6f6fe625e9dcb506eb732ec89a72",
+            "startedAt": "2026-10-28T05:47:27.789Z",
+            "completedAt": "2026-10-28T05:47:30.043Z",
+            "durationMs": 2254,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 4,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          },
+          "activeCandidateId": "candidate_52ab67bf-4aec-4ad7-878a-efbe51475d28",
+          "candidates": [
+            {
+              "id": "candidate_52ab67bf-4aec-4ad7-878a-efbe51475d28",
+              "revision": 1,
+              "digest": "b0b5a3bf71ae89e0b9d9e4d0797cc068423724334dcdf8b36043eeeba21e277e",
+              "status": "accepted",
+              "buildId": "baa9e837ca75c013a3d3c065a94f39f140be9702224aed2710c886fed1caba1b",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "b35ca006348f6ab9f25688a47ba0275f",
+                "promptVersion": "passage-scoped-component-v5-observed-transitions",
+                "temperature": 0.2,
+                "inputTokens": 9228,
+                "outputTokens": 943,
+                "durationMs": 8231,
+                "startedAt": "2026-10-28T05:47:30.765Z",
+                "completedAt": "2026-10-28T05:47:38.995Z",
+                "live": true
+              },
+              "verification": {
+                "id": "9fead442-e193-4ac8-a535-79aa995fbcc3",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "passed",
+                "passed": true,
+                "sourceDigest": "b0b5a3bf71ae89e0b9d9e4d0797cc068423724334dcdf8b36043eeeba21e277e",
+                "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+                "buildId": "baa9e837ca75c013a3d3c065a94f39f140be9702224aed2710c886fed1caba1b",
+                "startedAt": "2026-10-28T05:47:39.040Z",
+                "completedAt": "2026-10-28T05:47:39.747Z",
+                "durationMs": 707,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 9,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "passed"
+                  }
+                ],
+                "appointmentSaved": true,
+                "appointmentDate": "2026-11-16"
+              }
+            }
+          ],
+          "challenges": [
+            {
+              "id": "f21f18d2-38fb-4210-8059-fc715b2e1712",
+              "verifierVersion": "passage-browser-v2",
+              "kind": "challenge",
+              "status": "passed",
+              "passed": true,
+              "sourceDigest": "b0b5a3bf71ae89e0b9d9e4d0797cc068423724334dcdf8b36043eeeba21e277e",
+              "contractDigest": "afa5c9e8069923b3a20e54063001bd7cb0599ac427b1aea45c23e89aee6f180b",
+              "buildId": "baa9e837ca75c013a3d3c065a94f39f140be9702224aed2710c886fed1caba1b",
+              "startedAt": "2026-10-28T05:47:39.808Z",
+              "completedAt": "2026-10-28T05:47:41.578Z",
+              "durationMs": 1770,
+              "browser": "Chromium",
+              "browserVersion": "156.0.8078.4",
+              "scenario": {
+                "id": "combined",
+                "name": "All at once",
+                "description": "German labels, late validation, long content, and an unavailable first date.",
+                "locale": "de",
+                "delayedValidationMs": 900,
+                "unavailableFirst": true,
+                "longLabels": true,
+                "seed": 6803
+              },
+              "checksPassed": 9,
+              "checksTotal": 9,
+              "checks": [
+                {
+                  "id": "required_validation_preserved",
+                  "status": "passed"
+                },
+                {
+                  "id": "unavailable_slot_rejected",
+                  "status": "passed"
+                },
+                {
+                  "id": "control_keyboard_reachable",
+                  "status": "passed"
+                },
+                {
+                  "id": "dialog_escape",
+                  "status": "passed"
+                },
+                {
+                  "id": "selection_keyboard_operable",
+                  "status": "passed"
+                },
+                {
+                  "id": "focus_restored",
+                  "status": "passed"
+                },
+                {
+                  "id": "error_announced",
+                  "status": "passed"
+                },
+                {
+                  "id": "correct_outcome_persisted",
+                  "status": "passed"
+                },
+                {
+                  "id": "confirmation_focus",
+                  "status": "passed"
+                }
+              ],
+              "appointmentSaved": true,
+              "appointmentDate": "2026-11-17"
+            }
+          ],
+          "error": null
+        }
+      ]
+    },
+    {
+      "family": "async-validation",
+      "fixtureId": "civic-assistance",
+      "runIds": [
+        "repair_5e1ce24e-4b45-4c66-80b7-499ee31798c6",
+        "repair_1efae4ad-9c2f-4db4-a226-d33f2904d80d"
+      ],
+      "requestCount": 4,
+      "acceptedCandidateDigest": "8ed79f71fa61fd0d7a1cd84d1b74c801346da3771970298401f326c16fc227df",
+      "passed": true,
+      "runs": [
+        {
+          "id": "repair_5e1ce24e-4b45-4c66-80b7-499ee31798c6",
+          "fixtureId": "civic-assistance",
+          "mode": "live",
+          "status": "candidate_rejected",
+          "createdAt": "2026-10-28T05:43:59.543Z",
+          "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+          "baseline": {
+            "id": "1f8323e2-ed19-4db3-b1c4-0a5b117dd29d",
+            "verifierVersion": "passage-browser-v2",
+            "kind": "baseline",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "e5b54dfb4db7b0faa0c5e1b91690fb766a178a67da5ad8547ffec633d7ed1ca0",
+            "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+            "buildId": "4d582fa19f09d4aab6ce66c204742c82c04a42bbe4aea7f54eecf20d33236b4a",
+            "startedAt": "2026-10-28T05:43:59.581Z",
+            "completedAt": "2026-10-28T05:44:01.928Z",
+            "durationMs": 2347,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 3,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "failed",
+                "actual": "A visible error lacked alert semantics. Actual screen-reader output has not been recorded."
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          },
+          "activeCandidateId": "candidate_809be839-b18c-4768-938b-aab9b7fdc9d2",
+          "candidates": [
+            {
+              "id": "candidate_3dc54ba5-603b-4c56-9ab5-a6b14a9f8655",
+              "revision": 1,
+              "digest": "6a49d4ee9bba3edfc234d9fdd1828611a58df54898abadc8ef109bff1f85bf34",
+              "status": "rejected",
+              "buildId": "c62391186595520e8c560c5a78671e1cdcbcd4d414eb93985f96bb98e46994c1",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "135ebc4f1dcfbee925b64eb293396456",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 4432,
+                "outputTokens": 907,
+                "durationMs": 5144,
+                "startedAt": "2026-10-28T05:44:02.566Z",
+                "completedAt": "2026-10-28T05:44:07.710Z",
+                "live": true
+              },
+              "verification": {
+                "id": "de8f913a-82df-49b3-951e-7d1331618867",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "6a49d4ee9bba3edfc234d9fdd1828611a58df54898abadc8ef109bff1f85bf34",
+                "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+                "buildId": "c62391186595520e8c560c5a78671e1cdcbcd4d414eb93985f96bb98e46994c1",
+                "startedAt": "2026-10-28T05:44:07.749Z",
+                "completedAt": "2026-10-28T05:44:10.127Z",
+                "durationMs": 2378,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 5,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "failed",
+                    "actual": "Selection did not complete with the keyboard. Current value: empty."
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "failed",
+                    "actual": "Focus did not return after a completed selection because selection remained blocked."
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "failed",
+                    "actual": "No appointment was saved. The task is incomplete."
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "failed",
+                    "actual": "The confirmation heading did not receive focus."
+                  }
+                ],
+                "appointmentSaved": false,
+                "appointmentDate": null
+              }
+            },
+            {
+              "id": "candidate_bdcd87d5-be97-47b5-b7bc-c0b886c64744",
+              "revision": 2,
+              "digest": "6a49d4ee9bba3edfc234d9fdd1828611a58df54898abadc8ef109bff1f85bf34",
+              "status": "rejected",
+              "buildId": "c62391186595520e8c560c5a78671e1cdcbcd4d414eb93985f96bb98e46994c1",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "3c75942755e72f5c4e30918c1b81e82f",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 7023,
+                "outputTokens": 932,
+                "durationMs": 4227,
+                "startedAt": "2026-10-28T05:44:10.147Z",
+                "completedAt": "2026-10-28T05:44:14.374Z",
+                "live": true
+              },
+              "verification": {
+                "id": "79589100-90c3-47bf-a5f3-b67126b55113",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "6a49d4ee9bba3edfc234d9fdd1828611a58df54898abadc8ef109bff1f85bf34",
+                "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+                "buildId": "c62391186595520e8c560c5a78671e1cdcbcd4d414eb93985f96bb98e46994c1",
+                "startedAt": "2026-10-28T05:44:14.383Z",
+                "completedAt": "2026-10-28T05:44:16.771Z",
+                "durationMs": 2388,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 5,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "failed",
+                    "actual": "Selection did not complete with the keyboard. Current value: empty."
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "failed",
+                    "actual": "Focus did not return after a completed selection because selection remained blocked."
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "failed",
+                    "actual": "No appointment was saved. The task is incomplete."
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "failed",
+                    "actual": "The confirmation heading did not receive focus."
+                  }
+                ],
+                "appointmentSaved": false,
+                "appointmentDate": null
+              }
+            },
+            {
+              "id": "candidate_809be839-b18c-4768-938b-aab9b7fdc9d2",
+              "revision": 3,
+              "digest": "c46a0d35896f0812e443c00e48729d537c6285096293982b0aeb6aa4ffc8f34f",
+              "status": "rejected",
+              "buildId": "fe7fe2733f508509dc69c888b66aaae8881237796550d9b1e22536685c98fc1d",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "7b8ffbeaf3a2834c24f7aa3835b1cdcc",
+                "promptVersion": "passage-scoped-component-v4-ref-only",
+                "temperature": 0.2,
+                "inputTokens": 7023,
+                "outputTokens": 945,
+                "durationMs": 3492,
+                "startedAt": "2026-10-28T05:44:16.789Z",
+                "completedAt": "2026-10-28T05:44:20.282Z",
+                "live": true
+              },
+              "verification": {
+                "id": "18ce24e9-ae96-4fd2-91bd-717f6409ed83",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "failed",
+                "passed": false,
+                "sourceDigest": "c46a0d35896f0812e443c00e48729d537c6285096293982b0aeb6aa4ffc8f34f",
+                "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+                "buildId": "fe7fe2733f508509dc69c888b66aaae8881237796550d9b1e22536685c98fc1d",
+                "startedAt": "2026-10-28T05:44:20.317Z",
+                "completedAt": "2026-10-28T05:44:22.737Z",
+                "durationMs": 2420,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 5,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "failed",
+                    "actual": "Selection did not complete with the keyboard. Current value: empty."
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "failed",
+                    "actual": "Focus did not return after a completed selection because selection remained blocked."
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "failed",
+                    "actual": "No appointment was saved. The task is incomplete."
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "failed",
+                    "actual": "The confirmation heading did not receive focus."
+                  }
+                ],
+                "appointmentSaved": false,
+                "appointmentDate": null
+              }
+            }
+          ],
+          "challenges": [],
+          "error": null
+        },
+        {
+          "id": "repair_1efae4ad-9c2f-4db4-a226-d33f2904d80d",
+          "fixtureId": "civic-assistance",
+          "mode": "live",
+          "status": "ready",
+          "createdAt": "2026-10-28T05:47:42.071Z",
+          "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+          "baseline": {
+            "id": "44fbdb2c-1c4e-47d3-b484-b1cb79a8332a",
+            "verifierVersion": "passage-browser-v2",
+            "kind": "baseline",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "e5b54dfb4db7b0faa0c5e1b91690fb766a178a67da5ad8547ffec633d7ed1ca0",
+            "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+            "buildId": "c1c77845c715828324e38da13bcfcac905c14c118e67605ee109c0960da7263a",
+            "startedAt": "2026-10-28T05:47:42.101Z",
+            "completedAt": "2026-10-28T05:47:44.503Z",
+            "durationMs": 2402,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 3,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "failed",
+                "actual": "A visible error lacked alert semantics. Actual screen-reader output has not been recorded."
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          },
+          "activeCandidateId": "candidate_c0336da5-3001-42ef-bf18-ea3d2dd222ef",
+          "candidates": [
+            {
+              "id": "candidate_c0336da5-3001-42ef-bf18-ea3d2dd222ef",
+              "revision": 1,
+              "digest": "8ed79f71fa61fd0d7a1cd84d1b74c801346da3771970298401f326c16fc227df",
+              "status": "accepted",
+              "buildId": "73e942edf5a780a68561d4873770350eeda4a3deda5499396997867f53097029",
+              "rejectionReason": null,
+              "receipt": {
+                "provider": "nebius",
+                "model": "nvidia/nemotron-3-super-120b-a12b",
+                "requestId": "878470e0065ab227786a2423d41c7212",
+                "promptVersion": "passage-scoped-component-v5-observed-transitions",
+                "temperature": 0.2,
+                "inputTokens": 9709,
+                "outputTokens": 962,
+                "durationMs": 4176,
+                "startedAt": "2026-10-28T05:47:45.091Z",
+                "completedAt": "2026-10-28T05:47:49.268Z",
+                "live": true
+              },
+              "verification": {
+                "id": "574b619d-ffcc-4edb-9423-b0984846cad2",
+                "verifierVersion": "passage-browser-v2",
+                "kind": "candidate",
+                "status": "passed",
+                "passed": true,
+                "sourceDigest": "8ed79f71fa61fd0d7a1cd84d1b74c801346da3771970298401f326c16fc227df",
+                "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+                "buildId": "73e942edf5a780a68561d4873770350eeda4a3deda5499396997867f53097029",
+                "startedAt": "2026-10-28T05:47:49.301Z",
+                "completedAt": "2026-10-28T05:47:50.464Z",
+                "durationMs": 1163,
+                "browser": "Chromium",
+                "browserVersion": "156.0.8078.4",
+                "scenario": {
+                  "id": "baseline",
+                  "name": "Original conditions",
+                  "description": "English labels, standard timing, and the declared appointment availability.",
+                  "locale": "en",
+                  "delayedValidationMs": 120,
+                  "unavailableFirst": false,
+                  "longLabels": false,
+                  "seed": 1701
+                },
+                "checksPassed": 9,
+                "checksTotal": 9,
+                "checks": [
+                  {
+                    "id": "required_validation_preserved",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "unavailable_slot_rejected",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "control_keyboard_reachable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "dialog_escape",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "selection_keyboard_operable",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "focus_restored",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "error_announced",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "correct_outcome_persisted",
+                    "status": "passed"
+                  },
+                  {
+                    "id": "confirmation_focus",
+                    "status": "passed"
+                  }
+                ],
+                "appointmentSaved": true,
+                "appointmentDate": "2026-11-17"
+              }
+            }
+          ],
+          "challenges": [
+            {
+              "id": "ef58d9a9-8f13-441f-8040-e7208073261b",
+              "verifierVersion": "passage-browser-v2",
+              "kind": "challenge",
+              "status": "passed",
+              "passed": true,
+              "sourceDigest": "8ed79f71fa61fd0d7a1cd84d1b74c801346da3771970298401f326c16fc227df",
+              "contractDigest": "9299323d9ad81a28f5e12be5f742633c0107ff11ca96b8c3248b0e2c65e67f8a",
+              "buildId": "73e942edf5a780a68561d4873770350eeda4a3deda5499396997867f53097029",
+              "startedAt": "2026-10-28T05:47:51.125Z",
+              "completedAt": "2026-10-28T05:47:54.954Z",
+              "durationMs": 3829,
+              "browser": "Chromium",
+              "browserVersion": "156.0.8078.4",
+              "scenario": {
+                "id": "combined",
+                "name": "All at once",
+                "description": "German labels, late validation, long content, and an unavailable first date.",
+                "locale": "de",
+                "delayedValidationMs": 900,
+                "unavailableFirst": true,
+                "longLabels": true,
+                "seed": 6803
+              },
+              "checksPassed": 9,
+              "checksTotal": 9,
+              "checks": [
+                {
+                  "id": "required_validation_preserved",
+                  "status": "passed"
+                },
+                {
+                  "id": "unavailable_slot_rejected",
+                  "status": "passed"
+                },
+                {
+                  "id": "control_keyboard_reachable",
+                  "status": "passed"
+                },
+                {
+                  "id": "dialog_escape",
+                  "status": "passed"
+                },
+                {
+                  "id": "selection_keyboard_operable",
+                  "status": "passed"
+                },
+                {
+                  "id": "focus_restored",
+                  "status": "passed"
+                },
+                {
+                  "id": "error_announced",
+                  "status": "passed"
+                },
+                {
+                  "id": "correct_outcome_persisted",
+                  "status": "passed"
+                },
+                {
+                  "id": "confirmation_focus",
+                  "status": "passed"
+                }
+              ],
+              "appointmentSaved": true,
+              "appointmentDate": "2026-11-18"
+            }
+          ],
+          "error": null
+        }
+      ]
+    }
+  ],
+  "preValidationDevelopmentRuns": [
+    {
+      "id": "repair_3ab0773b-dca7-4baf-9f96-b3dd83466b74",
+      "fixtureId": "northstar-appointments",
+      "mode": "live",
+      "status": "environment_error",
+      "createdAt": "2026-10-28T05:21:17.852Z",
+      "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+      "baseline": {
+        "id": "363e9116-b411-4ac8-9778-62a01111deff",
+        "verifierVersion": "historical-unversioned",
+        "kind": "baseline",
+        "status": "failed",
+        "passed": false,
+        "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+        "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+        "buildId": "2926c742eff059255dd720d825a0b9c3637bc0574a6b41edefd8aef0e4cf5f66",
+        "startedAt": "2026-10-28T05:21:17.893Z",
+        "completedAt": "2026-10-28T05:21:20.427Z",
+        "durationMs": 2534,
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4",
+        "scenario": {
+          "id": "baseline",
+          "name": "Original conditions",
+          "description": "English labels, standard timing, and the declared appointment availability.",
+          "locale": "en",
+          "delayedValidationMs": 120,
+          "unavailableFirst": false,
+          "longLabels": false,
+          "seed": 1701
+        },
+        "checksPassed": 4,
+        "checksTotal": 9,
+        "checks": [
+          {
+            "id": "required_validation_preserved",
+            "status": "passed"
+          },
+          {
+            "id": "unavailable_slot_rejected",
+            "status": "passed"
+          },
+          {
+            "id": "control_keyboard_reachable",
+            "status": "passed"
+          },
+          {
+            "id": "dialog_escape",
+            "status": "failed",
+            "actual": "Picker remained open; focus returned to trigger; value preserved."
+          },
+          {
+            "id": "selection_keyboard_operable",
+            "status": "failed",
+            "actual": "Selection did not complete with the keyboard. Current value: empty."
+          },
+          {
+            "id": "focus_restored",
+            "status": "failed",
+            "actual": "Focus did not return after a completed selection because selection remained blocked."
+          },
+          {
+            "id": "error_announced",
+            "status": "passed"
+          },
+          {
+            "id": "correct_outcome_persisted",
+            "status": "failed",
+            "actual": "No appointment was saved. The task is incomplete."
+          },
+          {
+            "id": "confirmation_focus",
+            "status": "failed",
+            "actual": "The confirmation heading did not receive focus."
+          }
+        ],
+        "appointmentSaved": false,
+        "appointmentDate": null
+      },
+      "activeCandidateId": null,
+      "candidates": [],
+      "challenges": [],
+      "error": {
+        "code": "MODEL_TRUNCATED",
+        "message": "The candidate exceeded the model output allowance and was not executed."
+      }
+    },
+    {
+      "id": "repair_c161c013-7f55-4d24-9326-e50dcd272ce2",
+      "fixtureId": "northstar-appointments",
+      "mode": "live",
+      "status": "candidate_rejected",
+      "createdAt": "2026-10-28T05:27:21.263Z",
+      "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+      "baseline": {
+        "id": "89fc2036-016a-4949-9e51-d925b16a6c95",
+        "verifierVersion": "historical-unversioned",
+        "kind": "baseline",
+        "status": "failed",
+        "passed": false,
+        "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+        "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+        "buildId": "ae45ebbe28045b7961a924377a7b420c2869dde66a50ae8a6059936fc884fe29",
+        "startedAt": "2026-10-28T05:27:21.268Z",
+        "completedAt": "2026-10-28T05:27:23.748Z",
+        "durationMs": 2480,
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4",
+        "scenario": {
+          "id": "baseline",
+          "name": "Original conditions",
+          "description": "English labels, standard timing, and the declared appointment availability.",
+          "locale": "en",
+          "delayedValidationMs": 120,
+          "unavailableFirst": false,
+          "longLabels": false,
+          "seed": 1701
+        },
+        "checksPassed": 4,
+        "checksTotal": 9,
+        "checks": [
+          {
+            "id": "required_validation_preserved",
+            "status": "passed"
+          },
+          {
+            "id": "unavailable_slot_rejected",
+            "status": "passed"
+          },
+          {
+            "id": "control_keyboard_reachable",
+            "status": "passed"
+          },
+          {
+            "id": "dialog_escape",
+            "status": "failed",
+            "actual": "Picker remained open; focus returned to trigger; value preserved."
+          },
+          {
+            "id": "selection_keyboard_operable",
+            "status": "failed",
+            "actual": "Selection did not complete with the keyboard. Current value: empty."
+          },
+          {
+            "id": "focus_restored",
+            "status": "failed",
+            "actual": "Focus did not return after a completed selection because selection remained blocked."
+          },
+          {
+            "id": "error_announced",
+            "status": "passed"
+          },
+          {
+            "id": "correct_outcome_persisted",
+            "status": "failed",
+            "actual": "No appointment was saved. The task is incomplete."
+          },
+          {
+            "id": "confirmation_focus",
+            "status": "failed",
+            "actual": "The confirmation heading did not receive focus."
+          }
+        ],
+        "appointmentSaved": false,
+        "appointmentDate": null
+      },
+      "activeCandidateId": "candidate_a02d40c7-380e-43ae-94b9-1f4fff0952bf",
+      "candidates": [
+        {
+          "id": "candidate_0321202e-ec2f-4da0-bb89-fed3a123794d",
+          "revision": 1,
+          "digest": "025d852b25b377e6359076222dc9dea59b72bd8fb7adcac86e23167d645a5881",
+          "status": "rejected",
+          "buildId": "",
+          "rejectionReason": "Build failed with 2 errors:\nscoped-fixture:SlotControl.jsx:14:6: ERROR: Cannot assign to \"focusedIndex\" because it is a constant\nscoped-fixture:SlotControl.jsx:16:6: ERROR: Cannot assign to \"focusedIndex\" because it is a constant",
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/Nemotron-3_5-Lightning",
+            "requestId": "5493f7b12d4bd3af438ec35a8f3486f3",
+            "promptVersion": "passage-scoped-component-v2-no-thinking",
+            "temperature": 0.2,
+            "inputTokens": 4100,
+            "outputTokens": 1266,
+            "durationMs": 17886,
+            "startedAt": "2026-10-28T05:27:35.853Z",
+            "completedAt": "2026-10-28T05:27:53.738Z",
+            "live": true
+          },
+          "verification": null
+        },
+        {
+          "id": "candidate_f46476e7-e346-48d5-a6e6-49b31535370e",
+          "revision": 2,
+          "digest": "177672bf5448033e4d72601b4b41587d29c97649a2a9444990b3c96752db5f95",
+          "status": "rejected",
+          "buildId": "b4eab4f531790cd1405791d9061ccfaa2f51924a32b1c49a7d8607f20627eed0",
+          "rejectionReason": null,
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/Nemotron-3_5-Lightning",
+            "requestId": "9015c5b8b0c63ae250847890c0e6bcae",
+            "promptVersion": "passage-scoped-component-v2-no-thinking",
+            "temperature": 0.2,
+            "inputTokens": 4166,
+            "outputTokens": 1269,
+            "durationMs": 26574,
+            "startedAt": "2026-10-28T05:27:53.801Z",
+            "completedAt": "2026-10-28T05:28:20.376Z",
+            "live": true
+          },
+          "verification": {
+            "id": "c4a27cc5-8cef-4816-8315-2d844ed3d3cf",
+            "verifierVersion": "historical-unversioned",
+            "kind": "candidate",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "177672bf5448033e4d72601b4b41587d29c97649a2a9444990b3c96752db5f95",
+            "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+            "buildId": "b4eab4f531790cd1405791d9061ccfaa2f51924a32b1c49a7d8607f20627eed0",
+            "startedAt": "2026-10-28T05:28:20.421Z",
+            "completedAt": "2026-10-28T05:28:22.836Z",
+            "durationMs": 2415,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 5,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "passed"
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          }
+        },
+        {
+          "id": "candidate_a02d40c7-380e-43ae-94b9-1f4fff0952bf",
+          "revision": 3,
+          "digest": "81c830c8edc32fbd9e0a3abb9ac5a0584f229dfecbb5570fd8fac80adadbc7d4",
+          "status": "rejected",
+          "buildId": "bce9771edebd863e76e3f32ecc21e0d51113fb0ce7125117bd98413e5c80ef08",
+          "rejectionReason": null,
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/Nemotron-3_5-Lightning",
+            "requestId": "dc997588ad514ce2cfc93244cf318652",
+            "promptVersion": "passage-scoped-component-v2-no-thinking",
+            "temperature": 0.2,
+            "inputTokens": 4364,
+            "outputTokens": 1323,
+            "durationMs": 34677,
+            "startedAt": "2026-10-28T05:28:22.858Z",
+            "completedAt": "2026-10-28T05:28:57.535Z",
+            "live": true
+          },
+          "verification": {
+            "id": "5bbd93e8-0396-4eea-9743-2216a73132f4",
+            "verifierVersion": "historical-unversioned",
+            "kind": "candidate",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "81c830c8edc32fbd9e0a3abb9ac5a0584f229dfecbb5570fd8fac80adadbc7d4",
+            "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+            "buildId": "bce9771edebd863e76e3f32ecc21e0d51113fb0ce7125117bd98413e5c80ef08",
+            "startedAt": "2026-10-28T05:28:57.580Z",
+            "completedAt": "2026-10-28T05:29:00.146Z",
+            "durationMs": 2566,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 4,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "failed",
+                "actual": "Picker remained open; focus returned to trigger; value preserved."
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          }
+        }
+      ],
+      "challenges": [],
+      "error": null
+    },
+    {
+      "id": "repair_f94fd83a-7f02-4062-9700-296118f7e580",
+      "fixtureId": "northstar-appointments",
+      "mode": "live",
+      "status": "candidate_rejected",
+      "createdAt": "2026-10-28T05:33:07.869Z",
+      "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+      "baseline": {
+        "id": "97880d0d-0db2-4326-b708-495127a74cbb",
+        "verifierVersion": "historical-unversioned",
+        "kind": "baseline",
+        "status": "failed",
+        "passed": false,
+        "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+        "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+        "buildId": "bd5304d2986d4298bf13d1489e4fc6b5f206a54824acc52e91561d68748ce459",
+        "startedAt": "2026-10-28T05:33:07.933Z",
+        "completedAt": "2026-10-28T05:33:10.530Z",
+        "durationMs": 2597,
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4",
+        "scenario": {
+          "id": "baseline",
+          "name": "Original conditions",
+          "description": "English labels, standard timing, and the declared appointment availability.",
+          "locale": "en",
+          "delayedValidationMs": 120,
+          "unavailableFirst": false,
+          "longLabels": false,
+          "seed": 1701
+        },
+        "checksPassed": 4,
+        "checksTotal": 9,
+        "checks": [
+          {
+            "id": "required_validation_preserved",
+            "status": "passed"
+          },
+          {
+            "id": "unavailable_slot_rejected",
+            "status": "passed"
+          },
+          {
+            "id": "control_keyboard_reachable",
+            "status": "passed"
+          },
+          {
+            "id": "dialog_escape",
+            "status": "failed",
+            "actual": "Picker remained open; focus returned to trigger; value preserved."
+          },
+          {
+            "id": "selection_keyboard_operable",
+            "status": "failed",
+            "actual": "Selection did not complete with the keyboard. Current value: empty."
+          },
+          {
+            "id": "focus_restored",
+            "status": "failed",
+            "actual": "Focus did not return after a completed selection because selection remained blocked."
+          },
+          {
+            "id": "error_announced",
+            "status": "passed"
+          },
+          {
+            "id": "correct_outcome_persisted",
+            "status": "failed",
+            "actual": "No appointment was saved. The task is incomplete."
+          },
+          {
+            "id": "confirmation_focus",
+            "status": "failed",
+            "actual": "The confirmation heading did not receive focus."
+          }
+        ],
+        "appointmentSaved": false,
+        "appointmentDate": null
+      },
+      "activeCandidateId": "candidate_01c00c90-d746-42a8-a381-2d20c73bef2c",
+      "candidates": [
+        {
+          "id": "candidate_ec366da2-2f9d-4196-8999-8752aa77684a",
+          "revision": 1,
+          "digest": "a473edf94ad8326f7d673a9633eb28d6ba58db401a3b0c4b47eae4b2efa1fc9d",
+          "status": "rejected",
+          "buildId": "",
+          "rejectionReason": "The component may not access querySelectorAll.",
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "requestId": "bdf00f34ad594e1ac24a70432e5c0fb9",
+            "promptVersion": "passage-scoped-component-v3-native-keyboard",
+            "temperature": 0.2,
+            "inputTokens": 7832,
+            "outputTokens": 1335,
+            "durationMs": 6114,
+            "startedAt": "2026-10-28T05:33:25.418Z",
+            "completedAt": "2026-10-28T05:33:31.531Z",
+            "live": true
+          },
+          "verification": null
+        },
+        {
+          "id": "candidate_a5be4ac8-bfd5-40fc-9c2f-d55e2b824994",
+          "revision": 2,
+          "digest": "a473edf94ad8326f7d673a9633eb28d6ba58db401a3b0c4b47eae4b2efa1fc9d",
+          "status": "rejected",
+          "buildId": "",
+          "rejectionReason": "The component may not access querySelectorAll.",
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "requestId": "7b40203ae8788358cc43f5e6012946ec",
+            "promptVersion": "passage-scoped-component-v3-native-keyboard",
+            "temperature": 0.2,
+            "inputTokens": 7612,
+            "outputTokens": 1342,
+            "durationMs": 5705,
+            "startedAt": "2026-10-28T05:33:31.549Z",
+            "completedAt": "2026-10-28T05:33:37.254Z",
+            "live": true
+          },
+          "verification": null
+        },
+        {
+          "id": "candidate_01c00c90-d746-42a8-a381-2d20c73bef2c",
+          "revision": 3,
+          "digest": "a473edf94ad8326f7d673a9633eb28d6ba58db401a3b0c4b47eae4b2efa1fc9d",
+          "status": "rejected",
+          "buildId": "",
+          "rejectionReason": "The component may not access querySelectorAll.",
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "requestId": "1341a9bbeeb9bcb6a84dafb19df0c1fa",
+            "promptVersion": "passage-scoped-component-v3-native-keyboard",
+            "temperature": 0.2,
+            "inputTokens": 7612,
+            "outputTokens": 1340,
+            "durationMs": 5716,
+            "startedAt": "2026-10-28T05:33:37.262Z",
+            "completedAt": "2026-10-28T05:33:42.977Z",
+            "live": true
+          },
+          "verification": null
+        }
+      ],
+      "challenges": [],
+      "error": null
+    },
+    {
+      "id": "repair_1f732ff9-e6d8-4aa2-b451-7419b55eabf2",
+      "fixtureId": "northstar-appointments",
+      "mode": "live",
+      "status": "candidate_rejected",
+      "createdAt": "2026-10-28T05:36:42.444Z",
+      "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+      "baseline": {
+        "id": "d7da5fec-5167-403e-bbc8-1be2c5cdf2f6",
+        "verifierVersion": "historical-unversioned",
+        "kind": "baseline",
+        "status": "failed",
+        "passed": false,
+        "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+        "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+        "buildId": "bd5304d2986d4298bf13d1489e4fc6b5f206a54824acc52e91561d68748ce459",
+        "startedAt": "2026-10-28T05:36:42.458Z",
+        "completedAt": "2026-10-28T05:36:45.009Z",
+        "durationMs": 2551,
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4",
+        "scenario": {
+          "id": "baseline",
+          "name": "Original conditions",
+          "description": "English labels, standard timing, and the declared appointment availability.",
+          "locale": "en",
+          "delayedValidationMs": 120,
+          "unavailableFirst": false,
+          "longLabels": false,
+          "seed": 1701
+        },
+        "checksPassed": 4,
+        "checksTotal": 9,
+        "checks": [
+          {
+            "id": "required_validation_preserved",
+            "status": "passed"
+          },
+          {
+            "id": "unavailable_slot_rejected",
+            "status": "passed"
+          },
+          {
+            "id": "control_keyboard_reachable",
+            "status": "passed"
+          },
+          {
+            "id": "dialog_escape",
+            "status": "failed",
+            "actual": "Picker remained open; focus returned to trigger; value preserved."
+          },
+          {
+            "id": "selection_keyboard_operable",
+            "status": "failed",
+            "actual": "Selection did not complete with the keyboard. Current value: empty."
+          },
+          {
+            "id": "focus_restored",
+            "status": "failed",
+            "actual": "Focus did not return after a completed selection because selection remained blocked."
+          },
+          {
+            "id": "error_announced",
+            "status": "passed"
+          },
+          {
+            "id": "correct_outcome_persisted",
+            "status": "failed",
+            "actual": "No appointment was saved. The task is incomplete."
+          },
+          {
+            "id": "confirmation_focus",
+            "status": "failed",
+            "actual": "The confirmation heading did not receive focus."
+          }
+        ],
+        "appointmentSaved": false,
+        "appointmentDate": null
+      },
+      "activeCandidateId": "candidate_66f546e6-ef61-47e3-bce0-5c8af417ec9c",
+      "candidates": [
+        {
+          "id": "candidate_510004d3-31b4-47ff-8a3d-1a337add549b",
+          "revision": 1,
+          "digest": "b01733747668b1c3eb3089bc1a63aad8f611a383ff9f5f7a86764c311d1a2326",
+          "status": "rejected",
+          "buildId": "7e1fa9502ed45f980c86964129a5a36036ad2fce27a1378bc7fe890e87fb231a",
+          "rejectionReason": null,
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "requestId": "36452992dc02ccf54d2bbe693495347c",
+            "promptVersion": "passage-scoped-component-v4-ref-only",
+            "temperature": 0.2,
+            "inputTokens": 7745,
+            "outputTokens": 1043,
+            "durationMs": 5145,
+            "startedAt": "2026-10-28T05:36:52.033Z",
+            "completedAt": "2026-10-28T05:36:57.176Z",
+            "live": true
+          },
+          "verification": {
+            "id": "44039892-1434-4b39-bb53-d6902b9e26d6",
+            "verifierVersion": "historical-unversioned",
+            "kind": "candidate",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "b01733747668b1c3eb3089bc1a63aad8f611a383ff9f5f7a86764c311d1a2326",
+            "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+            "buildId": "7e1fa9502ed45f980c86964129a5a36036ad2fce27a1378bc7fe890e87fb231a",
+            "startedAt": "2026-10-28T05:36:57.229Z",
+            "completedAt": "2026-10-28T05:36:58.131Z",
+            "durationMs": 902,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 5,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "passed"
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading is the actual activeElement."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          }
+        },
+        {
+          "id": "candidate_cb5dcdbd-7892-43ed-92a3-e96203c8665c",
+          "revision": 2,
+          "digest": "b01733747668b1c3eb3089bc1a63aad8f611a383ff9f5f7a86764c311d1a2326",
+          "status": "rejected",
+          "buildId": "7e1fa9502ed45f980c86964129a5a36036ad2fce27a1378bc7fe890e87fb231a",
+          "rejectionReason": null,
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "requestId": "f4ad07f7c16f3acaaeb59f650748c7b1",
+            "promptVersion": "passage-scoped-component-v4-ref-only",
+            "temperature": 0.2,
+            "inputTokens": 7338,
+            "outputTokens": 1043,
+            "durationMs": 4971,
+            "startedAt": "2026-10-28T05:36:58.151Z",
+            "completedAt": "2026-10-28T05:37:03.121Z",
+            "live": true
+          },
+          "verification": {
+            "id": "9fa5ab14-704c-47cc-bc4b-7aff2021d7f5",
+            "verifierVersion": "historical-unversioned",
+            "kind": "candidate",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "b01733747668b1c3eb3089bc1a63aad8f611a383ff9f5f7a86764c311d1a2326",
+            "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+            "buildId": "7e1fa9502ed45f980c86964129a5a36036ad2fce27a1378bc7fe890e87fb231a",
+            "startedAt": "2026-10-28T05:37:03.135Z",
+            "completedAt": "2026-10-28T05:37:05.253Z",
+            "durationMs": 2118,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 5,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "passed"
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading did not receive focus."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          }
+        },
+        {
+          "id": "candidate_66f546e6-ef61-47e3-bce0-5c8af417ec9c",
+          "revision": 3,
+          "digest": "b01733747668b1c3eb3089bc1a63aad8f611a383ff9f5f7a86764c311d1a2326",
+          "status": "rejected",
+          "buildId": "7e1fa9502ed45f980c86964129a5a36036ad2fce27a1378bc7fe890e87fb231a",
+          "rejectionReason": null,
+          "receipt": {
+            "provider": "nebius",
+            "model": "nvidia/nemotron-3-super-120b-a12b",
+            "requestId": "c76bb733194a3c448264f9e2da1cdda9",
+            "promptVersion": "passage-scoped-component-v4-ref-only",
+            "temperature": 0.2,
+            "inputTokens": 7337,
+            "outputTokens": 1013,
+            "durationMs": 3636,
+            "startedAt": "2026-10-28T05:37:05.273Z",
+            "completedAt": "2026-10-28T05:37:08.909Z",
+            "live": true
+          },
+          "verification": {
+            "id": "39a8c0ee-95c0-488d-8451-77cdb1988837",
+            "verifierVersion": "historical-unversioned",
+            "kind": "candidate",
+            "status": "failed",
+            "passed": false,
+            "sourceDigest": "b01733747668b1c3eb3089bc1a63aad8f611a383ff9f5f7a86764c311d1a2326",
+            "contractDigest": "5a06a30e2ec3df271725ceb51f25b2829eceac91da66e2d5e97c9fbeb22931eb",
+            "buildId": "7e1fa9502ed45f980c86964129a5a36036ad2fce27a1378bc7fe890e87fb231a",
+            "startedAt": "2026-10-28T05:37:08.926Z",
+            "completedAt": "2026-10-28T05:37:09.652Z",
+            "durationMs": 726,
+            "browser": "Chromium",
+            "browserVersion": "156.0.8078.4",
+            "scenario": {
+              "id": "baseline",
+              "name": "Original conditions",
+              "description": "English labels, standard timing, and the declared appointment availability.",
+              "locale": "en",
+              "delayedValidationMs": 120,
+              "unavailableFirst": false,
+              "longLabels": false,
+              "seed": 1701
+            },
+            "checksPassed": 5,
+            "checksTotal": 9,
+            "checks": [
+              {
+                "id": "required_validation_preserved",
+                "status": "passed"
+              },
+              {
+                "id": "unavailable_slot_rejected",
+                "status": "passed"
+              },
+              {
+                "id": "control_keyboard_reachable",
+                "status": "passed"
+              },
+              {
+                "id": "dialog_escape",
+                "status": "passed"
+              },
+              {
+                "id": "selection_keyboard_operable",
+                "status": "failed",
+                "actual": "Selection did not complete with the keyboard. Current value: empty."
+              },
+              {
+                "id": "focus_restored",
+                "status": "failed",
+                "actual": "Focus did not return after a completed selection because selection remained blocked."
+              },
+              {
+                "id": "error_announced",
+                "status": "passed"
+              },
+              {
+                "id": "correct_outcome_persisted",
+                "status": "failed",
+                "actual": "No appointment was saved. The task is incomplete."
+              },
+              {
+                "id": "confirmation_focus",
+                "status": "failed",
+                "actual": "The confirmation heading is the actual activeElement."
+              }
+            ],
+            "appointmentSaved": false,
+            "appointmentDate": null
+          }
+        }
+      ],
+      "challenges": [],
+      "error": null
+    }
+  ],
+  "usage": {
+    "admissionBudgetUsd": 2,
+    "requestCount": 21,
+    "inputTokens": 133352,
+    "outputTokens": 26777,
+    "estimatedUsd": 0.05358294,
+    "unknownReservations": 0,
+    "byModel": [
+      {
+        "model": "nvidia/Nemotron-3_5-Lightning",
+        "requestCount": 4,
+        "inputTokens": 16732,
+        "outputTokens": 9858,
+        "estimatedUsd": 0.00336984
+      },
+      {
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "requestCount": 17,
+        "inputTokens": 116620,
+        "outputTokens": 16919,
+        "estimatedUsd": 0.0502131
+      }
+    ],
+    "entries": [
+      {
+        "id": "usage_64a55bdc-30bf-40c1-bd5f-4de297067d5d",
+        "runId": "repair_3ab0773b-dca7-4baf-9f96-b3dd83466b74",
+        "startedAt": "2026-10-28T05:21:25.764Z",
+        "completedAt": "2026-10-28T05:23:03.178Z",
+        "model": "nvidia/Nemotron-3_5-Lightning",
+        "reservedUsd": 0.002517,
+        "chargedUsd": 0.00168612,
+        "inputTokens": 4102,
+        "outputTokens": 6000,
+        "state": "complete",
+        "requestId": "a2a782d202187ea39428adfbcd54c813"
+      },
+      {
+        "id": "usage_e23e7c23-0742-47be-92b6-601afc2684b8",
+        "runId": "repair_c161c013-7f55-4d24-9326-e50dcd272ce2",
+        "startedAt": "2026-10-28T05:27:35.853Z",
+        "completedAt": "2026-10-28T05:27:53.738Z",
+        "model": "nvidia/Nemotron-3_5-Lightning",
+        "reservedUsd": 0.002517,
+        "chargedUsd": 0.0005498399999999999,
+        "inputTokens": 4100,
+        "outputTokens": 1266,
+        "state": "complete",
+        "requestId": "5493f7b12d4bd3af438ec35a8f3486f3"
+      },
+      {
+        "id": "usage_dd0e9ae0-fabe-4511-97c1-6056a2b5fc36",
+        "runId": "repair_c161c013-7f55-4d24-9326-e50dcd272ce2",
+        "startedAt": "2026-10-28T05:27:53.801Z",
+        "completedAt": "2026-10-28T05:28:20.376Z",
+        "model": "nvidia/Nemotron-3_5-Lightning",
+        "reservedUsd": 0.0025317,
+        "chargedUsd": 0.00055452,
+        "inputTokens": 4166,
+        "outputTokens": 1269,
+        "state": "complete",
+        "requestId": "9015c5b8b0c63ae250847890c0e6bcae"
+      },
+      {
+        "id": "usage_de6422a7-12ca-4b23-915a-2b56024194ee",
+        "runId": "repair_c161c013-7f55-4d24-9326-e50dcd272ce2",
+        "startedAt": "2026-10-28T05:28:22.858Z",
+        "completedAt": "2026-10-28T05:28:57.535Z",
+        "model": "nvidia/Nemotron-3_5-Lightning",
+        "reservedUsd": 0.00259296,
+        "chargedUsd": 0.0005793599999999999,
+        "inputTokens": 4364,
+        "outputTokens": 1323,
+        "state": "complete",
+        "requestId": "dc997588ad514ce2cfc93244cf318652"
+      },
+      {
+        "id": "usage_39ab95ad-3563-45b7-a8db-e6862b1609b2",
+        "runId": "repair_f94fd83a-7f02-4062-9700-296118f7e580",
+        "startedAt": "2026-10-28T05:33:25.418Z",
+        "completedAt": "2026-10-28T05:33:31.531Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0152691,
+        "chargedUsd": 0.0035510999999999997,
+        "inputTokens": 7832,
+        "outputTokens": 1335,
+        "state": "complete",
+        "requestId": "bdf00f34ad594e1ac24a70432e5c0fb9",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_4e1ae62a-26b1-4306-8a16-0b5b2a9b79d0",
+        "runId": "repair_f94fd83a-7f02-4062-9700-296118f7e580",
+        "startedAt": "2026-10-28T05:33:31.549Z",
+        "completedAt": "2026-10-28T05:33:37.254Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0149562,
+        "chargedUsd": 0.0034913999999999995,
+        "inputTokens": 7612,
+        "outputTokens": 1342,
+        "state": "complete",
+        "requestId": "7b40203ae8788358cc43f5e6012946ec",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_144e34ab-f773-4248-ac84-9660d9ac3537",
+        "runId": "repair_f94fd83a-7f02-4062-9700-296118f7e580",
+        "startedAt": "2026-10-28T05:33:37.262Z",
+        "completedAt": "2026-10-28T05:33:42.977Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0149562,
+        "chargedUsd": 0.0034896,
+        "inputTokens": 7612,
+        "outputTokens": 1340,
+        "state": "complete",
+        "requestId": "1341a9bbeeb9bcb6a84dafb19df0c1fa",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_a92a5f79-8d8a-4ab7-982f-1f6defedd144",
+        "runId": "repair_1f732ff9-e6d8-4aa2-b451-7419b55eabf2",
+        "startedAt": "2026-10-28T05:36:52.033Z",
+        "completedAt": "2026-10-28T05:36:57.176Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.015152699999999998,
+        "chargedUsd": 0.0032622,
+        "inputTokens": 7745,
+        "outputTokens": 1043,
+        "state": "complete",
+        "requestId": "36452992dc02ccf54d2bbe693495347c",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_2c90fb6b-e3d8-4565-bfe1-121ed6d6d128",
+        "runId": "repair_1f732ff9-e6d8-4aa2-b451-7419b55eabf2",
+        "startedAt": "2026-10-28T05:36:58.151Z",
+        "completedAt": "2026-10-28T05:37:03.121Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.014840699999999998,
+        "chargedUsd": 0.0031401000000000003,
+        "inputTokens": 7338,
+        "outputTokens": 1043,
+        "state": "complete",
+        "requestId": "f4ad07f7c16f3acaaeb59f650748c7b1",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_ddb81331-8bd4-4357-896d-707dddd36f1c",
+        "runId": "repair_1f732ff9-e6d8-4aa2-b451-7419b55eabf2",
+        "startedAt": "2026-10-28T05:37:05.273Z",
+        "completedAt": "2026-10-28T05:37:08.909Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0148389,
+        "chargedUsd": 0.0031128,
+        "inputTokens": 7337,
+        "outputTokens": 1013,
+        "state": "complete",
+        "requestId": "c76bb733194a3c448264f9e2da1cdda9",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_01c0c498-c682-4944-8430-628a8b802bbf",
+        "runId": "repair_6cecad94-701f-4413-b44e-4bb09203fa5d",
+        "startedAt": "2026-10-28T05:42:07.272Z",
+        "completedAt": "2026-10-28T05:42:11.805Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0112851,
+        "chargedUsd": 0.002196,
+        "inputTokens": 4428,
+        "outputTokens": 964,
+        "state": "complete",
+        "requestId": "12171919ce274edbe4dcb3a830d48855",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_a1513f87-c7cd-473a-a1ab-20bd8bd78819",
+        "runId": "repair_9155c712-f22e-4354-8ffa-0dafec1a7d24",
+        "startedAt": "2026-10-28T05:43:25.626Z",
+        "completedAt": "2026-10-28T05:43:29.289Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0109107,
+        "chargedUsd": 0.0018501,
+        "inputTokens": 4061,
+        "outputTokens": 702,
+        "state": "complete",
+        "requestId": "d3fcc3b77ddddad414808d31fe4e25e3",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_d46a7566-8ce5-4260-836a-208cbc88aefb",
+        "runId": "repair_9155c712-f22e-4354-8ffa-0dafec1a7d24",
+        "startedAt": "2026-10-28T05:43:31.532Z",
+        "completedAt": "2026-10-28T05:43:36.076Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0135036,
+        "chargedUsd": 0.0025526999999999998,
+        "inputTokens": 6211,
+        "outputTokens": 766,
+        "state": "complete",
+        "requestId": "e1d8dd14070ca9c80c0c3d5bdd87708a",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_767b0994-f323-4a3f-b9aa-dcdb3af93bc8",
+        "runId": "repair_fa341824-4d05-402b-9f49-8928792d4f3d",
+        "startedAt": "2026-10-28T05:43:41.447Z",
+        "completedAt": "2026-10-28T05:43:46.108Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.011476799999999999,
+        "chargedUsd": 0.0021822,
+        "inputTokens": 4589,
+        "outputTokens": 895,
+        "state": "complete",
+        "requestId": "7b217996438098074582ba1703e94f38",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_3b940aed-b7f4-4e50-bb99-8f41b8a9ac64",
+        "runId": "repair_fa341824-4d05-402b-9f49-8928792d4f3d",
+        "startedAt": "2026-10-28T05:43:48.317Z",
+        "completedAt": "2026-10-28T05:43:52.352Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.014625299999999999,
+        "chargedUsd": 0.0029679,
+        "inputTokens": 7220,
+        "outputTokens": 891,
+        "state": "complete",
+        "requestId": "987d8b69599b88f15a13294fa179fcd0",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_d8f2efc6-5420-4dda-9285-1760e22ad77c",
+        "runId": "repair_fa341824-4d05-402b-9f49-8928792d4f3d",
+        "startedAt": "2026-10-28T05:43:54.535Z",
+        "completedAt": "2026-10-28T05:43:58.354Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.014625299999999999,
+        "chargedUsd": 0.0029724,
+        "inputTokens": 7220,
+        "outputTokens": 896,
+        "state": "complete",
+        "requestId": "35d4479dee60b0fbcef89f849e9b0bc0",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_646135d8-d1f1-4426-a901-60e825deed14",
+        "runId": "repair_5e1ce24e-4b45-4c66-80b7-499ee31798c6",
+        "startedAt": "2026-10-28T05:44:02.566Z",
+        "completedAt": "2026-10-28T05:44:07.710Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.011388,
+        "chargedUsd": 0.0021459,
+        "inputTokens": 4432,
+        "outputTokens": 907,
+        "state": "complete",
+        "requestId": "135ebc4f1dcfbee925b64eb293396456",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_5b21d286-be1e-438c-be66-455fc6f2be3d",
+        "runId": "repair_5e1ce24e-4b45-4c66-80b7-499ee31798c6",
+        "startedAt": "2026-10-28T05:44:10.147Z",
+        "completedAt": "2026-10-28T05:44:14.374Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.014558699999999999,
+        "chargedUsd": 0.0029457000000000003,
+        "inputTokens": 7023,
+        "outputTokens": 932,
+        "state": "complete",
+        "requestId": "3c75942755e72f5c4e30918c1b81e82f",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_452994e7-1e65-4bb1-b3b9-0e78605101e5",
+        "runId": "repair_5e1ce24e-4b45-4c66-80b7-499ee31798c6",
+        "startedAt": "2026-10-28T05:44:16.789Z",
+        "completedAt": "2026-10-28T05:44:20.282Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.014558699999999999,
+        "chargedUsd": 0.0029574000000000002,
+        "inputTokens": 7023,
+        "outputTokens": 945,
+        "state": "complete",
+        "requestId": "7b8ffbeaf3a2834c24f7aa3835b1cdcc",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_f0cab2ec-a40f-4491-a7ee-f573a77ddbf6",
+        "runId": "repair_8b7db16c-5317-4618-abb6-671f5d8b8eea",
+        "startedAt": "2026-10-28T05:47:30.765Z",
+        "completedAt": "2026-10-28T05:47:38.995Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.016631699999999996,
+        "chargedUsd": 0.0036171000000000003,
+        "inputTokens": 9228,
+        "outputTokens": 943,
+        "state": "complete",
+        "requestId": "b35ca006348f6ab9f25688a47ba0275f",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      },
+      {
+        "id": "usage_2ac17e0a-09a4-44d0-92d0-1976c6596f3c",
+        "runId": "repair_1efae4ad-9c2f-4db4-a226-d33f2904d80d",
+        "startedAt": "2026-10-28T05:47:45.091Z",
+        "completedAt": "2026-10-28T05:47:49.268Z",
+        "model": "nvidia/nemotron-3-super-120b-a12b",
+        "reservedUsd": 0.0175686,
+        "chargedUsd": 0.0037785,
+        "inputTokens": 9709,
+        "outputTokens": 962,
+        "state": "complete",
+        "requestId": "878470e0065ab227786a2423d41c7212",
+        "pricing": {
+          "inputUsdPerMillion": 0.3,
+          "outputUsdPerMillion": 0.9
+        },
+        "servedModel": "nvidia/nemotron-3-super-120b-a12b"
+      }
+    ]
+  }
+}

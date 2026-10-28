@@ -1,0 +1,49 @@
+{
+  "name": "passage",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web -c cyan,green \"npm:dev:api\" \"npm:dev:web\"",
+    "dev:web": "vite --host 127.0.0.1 --port 4101 --strictPort",
+    "dev:api": "tsx watch server/index.ts",
+    "start": "tsx server/index.ts",
+    "demo": "concurrently -k -n api,web -c cyan,green \"npm:start\" \"vite preview --host 127.0.0.1 --port 4101 --strictPort\"",
+    "build": "tsc --noEmit && vite build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:e2e": "playwright test",
+    "verify:fixtures": "tsx scripts/verify-fixtures.ts",
+    "verify:source": "tsx scripts/verify-source.ts"
+  },
+  "dependencies": {
+    "@babel/parser": "7.28.4",
+    "@fastify/cors": "11.1.0",
+    "@fontsource/ibm-plex-mono": "5.2.7",
+    "@fontsource/source-sans-3": "5.2.8",
+    "@fontsource/source-serif-4": "5.2.8",
+    "diff": "8.0.4",
+    "dotenv": "17.2.3",
+    "esbuild": "0.25.12",
+    "fastify": "5.12.7",
+    "fflate": "0.8.3",
+    "lucide-react": "0.548.0",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "react-router-dom": "7.18.5",
+    "zod": "4.6.7"
+  },
+  "devDependencies": {
+    "@axe-core/playwright": "4.11.1",
+    "@playwright/test": "1.64.1",
+    "@types/node": "22.18.12",
+    "@types/react": "19.2.2",
+    "@types/react-dom": "19.2.2",
+    "@vitejs/plugin-react": "5.1.0",
+    "concurrently": "9.2.5",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3",
+    "vite": "7.3.7",
+    "vitest": "5.0.5"
+  }
+}

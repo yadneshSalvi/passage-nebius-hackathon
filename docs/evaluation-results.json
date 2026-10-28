@@ -1,0 +1,796 @@
+{
+  "schemaVersion": "1.0",
+  "generatedAt": "2026-10-28T05:20:49.902Z",
+  "evidenceType": "automated-development-reference-evaluation",
+  "humanTrials": 0,
+  "heldOutCases": 0,
+  "comparativeBaselineRun": false,
+  "limitations": [
+    "Authored synthetic fixtures only.",
+    "Six variants share four component implementations.",
+    "Reference repairs are handcrafted, not model-generated.",
+    "Browser observations do not establish real screen-reader experience."
+  ],
+  "results": [
+    {
+      "fixtureId": "northstar-appointments",
+      "mode": "original",
+      "passed": false,
+      "checksPassed": 4,
+      "checksTotal": 9,
+      "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+      "contractDigest": "3df984cec4b85129a65fee274cf9afe72877b52f022e8970c2263f3b3e04441a",
+      "buildId": "2926c742eff059255dd720d825a0b9c3637bc0574a6b41edefd8aef0e4cf5f66",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 2644,
+      "startedAt": "2026-10-28T05:20:31.370Z",
+      "completedAt": "2026-10-28T05:20:34.014Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": false,
+      "appointmentDate": null,
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "failed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "failed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "failed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "failed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "northstar-appointments",
+      "mode": "reference",
+      "passed": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "sourceDigest": "c9dbd7ffd2af889059a52edc849e10c11f8889869f439f82184dd1af26c7369e",
+      "contractDigest": "3df984cec4b85129a65fee274cf9afe72877b52f022e8970c2263f3b3e04441a",
+      "buildId": "682a1e6ec1284c6574d138f5b52977df2a093f64b67fb41dcf8631c0a5138c8f",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 661,
+      "startedAt": "2026-10-28T05:20:34.063Z",
+      "completedAt": "2026-10-28T05:20:34.724Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": true,
+      "appointmentDate": "2026-11-16",
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "passed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "passed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "passed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "passed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "riverside-support",
+      "mode": "original",
+      "passed": false,
+      "checksPassed": 4,
+      "checksTotal": 9,
+      "sourceDigest": "630d8620fd5b5f0a9f25bda13d3f1eb4c6dda84890681194788eb4415c6e29bf",
+      "contractDigest": "eb72d563d81cf7603bc39bda19deaa2b3456f42d9a4bef78fb2e5b5565fb75c4",
+      "buildId": "264ef117879cd6074fbabb2563fc7b35b0218e595d75c503f241bb4f9a942b70",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 2116,
+      "startedAt": "2026-10-28T05:20:34.762Z",
+      "completedAt": "2026-10-28T05:20:36.878Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": false,
+      "appointmentDate": null,
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "failed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "failed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "failed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "failed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "riverside-support",
+      "mode": "reference",
+      "passed": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "sourceDigest": "9974b54e95e921c2c2759f747d85611d7769e0f1c676d303c4b69b791d8c138e",
+      "contractDigest": "eb72d563d81cf7603bc39bda19deaa2b3456f42d9a4bef78fb2e5b5565fb75c4",
+      "buildId": "526b229d433c51a1ecb31317da11e08d636af14213992c518625299c995ab5b7",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 624,
+      "startedAt": "2026-10-28T05:20:36.917Z",
+      "completedAt": "2026-10-28T05:20:37.541Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": true,
+      "appointmentDate": "2026-11-16",
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "passed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "passed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "passed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "passed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "atlas-onboarding",
+      "mode": "original",
+      "passed": false,
+      "checksPassed": 4,
+      "checksTotal": 9,
+      "sourceDigest": "55c29d907a5a3583ed0d7699a1ee9bee6e22ae8d96fa1910c29cccbed905daf7",
+      "contractDigest": "a0d1967732283bf3c9a85d7613fa17144bcc4196cc5f9abd0c7a3f5b5a913e2d",
+      "buildId": "23579b7a10675390b231447f1ad8db8c8eaee3107b031c8f7f03771351eadfa4",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 2117,
+      "startedAt": "2026-10-28T05:20:37.576Z",
+      "completedAt": "2026-10-28T05:20:39.693Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": false,
+      "appointmentDate": null,
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "failed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "failed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "failed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "failed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "atlas-onboarding",
+      "mode": "reference",
+      "passed": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "sourceDigest": "6cecb7c1492d73469a13e87c99f57473d2ab301340e36b6f2854e1640bb0584f",
+      "contractDigest": "a0d1967732283bf3c9a85d7613fa17144bcc4196cc5f9abd0c7a3f5b5a913e2d",
+      "buildId": "474b935147f5a522e0166ebb10b8f264f28d1c8a222b13781188d8250bc53484",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 680,
+      "startedAt": "2026-10-28T05:20:39.733Z",
+      "completedAt": "2026-10-28T05:20:40.413Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": true,
+      "appointmentDate": "2026-11-16",
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "passed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "passed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "passed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "passed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "civic-assistance",
+      "mode": "original",
+      "passed": false,
+      "checksPassed": 3,
+      "checksTotal": 9,
+      "sourceDigest": "e5b54dfb4db7b0faa0c5e1b91690fb766a178a67da5ad8547ffec633d7ed1ca0",
+      "contractDigest": "29f69977b2454651bc3623e16b4edd9970d84d8e7793b0e1e8243bbb46b9dd35",
+      "buildId": "cabb3ba5e2a7ed0220522266f9d207b690751a3d58fcfc21362b538be6b760ea",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 2328,
+      "startedAt": "2026-10-28T05:20:40.451Z",
+      "completedAt": "2026-10-28T05:20:42.779Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": false,
+      "appointmentDate": null,
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "failed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "failed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "failed"
+        },
+        {
+          "id": "error_announced",
+          "status": "failed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "failed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "civic-assistance",
+      "mode": "reference",
+      "passed": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "sourceDigest": "5e6b3e7f97418cca36b37de10804b7c1c99e6d08fbac29bb77a817490b667878",
+      "contractDigest": "29f69977b2454651bc3623e16b4edd9970d84d8e7793b0e1e8243bbb46b9dd35",
+      "buildId": "af6cb08816d395d0e4ff028f56573ec87f90f5201d97eb3080d077fefcc67029",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 1119,
+      "startedAt": "2026-10-28T05:20:42.824Z",
+      "completedAt": "2026-10-28T05:20:43.943Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "appointmentSaved": true,
+      "appointmentDate": "2026-11-17",
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "passed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "passed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "passed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "passed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "northstar-international",
+      "mode": "original",
+      "passed": false,
+      "checksPassed": 4,
+      "checksTotal": 9,
+      "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+      "contractDigest": "891ce08ec33b5d1c0ef6f204a55f7bba5024b8300decb3cae4d4db595b3ccf58",
+      "buildId": "e60e4b2e6aa873d7f2f4184246aa064d64a469031cb55a58b706ba0459508241",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 2228,
+      "startedAt": "2026-10-28T05:20:43.983Z",
+      "completedAt": "2026-10-28T05:20:46.211Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "de",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": true,
+        "seed": 1701
+      },
+      "appointmentSaved": false,
+      "appointmentDate": null,
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "failed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "failed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "failed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "failed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "northstar-international",
+      "mode": "reference",
+      "passed": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "sourceDigest": "c9dbd7ffd2af889059a52edc849e10c11f8889869f439f82184dd1af26c7369e",
+      "contractDigest": "891ce08ec33b5d1c0ef6f204a55f7bba5024b8300decb3cae4d4db595b3ccf58",
+      "buildId": "d299e136dfbf9bebb8fca7a5b9e45d3f91e2e517de864b3215f5b91af1a7a347",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 639,
+      "startedAt": "2026-10-28T05:20:46.248Z",
+      "completedAt": "2026-10-28T05:20:46.887Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "de",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": true,
+        "seed": 1701
+      },
+      "appointmentSaved": true,
+      "appointmentDate": "2026-11-16",
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "passed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "passed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "passed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "passed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "riverside-evening",
+      "mode": "original",
+      "passed": false,
+      "checksPassed": 4,
+      "checksTotal": 9,
+      "sourceDigest": "630d8620fd5b5f0a9f25bda13d3f1eb4c6dda84890681194788eb4415c6e29bf",
+      "contractDigest": "87a28ac53ef0bf46d056cb2a385f36584a1381f781f4b50bac8af498e80c02bf",
+      "buildId": "f0fd6737aa85d2adfde8e47ba3187d1fb09e2a3b3eb867fd5c9ce24c787ef8e6",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 2233,
+      "startedAt": "2026-10-28T05:20:46.923Z",
+      "completedAt": "2026-10-28T05:20:49.156Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": true,
+        "seed": 1701
+      },
+      "appointmentSaved": false,
+      "appointmentDate": null,
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "failed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "failed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "failed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "failed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "failed"
+        }
+      ]
+    },
+    {
+      "fixtureId": "riverside-evening",
+      "mode": "reference",
+      "passed": true,
+      "checksPassed": 9,
+      "checksTotal": 9,
+      "sourceDigest": "9974b54e95e921c2c2759f747d85611d7769e0f1c676d303c4b69b791d8c138e",
+      "contractDigest": "87a28ac53ef0bf46d056cb2a385f36584a1381f781f4b50bac8af498e80c02bf",
+      "buildId": "3a653948d852a65e83c5d264abd95c45f36fa3f3663de08fcf49c90bffdf466b",
+      "browser": "Chromium",
+      "browserVersion": "156.0.8078.4",
+      "durationMs": 674,
+      "startedAt": "2026-10-28T05:20:49.213Z",
+      "completedAt": "2026-10-28T05:20:49.887Z",
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": true,
+        "seed": 1701
+      },
+      "appointmentSaved": true,
+      "appointmentDate": "2026-11-16",
+      "checks": [
+        {
+          "id": "required_validation_preserved",
+          "status": "passed"
+        },
+        {
+          "id": "unavailable_slot_rejected",
+          "status": "passed"
+        },
+        {
+          "id": "control_keyboard_reachable",
+          "status": "passed"
+        },
+        {
+          "id": "dialog_escape",
+          "status": "passed"
+        },
+        {
+          "id": "selection_keyboard_operable",
+          "status": "passed"
+        },
+        {
+          "id": "focus_restored",
+          "status": "passed"
+        },
+        {
+          "id": "error_announced",
+          "status": "passed"
+        },
+        {
+          "id": "correct_outcome_persisted",
+          "status": "passed"
+        },
+        {
+          "id": "confirmation_focus",
+          "status": "passed"
+        }
+      ]
+    }
+  ]
+}
