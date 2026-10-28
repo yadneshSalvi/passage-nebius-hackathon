@@ -1,0 +1,1 @@
+{"name":"passage-isolated-react-worker","version":"1.0.0","private":true,"type":"module","dependencies":{"esbuild":"0.25.12","react":"19.2.5","react-dom":"19.2.5","react-router-dom":"7.18.5","classnames":"2.5.1","todomvc-app-css":"2.4.3","todomvc-common":"1.0.5","exenv":"1.2.0","prop-types":"15.8.1","react-lifecycles-compat":"3.0.4","warning":"4.0.3"}}

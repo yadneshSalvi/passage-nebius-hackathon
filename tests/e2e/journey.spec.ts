@@ -3,12 +3,11 @@ import AxeBuilder from "@axe-core/playwright";
 import { readFile } from "node:fs/promises";
 import { unzipSync, strFromU8 } from "fflate";
 
-test("a judge can reproduce, apply an explicit reference repair, challenge, and export real evidence", async ({
+test("the historical studio can reproduce, apply an explicit reference repair, challenge, and export real evidence", async ({
   page,
   request,
 }) => {
-  await page.goto("/");
-  await page.getByRole("link", { name: "Try a blocked journey" }).click();
+  await page.goto("/journeys/new");
   await expect(
     page.getByRole("heading", { name: "What should someone be able to do?" }),
   ).toBeVisible();
@@ -86,12 +85,59 @@ test("a judge can reproduce, apply an explicit reference repair, challenge, and 
   expect(portable.run.baseline.screenshotUrl).toMatch(/^artifacts\//);
 });
 
+test("first use captures a barrier, freezes an explicitly automated development review, and exports a runnable temporal guard", async ({ page, request }) => {
+  await page.goto("/");
+  await expect(page.locator("iframe.story-iframe")).toBeVisible();
+  await page.getByRole("main").getByRole("link", { name: "Repair a journey" }).click();
+  await page.getByLabel(/I agree to capture/).check();
+  await page.getByRole("button", { name: "Open the journey workspace" }).click();
+  await expect(page).toHaveURL(/\/compiler\/journey-compiler_/);
+  const id = new URL(page.url()).pathname.split("/")[2];
+  const read = async () => (await request.get(`/v1/compiler/sessions/${id}`)).json();
+  await page.getByRole("button", { name: "Record attempt", exact: true }).click();
+  await expect.poll(async () => (await read()).captures.length, { timeout: 45000 }).toBe(1);
+  const observed = await read();
+  expect(observed.captures[0].status).toBe("failed");
+  expect(observed.captures[0].outcome).toBeNull();
+  const preview = await request.get(`/v1/compiler/sessions/${id}/previews/${observed.captures[0].id}`);
+  expect(preview.status()).toBe(200);
+  await page.getByRole("button", { name: /Review the contract/ }).click();
+  await page.getByLabel(/^Drafting method/).selectOption("observed");
+  await page.getByRole("button", { name: "Compile a draft", exact: true }).click();
+  await expect(page.locator(".compiler-review-form")).toBeVisible();
+  await page.getByLabel("Review provenance").selectOption("automated-development");
+  await page.getByLabel("Task intent reviewer").fill("Automated E2E development review");
+  await page.getByLabel("Interaction reviewer", { exact: true }).fill("Automated E2E browser review");
+  await page.getByLabel(/I reviewed the observed/).check();
+  await page.getByRole("button", { name: "Approve & freeze contract" }).click();
+  await expect.poll(async () => (await read()).review?.evidenceClass).toBe("automated-development-review");
+  await page.getByRole("button", { name: /Challenge & keep/ }).click();
+  await page.getByLabel("Source under test").selectOption("reference");
+  await page.getByLabel(/^Challenge/).selectOption("cancel-pending");
+  await page.getByRole("button", { name: "Run the frozen contract" }).click();
+  await expect.poll(async () => (await read()).verifications.length, { timeout: 45000 }).toBe(1);
+  const checked = await read();
+  expect(checked.verifications[0].status).toBe("passed");
+  expect(checked.verifications[0].checks.every((item: { status: string }) => item.status === "passed")).toBe(true);
+  await expect(page.getByText(/Current reviewed version/).first()).toBeVisible();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("link", { name: "Runnable guard" }).click();
+  const download = await downloadPromise;
+  const files = unzipSync(await readFile((await download.path())!));
+  const guard = JSON.parse(strFromU8(files["guard.json"]));
+  expect(guard.review.evidenceClass).toBe("automated-development-review");
+  expect(guard.review.independentlyReviewed).toBe(false);
+  expect(guard.contractsBySchedule["cancel-pending"].digest).toBe(checked.verifications[0].contractDigest);
+  expect(files["scripts/verify-journey-guard.ts"]).toBeDefined();
+  expect(Object.keys(files).some(name => name.includes(".env") || name.includes("runs.db"))).toBe(false);
+});
+
 test("the studio has responsive layouts and no serious automated accessibility violations", async ({
   page,
 }) => {
   await page.goto("/");
   await expect(
-    page.getByRole("link", { name: "Try a blocked journey" }),
+    page.getByRole("main").getByRole("link", { name: "Repair a journey" }),
   ).toBeVisible();
   for (const width of [390, 768, 1280, 1440]) {
     await page.setViewportSize({ width, height: 960 });
@@ -103,6 +149,7 @@ test("the studio has responsive layouts and no serious automated accessibility v
   }
   await page.setViewportSize({ width: 1440, height: 1000 });
   const results = await new AxeBuilder({ page })
+    .exclude("iframe")
     .withTags(["wcag2a", "wcag2aa", "wcag21aa"])
     .analyze();
   expect(

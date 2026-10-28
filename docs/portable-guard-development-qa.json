@@ -1,0 +1,99 @@
+{
+  "schema": "passage.portable-guard-development-qa.v1",
+  "reviewer": "Codex root, automated development",
+  "humanReview": false,
+  "cases": [
+    {
+      "case": "refactor-request-state",
+      "sourceSha256": "699ef9d7071b00e6cea3a8a5bbaa99f18e05a7a25c5641590d8f0de47a46b6f6",
+      "passed": true,
+      "exitCode": 0,
+      "schedules": [
+        {
+          "schedule": "baseline",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "failureSignature": null
+        }
+      ]
+    },
+    {
+      "case": "refactor-selected-lookup",
+      "sourceSha256": "4a64d2c8f327f84fe95ed453ee13283cf06992b0c8a0f77c2912c394d2f415ce",
+      "passed": true,
+      "exitCode": 0,
+      "schedules": [
+        {
+          "schedule": "baseline",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "failureSignature": null
+        }
+      ]
+    },
+    {
+      "case": "regression-modal-containment",
+      "sourceSha256": "e113bfe65ed29caee8133e3856892f63fbc667af861c5308a2a44a8bfd8c77f3",
+      "passed": false,
+      "exitCode": 1,
+      "schedules": [
+        {
+          "schedule": "baseline",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "modal-boundary",
+          "status": "failed",
+          "failureSignature": "modal-focus-contained:focus-escaped"
+        }
+      ]
+    },
+    {
+      "case": "regression-late-cancel-commit",
+      "sourceSha256": "2f0b6e08ec333c3ec12f8bc1eccade6ca04eea3f9b6c52463b2c068b2fd6fac9",
+      "passed": false,
+      "exitCode": 1,
+      "schedules": [
+        {
+          "schedule": "baseline",
+          "status": "passed",
+          "failureSignature": null
+        },
+        {
+          "schedule": "cancel-pending",
+          "status": "failed",
+          "failureSignature": "late-response-cannot-commit:value-changed"
+        },
+        {
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "failureSignature": null
+        }
+      ]
+    }
+  ]
+}

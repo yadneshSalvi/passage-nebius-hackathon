@@ -45,8 +45,10 @@ interface AssistiveSession {
     | "deletion_pending"
     | "deleted"
     | "expired";
-  independentlyReviewed: false;
-  backendOutcomeVerified: false;
+  independentlyReviewed: boolean;
+  backendOutcomeVerified: boolean;
+  outcomeBinding?: { fixtureSessionId: string; status: string; intended: { date: string; attendee: string; service: string } };
+  review?: { classification: "reviewer-attested-independence"; authenticatedIdentityVerified: false; conclusion: "accepted" | "needs-follow-up"; reviewedAt: string };
   evidenceType: "operator-attested-assistive-session";
   metadata: SessionMetadata | null;
   result: {
@@ -80,6 +82,14 @@ export function AssistiveEvidence({
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [deleteId, setDeleteId] = useState("");
+  const [attemptUrl, setAttemptUrl] = useState("");
+  const [intendedDate, setIntendedDate] = useState(candidate.verification?.outcome?.date ?? "2026-11-16");
+  const [intendedAttendee, setIntendedAttendee] = useState("Alex Morgan");
+  const [reviewId, setReviewId] = useState("");
+  const [reviewer, setReviewer] = useState("");
+  const [reviewNotes, setReviewNotes] = useState("");
+  const [independent, setIndependent] = useState(false);
+  const [conclusion, setConclusion] = useState<"accepted" | "needs-follow-up">("needs-follow-up");
   const [form, setForm] = useState({
     participant: "",
     operator: "",
@@ -123,7 +133,8 @@ export function AssistiveEvidence({
       const result = await post<{
         session: AssistiveSession;
         importToken: string;
-      }>("/assistive-sessions", {
+        attempt: { previewUrl: string };
+      }>("/assistive-sessions/bound", {
         ...form,
         locale: form.locale,
         runId: run.id,
@@ -132,9 +143,11 @@ export function AssistiveEvidence({
         contractDigest: run.contract.digest,
         inputMode: "keyboard",
         consentScope: "private-study",
+        intended: { date: intendedDate, attendee: intendedAttendee, service: run.fixtureId },
       });
       setSession(result.session);
       setToken(result.importToken);
+      setAttemptUrl(result.attempt.previewUrl);
       await load();
     } catch (e) {
       setError((e as Error).message);
@@ -231,6 +244,22 @@ export function AssistiveEvidence({
       setError((e as Error).message);
     }
   }
+  async function verifyOutcome(captureId: string) {
+    setBusy(true); setError(""); setSuccess("");
+    try {
+      const result = await post<{ verification: { verified: boolean } }>(`/assistive-sessions/${captureId}/verify-outcome`);
+      setSuccess(result.verification.verified ? "This exact operator attempt matches its intended protected appointment. Reviewer attestation remains a separate step." : "The protected attempt did not establish the claimed completion. Its observed result is retained.");
+      await load();
+    } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
+  }
+  async function reviewCapture(event: React.FormEvent) {
+    event.preventDefault(); setBusy(true); setError("");
+    try {
+      await post(`/assistive-sessions/${reviewId}/review`, { reviewer, independentFromOperator: independent, conclusion, notes: reviewNotes });
+      setReviewId(""); setReviewer(""); setReviewNotes(""); setIndependent(false);
+      setSuccess("Separate reviewer attestation saved. This local workflow does not authenticate the reviewer’s identity or establish a human study."); await load();
+    } catch (e) { setError((e as Error).message); } finally { setBusy(false); }
+  }
   return (
     <section className="panel assistive-evidence">
       <div className="section-heading">
@@ -243,9 +272,9 @@ export function AssistiveEvidence({
         transcript into a private, revision-bound session.
       </p>
       <Notice title="Human validation is still pending">
-        Imported evidence is operator-attested. It does not establish
-        independent review, a verified human backend outcome, or a completed
-        human study. No recording is generated.
+        Imports are operator-attested. Each actual attempt gets its own
+        protected service session and a separate reviewer action. Reviewer
+        identity is not authenticated here; a completed human study is not claimed.
       </Notice>
       {error ? <Notice tone="error">{error}</Notice> : null}
       {success ? (
@@ -319,6 +348,10 @@ export function AssistiveEvidence({
               </select>
             </label>
           </div>
+          <div className="field-grid">
+            <label>Intended fictional appointment date<input type="date" required value={intendedDate} onChange={event => setIntendedDate(event.target.value)} /></label>
+            <label>Fictional attendee entered for this task<input required maxLength={80} value={intendedAttendee} onChange={event => setIntendedAttendee(event.target.value)} /></label>
+          </div>
           <div className="capture-binding">
             <Fingerprint size={17} />
             <span>
@@ -367,6 +400,10 @@ export function AssistiveEvidence({
             import before leaving or refreshing. If the token is lost, delete
             the pending session and create another.
           </Notice>
+          {attemptUrl ? <Notice title="Use this fresh protected attempt">
+            <p>Complete the agreed task in this session before importing evidence. The earlier automated booking is never used as the participant’s outcome.</p>
+            <a className="text-link" href={attemptUrl} target="_blank" rel="noreferrer">Open this actual attempt <ExternalLink size={14} /></a>
+          </Notice> : null}
           <div className="capture-binding">
             <Fingerprint size={17} />
             <span>
@@ -553,10 +590,20 @@ export function AssistiveEvidence({
                 </a>
               ))}
               {item.status === "imported" ? (
-                <p className="capture-limit">
-                  Operator-attested · Independent review pending · Human backend
-                  outcome not verified
-                </p>
+                <>
+                  <p className="capture-limit">Operator-attested · {item.backendOutcomeVerified ? "Exact protected attempt verified" : "Protected outcome unverified"} · {item.review ? `Separate review: ${item.review.conclusion} (identity not authenticated)` : "Separate reviewer attestation pending"}</p>
+                  {item.outcomeBinding ? <div className="capture-actions">
+                    <button className="button button-secondary button-small" disabled={busy} onClick={() => void verifyOutcome(item.id)}>Check this attempt’s stored outcome</button>
+                    <button className="button button-secondary button-small" disabled={busy} onClick={() => setReviewId(item.id)}>Record separate review</button>
+                  </div> : <p className="small muted">Legacy text capture has no separately bound service session. Start a fresh attempt to establish its outcome.</p>}
+                  {reviewId === item.id ? <form className="capture-form" onSubmit={reviewCapture}>
+                    <label>Actual reviewer name<input required maxLength={200} value={reviewer} onChange={event => setReviewer(event.target.value)} /></label>
+                    <label>Review decision<select value={conclusion} onChange={event => setConclusion(event.target.value as typeof conclusion)}><option value="needs-follow-up">Needs follow-up</option><option value="accepted">Accept observed completion</option></select></label>
+                    <label>Review notes<textarea maxLength={4000} rows={3} value={reviewNotes} onChange={event => setReviewNotes(event.target.value)} /></label>
+                    <label className="checkbox-label"><input type="checkbox" required checked={independent} onChange={event => setIndependent(event.target.checked)} /><span>I am the actual named reviewer, separate from this session’s operator, and have inspected the supplied evidence. This is my attestation, not authenticated identity.</span></label>
+                    <button className="button button-small" disabled={busy || !independent}>Save reviewer attestation</button>
+                  </form> : null}
+                </>
               ) : null}
               {deleteId === item.id ? (
                 <div className="capture-delete-confirm">

@@ -1,0 +1,51 @@
+{
+  "schema": "passage.bounded-cleanup-security-qa/v1",
+  "recordedAt": "2026-10-28",
+  "evidenceClass": "automated-adversarial-browser-regression",
+  "humanParticipant": false,
+  "participantCount": 0,
+  "adversarialSource": "<button id=\"run\" onclick=\"while(true){}\">Run</button>",
+  "interactionBudgetMs": 300,
+  "actionBudgetMs": 100,
+  "before": {
+    "runtime": "passage-temporal-native-focus-v2",
+    "recordingMethod": "Transcribed from the actual pre-fix browser reproduction stdout in this session.",
+    "result": {
+      "settledBeforeForcedClose": false,
+      "elapsedMs": 1026,
+      "declaredMaxDurationMs": 300,
+      "status": "error",
+      "error": "Temporal operation exceeded its bounded timeout."
+    }
+  },
+  "after": {
+    "runtime": "passage-temporal-native-focus-bounded-cleanup-v3",
+    "recordingMethod": "Unmodified stdout from a fresh run of the same actual starving-renderer reproduction.",
+    "stdout": "{\n  \"settledBeforeForcedClose\": true,\n  \"settledAtMs\": 303,\n  \"executionDurationMs\": 302,\n  \"verifierVersion\": \"passage-temporal-native-focus-bounded-cleanup-v3\",\n  \"retainedEvents\": 7,\n  \"elapsedMs\": 1025,\n  \"declaredMaxDurationMs\": 300,\n  \"status\": \"error\",\n  \"error\": \"Temporal operation exceeded its bounded timeout. Cleanup: Trace flush exceeded its bounded timeout.\"\n}",
+    "stdoutSha256": "6dde08d4a401f85b3bb9259d6039bf5c3e9f0c078009c895983e2c56280c99d5"
+  },
+  "interpretation": "The harness deliberately waits 1000 ms before closing Chromium in both cases. Before the fix execution had not settled then. After the fix it settled around the declared 300 ms interaction budget with retained evidence and status error; total harness elapsed includes the deliberate wait.",
+  "changes": [
+    "Recorder setup, flush, response drain and page listener removal use timeout and cancellation budgets.",
+    "Cleanup failure is retained as execution error, never converted to passed.",
+    "Repository shutdown starts context and browser closure independently before awaiting page-dependent recorder operations.",
+    "Shutdown has a separate 2000 ms outer budget; collected execution checks and trace survive failure."
+  ],
+  "regressions": [
+    "Real starving renderer returns error without the independent safety watchdog.",
+    "Page-provided malicious listener cleanup and cancellation are bounded.",
+    "Healthy real input/focus recording remains accepted.",
+    "Repository service healthy/starving browser pair confirms independent shutdown and evidence retention."
+  ],
+  "verification": {
+    "focusedTemporalAndRepositoryTestsPassed": 30,
+    "typecheck": "passed"
+  },
+  "limitations": [
+    "This is a synthetic adversarial browser case, not a participant observation.",
+    "Interaction, recorder cleanup and browser shutdown have distinct bounded budgets plus ordinary scheduling/IPC overhead.",
+    "Standalone executeContract does not own the caller browser; the owner must close it. The repository owner now requests context/browser close independently.",
+    "A browser process that itself fails to exit within 2000 ms is reported as cleanup error. OS-level forced process termination is not guaranteed by this API layer.",
+    "Existing completed checks are preserved, but incomplete trace collection never establishes success."
+  ]
+}

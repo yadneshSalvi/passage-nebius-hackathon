@@ -136,6 +136,11 @@ describe("scoped component and immutable build boundary", () => {
       "panelRef.current?.['querySelectorAll']('button');",
     ])
       expect(validateCandidateSource(withQuery(statement)).valid).toBe(false);
+    const alias = validateCandidateSource(withQuery("const panel = panelRef.current; panel?.querySelectorAll('button');"));
+    expect(alias.errors.join(' ')).toContain("panel?.querySelectorAll('button')");
+    expect(alias.errors.join(' ')).toMatch(/line \d+, column \d+/);
+    expect(alias.errors.join(' ')).toContain("ref.current.querySelectorAll('static selector')");
+    expect(alias.errors.join(' ')).toContain('Aliases, dynamic selectors');
   });
   it("content-binds builds to source, immutable assets, and the installed toolchain", async () => {
     const source = await getOriginalSource("northstar-appointments");

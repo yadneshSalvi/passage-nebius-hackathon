@@ -50,6 +50,7 @@ export const PROVIDER_ROUTES: Record<LiveProvider, ProviderRoute> = {
     baseUrl: "https://api.tokenfactory.nebius.com/v1",
     allowedBaseUrls: [
       "https://api.tokenfactory.nebius.com/v1",
+      "https://api.tokenfactory.us-central1.nebius.com/v1",
       "https://api.nebius.com/v1",
       "https://api.studio.nebius.com/v1",
     ],
@@ -65,13 +66,21 @@ export const PROVIDER_ROUTES: Record<LiveProvider, ProviderRoute> = {
               ? "Nebius Ultra is catalog-priced; completion compatibility qualification remains pending."
               : undefined,
           pricing,
-          maxOutputTokens: model === NEBIUS_ULTRA_MODEL ? 16000 : 6000,
-          timeoutMs: model === NEBIUS_ULTRA_MODEL ? 240000 : 120000,
+          maxOutputTokens: model === NEBIUS_ULTRA_MODEL ? 32000 : 6000,
+          timeoutMs: model === NEBIUS_ULTRA_MODEL ? 480000 : 120000,
+          ...(model === NEBIUS_ULTRA_MODEL ? {maxResponseBytes:1048576} : {}),
           requestFields:
             model === NEBIUS_ULTRA_MODEL
               ? {
-                  chat_template_kwargs: { enable_thinking: true },
-                  response_format: { type: "json_object" },
+                  // NVIDIA's coding-agent profile; qualify this separately from
+                  // historical 0.2-temperature completions.
+                  // https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-NVFP4/raw/main/README.md
+                  temperature: 1,
+                  top_p: 0.95,
+                  chat_template_kwargs: {
+                    enable_thinking: true,
+                    force_nonempty_content: true,
+                  },
                 }
               : directJsonFields,
         },

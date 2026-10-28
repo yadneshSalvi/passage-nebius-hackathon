@@ -1,0 +1,53 @@
+{
+  "schema": "passage-grouped-reduction-development-qa/v1",
+  "recordedAt": "2026-10-28T14:41:04.513815+00:00",
+  "evidenceClass": "automated-development",
+  "humanParticipantCount": 0,
+  "reviewer": "Codex orchestrator",
+  "sourceDigest": "5c4161cb48fe19f8599488d014ce54eccae991613bf4ead1350ee4cb259309b7",
+  "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+  "captureId": "capture_243cde10-e28a-4797-97fb-8a4795aeacb2",
+  "sameFailureSignature": "late-response-cannot-commit:value-changed",
+  "legacy": {
+    "id": "legacy-reduction_6e160aac89365560c9c88a8b0efa5ad36488c600dfce3ca3015ff454ed1850d6",
+    "attempts": 2,
+    "removedActions": 0,
+    "remainingActions": 10,
+    "recordDigest": "e48b34fca4f02a0a011254c03aee515dcb428743ba088786694271a413009e9c",
+    "historicalRejectedTrialTracesAvailable": false
+  },
+  "grouped": {
+    "id": "reduction-run_427d74a0-828a-428a-a728-d7bc61b0a11b",
+    "attempts": 1,
+    "removedActionIds": [
+      "explore-forward",
+      "explore-back"
+    ],
+    "remainingActions": 8,
+    "recordDigest": "49c9644883888520c2a7bdff22b18ea22247e2d037dc2a98fb4e288b6ca62255",
+    "replayId": "reduction-replay_46770fec-78c3-4b27-8e2f-78564e7ec402",
+    "replayRecordDigest": "911915df5d37e35d3a9ba05b545cedb6eda037a25818079901938805a7da210b",
+    "search": {
+      "algorithm": "optional-group-ddmin-v2",
+      "termination": "searched-moves-exhausted",
+      "localMinimal": true,
+      "globalMinimal": false,
+      "replayLimit": 24,
+      "initialReused": true,
+      "candidatesChecked": 1,
+      "invalidCandidates": 0,
+      "reusedExecutions": 0,
+      "acceptedMoves": 1,
+      "inconclusiveReplays": 0,
+      "limitation": "Local only to validated chunks, complements, pairs and single deletions searched within the replay budget; no global minimality guarantee. Inconclusive error/cancelled trials cannot establish local minimality. Identical candidate schedules may reuse an observed execution; nondeterministic behavior is not established by cached evidence."
+    }
+  },
+  "verified": "Current guard export retains both reduction runs, the new start record and its complete fresh browser replay; old counts-only evidence was not rewritten.",
+  "recordDigestEncoding": "SHA-256 of UTF-8 JSON, sorted keys, compact separators, non-ASCII unescaped",
+  "rawEvidence": ".passage/root-reduction-history-qa/export.json",
+  "limitations": [
+    "This is an automated development replay of a known failure, not a held-out test or independent human review.",
+    "The old rejected trial traces were not recorded and were not reconstructed.",
+    "No global minimality or nondeterministic reliability claim."
+  ]
+}

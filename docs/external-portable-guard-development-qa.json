@@ -1,0 +1,96 @@
+{
+  "schema": "passage.external-portable-guard-development-qa.v1",
+  "reviewer": "Codex root, automated development",
+  "humanReview": false,
+  "scope": "Modified development manifests derived from the accepted Nebius source; not new upstream commits. Exported runner installed in a fresh directory, reusing the qualified immutable Docker worker image; no original database or credentials.",
+  "cases": [
+    {
+      "case": "refactor-cancellation-state",
+      "sourceDigest": "e31adb678b7c504eb6a64c7ff9b9aba0230fbea0dcca8540c6d66aa38bb41a52",
+      "passed": true,
+      "exitCode": 0,
+      "failureSignature": null,
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "passed"
+        },
+        {
+          "id": "save-works",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "refactor-enter-dispatch",
+      "sourceDigest": "edfb10ee6043c805c48e228454d8aed0246aff19e4727c1af73c98d5d18fe07f",
+      "passed": true,
+      "exitCode": 0,
+      "failureSignature": null,
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "passed"
+        },
+        {
+          "id": "save-works",
+          "status": "passed"
+        }
+      ]
+    },
+    {
+      "case": "regression-keyboard-reach",
+      "sourceDigest": "2583c1071bef5eba27fbacf9b45ba1476a21b0c53e804edb5c6584e27c29887c",
+      "passed": false,
+      "exitCode": 1,
+      "failureSignature": "keyboard-entry:focus-escaped",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "failed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "not-run"
+        },
+        {
+          "id": "save-works",
+          "status": "not-run"
+        }
+      ]
+    },
+    {
+      "case": "regression-cancel-keeps-editor",
+      "sourceDigest": "9e967d2f36a1a430e10ee036f7d538448fe575d70af8491071c7b1dc9ac3568d",
+      "passed": false,
+      "exitCode": 1,
+      "failureSignature": "action:editor-closed:expected-state-unreachable",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "action:editor-closed",
+          "status": "failed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "not-run"
+        },
+        {
+          "id": "save-works",
+          "status": "not-run"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,209 @@
+import React, { useState, useRef, useEffect } from 'react';
+
+export default function SlotControl({ value, onChange, choices, locale, checkAvailability, delayMs = 0, longLabels }) {
+  const [open, setOpen] = useState(false);
+  const pendingDateRef = useRef(null);
+  const gridRef = useRef(null);
+  const panelRef = useRef(null);
+  const triggerRef = useRef(null);
+  const focusGuardRef = useRef(0);
+  const cellsRef = useRef([]);
+  const currentIndexRef = useRef(-1);
+  const pendingDateRef = useRef(null);
+  const focusGuardRef = useRef(0);
+
+  const handleModalKeyDown = (e) => {
+    if (e.key === 'Escape') {
+      if (pendingDateRef.current) {
+        pendingDateRef.current = null;
+      }
+      ++focusGuardRef.current;
+      setOpen(false);
+      triggerRef.current?.focus();
+      return;
+    }
+
+    if (!panelRef.current) return;
+    const cells = Array.from(panelRef.current.querySelectorAll('[data-date]:not(.unavailable), .icon-button'));
+    if (cells.length === 0) return;
+
+    const activeElement = document.activeElement;
+    const currentIndex = cells.indexOf(activeElement);
+    if (currentIndex === -1) {
+      cells[0]?.focus();
+      return;
+    }
+
+    if (e.key === 'Tab' && e.shiftKey) {
+      e.preventDefault();
+      const prevIndex = (currentIndex - 1 + cells.length) % cells.length;
+      cells[prevIndex]?.focus();
+      return;
+    }
+
+    if (e.key === 'Tab') {
+      e.preventDefault();
+      const nextIndex = (currentIndex + 1) % cells.length;
+      cells[nextIndex]?.focus();
+      return;
+    }
+
+    const dateCells = cells.filter(c => c.hasAttribute('data-date'));
+    const colCount = 7;
+
+    if (e.key === 'ArrowRight') {
+      e.preventDefault();
+      const currentDateIndex = dateCells.indexOf(activeElement);
+      if (currentDateIndex === -1) return;
+      const nextIndex = (currentDateIndex + 1) % dateCells.length;
+      dateCells[nextIndex]?.focus();
+      return;
+    } else if (e.key === 'ArrowLeft') {
+      e.preventDefault();
+      const currentDateIndex = dateCells.indexOf(activeElement);
+      if (currentDateIndex === -1) return;
+      const prevIndex = (currentDateIndex - 1 + dateCells.length) % dateCells.length;
+      dateCells[prevIndex]?.focus();
+      return;
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      const currentDateIndex = dateCells.indexOf(activeElement);
+      if (currentDateIndex === -1) return;
+      const nextIndex = Math.min(currentDateIndex + colCount, dateCells.length - 1);
+      dateCells[nextIndex]?.focus();
+      return;
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      const currentDateIndex = dateCells.indexOf(activeElement);
+      if (currentDateIndex === -1) return;
+      const prevIndex = Math.max(currentDateIndex - colCount, 0);
+      dateCells[prevIndex]?.focus();
+      return;
+    } else if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      if (activeElement.classList.contains('icon-button') && activeElement.getAttribute('aria-label') === 'Close calendar') {
+        if (pendingDateRef.current) pendingDateRef.current = null;
+        ++focusGuardRef.current;
+        setOpen(false);
+        triggerRef.current?.focus();
+        return;
+      }
+      const dateCell = activeElement;
+      if (dateCell.hasAttribute('data-date') && !pendingDateRef.current) {
+        const date = dateCell.getAttribute('data-date');
+        const choice = choices.find(c => c.date === date);
+        if (choice && !choice.unavailable) {
+          pendingDateRef.current = date;
+          const guard = ++focusGuardRef.current;
+          checkAvailability(date).then((result) => {
+            if (guard !== focusGuardRef.current) return;
+            if (result.available) {
+              onChange(date);
+              pendingDateRef.current = null;
+              setOpen(false);
+              triggerRef.current?.focus();
+            } else {
+              pendingDateRef.current = null;
+            }
+          });
+        }
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (!open) return;
+    const guard = ++focusGuardRef.current;
+    if (!gridRef.current) return;
+    const firstAvailable = gridRef.current.querySelector('[data-date]:not(.unavailable)');
+    if (firstAvailable) {
+      firstAvailable.focus();
+    }
+  }, [open]);
+
+  const handleDateClick = (date) => {
+    if (pendingDateRef.current) return;
+    const choice = choices.find(c => c.date === date);
+    if (choice && !choice.unavailable) {
+      pendingDateRef.current = date;
+      const guard = ++focusGuardRef.current;
+      checkAvailability(date).then((result) => {
+        if (guard !== focusGuardRef.current) return;
+        if (result.available) {
+          onChange(date);
+          pendingDateRef.current = null;
+          setOpen(false);
+          triggerRef.current?.focus();
+        } else {
+          pendingDateRef.current = null;
+        }
+      });
+    }
+  };
+
+  const selected = choices.find((choice) => choice.date === value);
+
+  return (
+    <div className="slot-control">
+      <span className="field-label" id="date-label">{locale === 'de' ? 'Termin auswählen' : 'Appointment date'}</span>
+      <button
+        type="button"
+        className="picker-trigger"
+        data-testid="slot-trigger"
+        aria-haspopup="dialog"
+        aria-expanded={open}
+        aria-labelledby="date-label selected-date-label"
+        onClick={() => setOpen(!open)}
+        ref={triggerRef}
+      >
+        <span id="selected-date-label">{selected ? selected.label : locale === 'de' ? 'Datum auswählen' : 'Choose a date'}</span><span aria-hidden="true">⌄</span>
+      </button>
+      {open && (
+        <div
+          className="picker-panel"
+          data-testid="slot-panel"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="calendar-title"
+          onKeyDown={handleModalKeyDown}
+          ref={panelRef}
+        >
+          <div className="picker-heading">
+            <h3 id="calendar-title">{locale === 'de' ? 'November 2026' : 'November 2026'}</h3>
+            <button
+              type="button"
+              className="icon-button"
+              aria-label="Close calendar"
+              tabIndex={0}
+              onClick={() => {
+                if (pendingDateRef.current) pendingDateRef.current = null;
+                ++focusGuardRef.current;
+                setOpen(false);
+                triggerRef.current?.focus();
+              }}
+            >×</button>
+          </div>
+          <div className="calendar-week" aria-hidden="true"><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span><span>SU</span></div>
+          <div className="calendar-grid" ref={gridRef}>
+            {choices.map((choice) => (
+              <div
+                key={choice.date}
+                className={`calendar-day ${choice.unavailable ? 'unavailable' : ''}`}
+                data-date={choice.date}
+                role="button"
+                aria-label={choice.label}
+                aria-disabled={choice.unavailable}
+                tabIndex={choice.unavailable ? -1 : 0}
+                onClick={() => handleDateClick(choice.date)}
+              >
+                <span>{choice.day}</span>
+                <span className="availability-dot" />
+              </div>
+            ))}
+          </div>
+          <p className="picker-hint">{locale === 'de' ? 'Alle Termine in Ihrer Ortszeit.' : 'All appointments in your local time.'}</p>
+        </div>
+      )}
+    </div>
+  );
+}

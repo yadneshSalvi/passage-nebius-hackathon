@@ -1,0 +1,40 @@
+{
+  "summary": "Two keyboard-driven transitions fail: (1) Enter activation does not emit an availability request because the handler constructs a CustomEvent via forbidden 'new' expression, preventing the pending availability event from firing. (2) Shift+Tab focus containment escapes the modal because the focus index uses a computed expression (focusableArray.length - 1) instead of a local numeric variable, violating the adapter's index constraints.",
+  "locations": [
+    {
+      "lineIds": [
+        "line:fae59c073f9d33227c2a5183",
+        "line:c4b7541b83f12b78d86d3c95",
+        "line:e62bbb8f047236dc851fb08b",
+        "line:57f86ab7950637ae7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde",
+        "line:08c66de8ffd8659df9af4708",
+        "line:0ef46a73824df63b8c6ab4c1",
+        "line:8e13b8aac492e188d883923b",
+        "line:9a00237cfba5a53090e8b89f"
+      ],
+      "symbol": "handleKeyDown Enter branch",
+      "reason": "The Enter key handler dispatches a CustomEvent via 'new CustomEvent(...)', which the adapter forbids (constructor calls unsupported). This prevents the 'availability.pending' event from reaching the test harness, so no availability request is observed after activation.",
+      "evidenceRefs": [
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:18",
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:20",
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:21"
+      ]
+    },
+    {
+      "lineIds": [
+        "line:7783d9c3bcc300083ec27496",
+        "line:4c966de8ffd8659df9af4708",
+        "line:dbbe54e1ebb8d3279b225ee2",
+        "line:17107f05ff362945cadbe010",
+        "line:038380d6948adb552aaf8ad9",
+        "line:f47236dc851fb08b",
+        "line:d570ca2fa336906d2b21880"
+      ],
+      "symbol": "handleModalKeyDown Shift+Tab",
+      "reason": "The Shift+Tab handler indexes focusableArray with 'focusableArray.length - 1', a computed BinaryExpression. The adapter requires a local numeric variable for bracket indices; this causes focus to escape after two Shift+Tab presses, breaking modal containment.",
+      "evidenceRefs": [
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:26"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,4224 @@
+{
+  "schema": "passage-authored-preservation/v1",
+  "verifierVersion": "passage-authored-preservation-v1",
+  "startedAt": "2026-10-28T14:29:15.015Z",
+  "completedAt": "2026-10-28T14:29:22.518Z",
+  "passed": false,
+  "source": {
+    "digest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+    "content": "import React, { useState, useRef, useEffect } from 'react';\n\nexport default function SlotControl({ value, onChange, choices, locale, checkAvailability, delayMs = 0, longLabels }) {\n  const [open, setOpen] = useState(false);\n  const pendingDateRef = useRef(null);\n  const gridRef = useRef(null);\n  const triggerRef = useRef(null);\n  const focusGuardRef = useRef(0);\n  const selected = choices.find((choice) => choice.date === value);\n\n  // Focus first available cell when modal opens\n  useEffect(() => {\n    if (!open) return;\n    const guard = ++focusGuardRef.current;\n    if (!gridRef.current) return;\n    const firstAvailable = gridRef.current.querySelector('[data-date]:not(.unavailable)');\n    if (firstAvailable) {\n      firstAvailable.focus();\n    }\n  }, [open]);\n\n  const handleModalKeyDown = (e) => {\n    if (e.key === 'Escape') {\n      if (pendingDateRef.current) {\n        pendingDateRef.current = null;\n      }\n      ++focusGuardRef.current;\n      setOpen(false);\n      triggerRef.current?.focus();\n      return;\n    }\n\n    if (e.key === 'Tab' && e.shiftKey) {\n      if (!gridRef.current) return;\n      const cells = Array.from(gridRef.current.querySelectorAll('[data-date]:not(.unavailable)'));\n      if (cells.length === 0) return;\n      const activeElement = gridRef.current.querySelector('[data-date]:focus');\n      if (!activeElement) return;\n      e.preventDefault();\n      const currentIndex = cells.indexOf(activeElement);\n      if (currentIndex === -1) return;\n      const prevIndex = (currentIndex - 1 + cells.length) % cells.length;\n      cells[prevIndex]?.focus();\n      return;\n    }\n\n    if (e.key === 'Tab') {\n      if (!gridRef.current) return;\n      const cells = Array.from(gridRef.current.querySelectorAll('[data-date]:not(.unavailable)'));\n      if (cells.length === 0) return;\n      const activeElement = gridRef.current.querySelector('[data-date]:focus');\n      if (!activeElement) return;\n      e.preventDefault();\n      const currentIndex = cells.indexOf(activeElement);\n      if (currentIndex === -1) return;\n      const nextIndex = (currentIndex + 1) % cells.length;\n      cells[nextIndex]?.focus();\n      return;\n    }\n\n    if (!gridRef.current) return;\n    const cells = Array.from(gridRef.current.querySelectorAll('[data-date]:not(.unavailable)'));\n    if (cells.length === 0) return;\n\n    const activeElement = gridRef.current.querySelector('[data-date]:focus');\n    const currentIndex = cells.indexOf(activeElement);\n    if (currentIndex === -1) return;\n\n    const colCount = 7;\n    let nextIndex = currentIndex;\n\n    if (e.key === 'ArrowRight') {\n      e.preventDefault();\n      nextIndex = (currentIndex + 1) % cells.length;\n    } else if (e.key === 'ArrowLeft') {\n      e.preventDefault();\n      nextIndex = (currentIndex - 1 + cells.length) % cells.length;\n    } else if (e.key === 'ArrowDown') {\n      e.preventDefault();\n      nextIndex = Math.min(currentIndex + colCount, cells.length - 1);\n    } else if (e.key === 'ArrowUp') {\n      e.preventDefault();\n      nextIndex = Math.max(currentIndex - colCount, 0);\n    } else if (e.key === 'Enter' || e.key === ' ') {\n      e.preventDefault();\n      const dateCell = cells[currentIndex];\n      if (dateCell && !pendingDateRef.current) {\n        const date = dateCell.getAttribute('data-date');\n        const choice = choices.find(c => c.date === date);\n        if (choice && !choice.unavailable) {\n          pendingDateRef.current = date;\n          const guard = focusGuardRef.current;\n          checkAvailability(date).then((result) => {\n            if (guard !== focusGuardRef.current) return;\n            if (result.available) {\n              onChange(date);\n              pendingDateRef.current = null;\n              setOpen(false);\n              triggerRef.current?.focus();\n            } else {\n              pendingDateRef.current = null;\n            }\n          });\n        }\n      }\n      return;\n    } else {\n      return;\n    }\n\n    cells[nextIndex]?.focus();\n  };\n\n  return (\n    <div className=\"slot-control\">\n      <span className=\"field-label\" id=\"date-label\">{locale === 'de' ? 'Termin auswählen' : 'Appointment date'}</span>\n      <button\n        type=\"button\"\n        className=\"picker-trigger\"\n        data-testid=\"slot-trigger\"\n        aria-haspopup=\"dialog\"\n        aria-expanded={open}\n        aria-labelledby=\"date-label selected-date-label\"\n        onClick={() => setOpen(!open)}\n        ref={triggerRef}\n      >\n        <span id=\"selected-date-label\">{selected ? selected.label : locale === 'de' ? 'Datum auswählen' : 'Choose a date'}</span><span aria-hidden=\"true\">⌄</span>\n      </button>\n      {open && (\n        <div\n          className=\"picker-panel\"\n          data-testid=\"slot-panel\"\n          role=\"dialog\"\n          aria-modal=\"true\"\n          aria-labelledby=\"calendar-title\"\n          onKeyDown={handleModalKeyDown}\n        >\n          <div className=\"picker-heading\">\n            <h3 id=\"calendar-title\">{locale === 'de' ? 'November 2026' : 'November 2026'}</h3>\n            <button type=\"button\" className=\"icon-button\" aria-label=\"Close calendar\" onClick={() => { if (pendingDateRef.current) pendingDateRef.current = null; ++focusGuardRef.current; setOpen(false); triggerRef.current?.focus(); }}>×</button>\n          </div>\n          <div className=\"calendar-week\" aria-hidden=\"true\"><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span><span>SU</span></div>\n          <div className=\"calendar-grid\" ref={gridRef}>\n            {choices.map((choice) => (\n              <div\n                key={choice.date}\n                className={`calendar-day ${choice.unavailable ? 'unavailable' : ''}`}\n                data-date={choice.date}\n                role=\"button\"\n                aria-label={choice.label}\n                aria-disabled={choice.unavailable}\n                tabIndex={choice.unavailable ? -1 : 0}\n              >\n                <span>{choice.day}</span>\n                <span className=\"availability-dot\" />\n              </div>\n            ))}\n          </div>\n          <p className=\"picker-hint\">{locale === 'de' ? 'Alle Termine in Ihrer Ortszeit.' : 'All appointments in your local time.'}</p>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "fixtureId": "northstar-appointments"
+  },
+  "build": {
+    "id": "e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e",
+    "fixtureId": "northstar-appointments",
+    "digest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+    "source": "import React, { useState, useRef, useEffect } from 'react';\n\nexport default function SlotControl({ value, onChange, choices, locale, checkAvailability, delayMs = 0, longLabels }) {\n  const [open, setOpen] = useState(false);\n  const pendingDateRef = useRef(null);\n  const gridRef = useRef(null);\n  const triggerRef = useRef(null);\n  const focusGuardRef = useRef(0);\n  const selected = choices.find((choice) => choice.date === value);\n\n  // Focus first available cell when modal opens\n  useEffect(() => {\n    if (!open) return;\n    const guard = ++focusGuardRef.current;\n    if (!gridRef.current) return;\n    const firstAvailable = gridRef.current.querySelector('[data-date]:not(.unavailable)');\n    if (firstAvailable) {\n      firstAvailable.focus();\n    }\n  }, [open]);\n\n  const handleModalKeyDown = (e) => {\n    if (e.key === 'Escape') {\n      if (pendingDateRef.current) {\n        pendingDateRef.current = null;\n      }\n      ++focusGuardRef.current;\n      setOpen(false);\n      triggerRef.current?.focus();\n      return;\n    }\n\n    if (e.key === 'Tab' && e.shiftKey) {\n      if (!gridRef.current) return;\n      const cells = Array.from(gridRef.current.querySelectorAll('[data-date]:not(.unavailable)'));\n      if (cells.length === 0) return;\n      const activeElement = gridRef.current.querySelector('[data-date]:focus');\n      if (!activeElement) return;\n      e.preventDefault();\n      const currentIndex = cells.indexOf(activeElement);\n      if (currentIndex === -1) return;\n      const prevIndex = (currentIndex - 1 + cells.length) % cells.length;\n      cells[prevIndex]?.focus();\n      return;\n    }\n\n    if (e.key === 'Tab') {\n      if (!gridRef.current) return;\n      const cells = Array.from(gridRef.current.querySelectorAll('[data-date]:not(.unavailable)'));\n      if (cells.length === 0) return;\n      const activeElement = gridRef.current.querySelector('[data-date]:focus');\n      if (!activeElement) return;\n      e.preventDefault();\n      const currentIndex = cells.indexOf(activeElement);\n      if (currentIndex === -1) return;\n      const nextIndex = (currentIndex + 1) % cells.length;\n      cells[nextIndex]?.focus();\n      return;\n    }\n\n    if (!gridRef.current) return;\n    const cells = Array.from(gridRef.current.querySelectorAll('[data-date]:not(.unavailable)'));\n    if (cells.length === 0) return;\n\n    const activeElement = gridRef.current.querySelector('[data-date]:focus');\n    const currentIndex = cells.indexOf(activeElement);\n    if (currentIndex === -1) return;\n\n    const colCount = 7;\n    let nextIndex = currentIndex;\n\n    if (e.key === 'ArrowRight') {\n      e.preventDefault();\n      nextIndex = (currentIndex + 1) % cells.length;\n    } else if (e.key === 'ArrowLeft') {\n      e.preventDefault();\n      nextIndex = (currentIndex - 1 + cells.length) % cells.length;\n    } else if (e.key === 'ArrowDown') {\n      e.preventDefault();\n      nextIndex = Math.min(currentIndex + colCount, cells.length - 1);\n    } else if (e.key === 'ArrowUp') {\n      e.preventDefault();\n      nextIndex = Math.max(currentIndex - colCount, 0);\n    } else if (e.key === 'Enter' || e.key === ' ') {\n      e.preventDefault();\n      const dateCell = cells[currentIndex];\n      if (dateCell && !pendingDateRef.current) {\n        const date = dateCell.getAttribute('data-date');\n        const choice = choices.find(c => c.date === date);\n        if (choice && !choice.unavailable) {\n          pendingDateRef.current = date;\n          const guard = focusGuardRef.current;\n          checkAvailability(date).then((result) => {\n            if (guard !== focusGuardRef.current) return;\n            if (result.available) {\n              onChange(date);\n              pendingDateRef.current = null;\n              setOpen(false);\n              triggerRef.current?.focus();\n            } else {\n              pendingDateRef.current = null;\n            }\n          });\n        }\n      }\n      return;\n    } else {\n      return;\n    }\n\n    cells[nextIndex]?.focus();\n  };\n\n  return (\n    <div className=\"slot-control\">\n      <span className=\"field-label\" id=\"date-label\">{locale === 'de' ? 'Termin auswählen' : 'Appointment date'}</span>\n      <button\n        type=\"button\"\n        className=\"picker-trigger\"\n        data-testid=\"slot-trigger\"\n        aria-haspopup=\"dialog\"\n        aria-expanded={open}\n        aria-labelledby=\"date-label selected-date-label\"\n        onClick={() => setOpen(!open)}\n        ref={triggerRef}\n      >\n        <span id=\"selected-date-label\">{selected ? selected.label : locale === 'de' ? 'Datum auswählen' : 'Choose a date'}</span><span aria-hidden=\"true\">⌄</span>\n      </button>\n      {open && (\n        <div\n          className=\"picker-panel\"\n          data-testid=\"slot-panel\"\n          role=\"dialog\"\n          aria-modal=\"true\"\n          aria-labelledby=\"calendar-title\"\n          onKeyDown={handleModalKeyDown}\n        >\n          <div className=\"picker-heading\">\n            <h3 id=\"calendar-title\">{locale === 'de' ? 'November 2026' : 'November 2026'}</h3>\n            <button type=\"button\" className=\"icon-button\" aria-label=\"Close calendar\" onClick={() => { if (pendingDateRef.current) pendingDateRef.current = null; ++focusGuardRef.current; setOpen(false); triggerRef.current?.focus(); }}>×</button>\n          </div>\n          <div className=\"calendar-week\" aria-hidden=\"true\"><span>MO</span><span>TU</span><span>WE</span><span>TH</span><span>FR</span><span>SA</span><span>SU</span></div>\n          <div className=\"calendar-grid\" ref={gridRef}>\n            {choices.map((choice) => (\n              <div\n                key={choice.date}\n                className={`calendar-day ${choice.unavailable ? 'unavailable' : ''}`}\n                data-date={choice.date}\n                role=\"button\"\n                aria-label={choice.label}\n                aria-disabled={choice.unavailable}\n                tabIndex={choice.unavailable ? -1 : 0}\n              >\n                <span>{choice.day}</span>\n                <span className=\"availability-dot\" />\n              </div>\n            ))}\n          </div>\n          <p className=\"picker-hint\">{locale === 'de' ? 'Alle Termine in Ihrer Ortszeit.' : 'All appointments in your local time.'}</p>\n        </div>\n      )}\n    </div>\n  );\n}",
+    "sourceFile": "DatePicker.jsx",
+    "previewUrl": "http://127.0.0.1:62522/preview/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e",
+    "bundleDigest": "fd38a6909ee02a1738cbc0d0bcabffd150e387895dd0cc9bb8ff4860cf934dbc",
+    "cssDigest": "618d75ca0508d692c4658aeeaaf52e5c76bb2509b4649be97046a2aca0fe3ceb",
+    "toolchainDigest": "fc6e97e8cd7e6af98b4b3ffe0a124cad9abbd994da38c1be8dddc4a3f7f7d69c"
+  },
+  "bounds": {
+    "actionTimeoutMs": 3000,
+    "maxTabPresses": 24
+  },
+  "runs": [
+    {
+      "id": "680efcfb-0bc0-4d74-bdd4-6f8eb119aba6",
+      "kind": "pointer-booking",
+      "status": "failed",
+      "passed": false,
+      "startedAt": "2026-10-28T14:29:15.058Z",
+      "completedAt": "2026-10-28T14:29:18.769Z",
+      "durationMs": 3716,
+      "identity": {
+        "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+        "buildId": "e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e",
+        "bundleDigest": "fd38a6909ee02a1738cbc0d0bcabffd150e387895dd0cc9bb8ff4860cf934dbc",
+        "toolchainDigest": "fc6e97e8cd7e6af98b4b3ffe0a124cad9abbd994da38c1be8dddc4a3f7f7d69c",
+        "fixtureId": "northstar-appointments",
+        "sessionId": "f59aecec-a9ef-428e-892a-6b4531591d01",
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4"
+      },
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "intendedDate": "2026-11-16",
+      "attendee": "Preservation Pointer",
+      "checks": [
+        {
+          "id": "pointer-opens-dialog",
+          "label": "Pointer opens the calendar",
+          "expected": "The original date trigger opens the actual calendar.",
+          "status": "passed",
+          "actual": "Calendar visibility after pointer activation."
+        },
+        {
+          "id": "enabled-intended-choice",
+          "label": "Intended date is enabled",
+          "expected": "The protected scenario supplies an enabled intended date.",
+          "status": "passed",
+          "actual": "Protected intended date 2026-11-16; unavailable=false."
+        },
+        {
+          "id": "availability-request-response",
+          "label": "Pointer activation checks real availability",
+          "expected": "A real successful availability request and available response match the explicit date.",
+          "status": "failed",
+          "actual": "HTTP no response; availabilityChecks=0; selectedValue=; response=null."
+        },
+        {
+          "id": "pointer-selection-committed",
+          "label": "Pointer commits the intended choice",
+          "expected": "The selected-date value matches the explicit available date.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "pointer-confirmation",
+          "label": "Pointer confirmation stores an appointment",
+          "expected": "The fictional attendee and date reach the protected appointment endpoint.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "exact-single-outcome",
+          "label": "Exactly one correct protected outcome",
+          "expected": "One stored result matches session, source, service, explicit date and fictional attendee.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        }
+      ],
+      "trace": [
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /s/f59aecec-a9ef-428e-892a-6b4531591d01",
+          "requestId": "request-1",
+          "data": {
+            "url": "http://127.0.0.1:62522/s/f59aecec-a9ef-428e-892a-6b4531591d01",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 1,
+          "at": "2026-10-28T14:29:15.549Z",
+          "elapsedMs": 30
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /s/f59aecec-a9ef-428e-892a-6b4531591d01",
+          "requestId": "request-1",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/s/f59aecec-a9ef-428e-892a-6b4531591d01"
+          },
+          "sequence": 2,
+          "at": "2026-10-28T14:29:15.566Z",
+          "elapsedMs": 47
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 3,
+          "at": "2026-10-28T14:29:15.579Z",
+          "elapsedMs": 60
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 4,
+          "at": "2026-10-28T14:29:15.579Z",
+          "elapsedMs": 60
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css"
+          },
+          "sequence": 5,
+          "at": "2026-10-28T14:29:15.581Z",
+          "elapsedMs": 62
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js"
+          },
+          "sequence": 6,
+          "at": "2026-10-28T14:29:15.587Z",
+          "elapsedMs": 68
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Pointer-click the date trigger",
+          "actionId": "pointer-opens-dialog",
+          "sequence": 7,
+          "at": "2026-10-28T14:29:15.660Z",
+          "elapsedMs": 141
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 8,
+          "at": "2026-10-28T14:29:15.694Z",
+          "elapsedMs": 175
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "click",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 9,
+          "at": "2026-10-28T14:29:15.699Z",
+          "elapsedMs": 180
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 10,
+          "at": "2026-10-28T14:29:15.699Z",
+          "elapsedMs": 180
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Pointer opens the calendar",
+          "actionId": "pointer-opens-dialog",
+          "data": {
+            "status": "passed",
+            "expected": "The original date trigger opens the actual calendar.",
+            "actual": "Calendar visibility after pointer activation."
+          },
+          "sequence": 11,
+          "at": "2026-10-28T14:29:15.736Z",
+          "elapsedMs": 217
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Intended date is enabled",
+          "actionId": "enabled-intended-choice",
+          "data": {
+            "status": "passed",
+            "expected": "The protected scenario supplies an enabled intended date.",
+            "actual": "Protected intended date 2026-11-16; unavailable=false."
+          },
+          "sequence": 12,
+          "at": "2026-10-28T14:29:15.741Z",
+          "elapsedMs": 222
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Pointer-click the enabled intended date 2026-11-16",
+          "actionId": "availability-request-response",
+          "sequence": 13,
+          "at": "2026-10-28T14:29:15.742Z",
+          "elapsedMs": 223
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "click",
+          "target": "span",
+          "data": {
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 14,
+          "at": "2026-10-28T14:29:15.765Z",
+          "elapsedMs": 246
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Pointer activation checks real availability",
+          "actionId": "availability-request-response",
+          "data": {
+            "status": "failed",
+            "expected": "A real successful availability request and available response match the explicit date.",
+            "actual": "HTTP no response; availabilityChecks=0; selectedValue=; response=null."
+          },
+          "sequence": 15,
+          "at": "2026-10-28T14:29:18.745Z",
+          "elapsedMs": 3226
+        },
+        {
+          "provenance": "controller",
+          "kind": "error",
+          "label": "HTTP no response; availabilityChecks=0; selectedValue=; response=null.",
+          "sequence": 16,
+          "at": "2026-10-28T14:29:18.745Z",
+          "elapsedMs": 3226
+        }
+      ],
+      "focus": [],
+      "selectedValueBefore": "",
+      "selectedValueAfter": "",
+      "service": {
+        "availabilityChecks": 0,
+        "validatedDates": [],
+        "outcomeCount": 0,
+        "outcomes": []
+      },
+      "limitations": [
+        "Additional authored-fixture preservation checks; historical frozen-contract acceptance is unchanged.",
+        "Each check uses a fresh Chromium process, browser context, and protected fictional service session.",
+        "Focus acceptance uses Playwright utility-world locator queries and native :focus, never page-main-world activeElement getters.",
+        "Finite pointer and forward-Tab paths are not exhaustive accessibility, actual AT, participant, or formal-verification evidence.",
+        "Trace page instrumentation is lower-trust context; acceptance comes from controller actions, native locator state and the protected FixtureHost.",
+        "Close reachability is bounded to 24 native forward Tab presses."
+      ],
+      "error": "HTTP no response; availabilityChecks=0; selectedValue=; response=null."
+    },
+    {
+      "id": "26948a68-0d7b-48d5-af49-1eebacd69a78",
+      "kind": "close-control-keyboard",
+      "status": "failed",
+      "passed": false,
+      "startedAt": "2026-10-28T14:29:18.770Z",
+      "completedAt": "2026-10-28T14:29:19.043Z",
+      "durationMs": 274,
+      "identity": {
+        "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+        "buildId": "e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e",
+        "bundleDigest": "fd38a6909ee02a1738cbc0d0bcabffd150e387895dd0cc9bb8ff4860cf934dbc",
+        "toolchainDigest": "fc6e97e8cd7e6af98b4b3ffe0a124cad9abbd994da38c1be8dddc4a3f7f7d69c",
+        "fixtureId": "northstar-appointments",
+        "sessionId": "b9dc0600-4514-48f6-8e80-9cfb6b094211",
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4"
+      },
+      "scenario": {
+        "id": "baseline",
+        "name": "Original conditions",
+        "description": "English labels, standard timing, and the declared appointment availability.",
+        "locale": "en",
+        "delayedValidationMs": 120,
+        "unavailableFirst": false,
+        "longLabels": false,
+        "seed": 1701
+      },
+      "intendedDate": "2026-11-16",
+      "attendee": "Preservation Pointer",
+      "checks": [
+        {
+          "id": "keyboard-opens-dialog",
+          "label": "Keyboard opens the calendar",
+          "expected": "Native Tab reaches the trigger; Enter opens the actual calendar.",
+          "status": "passed",
+          "actual": "Native Tab reached the trigger; Enter must open the actual calendar."
+        },
+        {
+          "id": "close-reachable-by-tab",
+          "label": "Native Tab reaches the Close control",
+          "expected": "The actual Close calendar button receives native focus within the declared Tab bound.",
+          "status": "failed",
+          "actual": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-16\",\"label\":\"Monday 16 November\",\"text\":\"16\"}."
+        },
+        {
+          "id": "close-activated-with-enter",
+          "label": "Enter activates the Close control",
+          "expected": "Pressing Enter with actual Close focus closes the calendar.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "close-restores-trigger",
+          "label": "Close restores native trigger focus",
+          "expected": "The surviving original trigger has browser-native focus.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "close-preserves-value",
+          "label": "Closing preserves the prior selection",
+          "expected": "Opening, tabbing and closing do not commit or change a selection.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "close-does-not-book",
+          "label": "Closing stores no booking",
+          "expected": "The protected service has no appointment outcome.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        }
+      ],
+      "trace": [
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /s/b9dc0600-4514-48f6-8e80-9cfb6b094211",
+          "requestId": "request-1",
+          "data": {
+            "url": "http://127.0.0.1:62522/s/b9dc0600-4514-48f6-8e80-9cfb6b094211",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 1,
+          "at": "2026-10-28T14:29:18.880Z",
+          "elapsedMs": 5
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /s/b9dc0600-4514-48f6-8e80-9cfb6b094211",
+          "requestId": "request-1",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/s/b9dc0600-4514-48f6-8e80-9cfb6b094211"
+          },
+          "sequence": 2,
+          "at": "2026-10-28T14:29:18.883Z",
+          "elapsedMs": 8
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 3,
+          "at": "2026-10-28T14:29:18.885Z",
+          "elapsedMs": 10
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 4,
+          "at": "2026-10-28T14:29:18.885Z",
+          "elapsedMs": 10
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css"
+          },
+          "sequence": 5,
+          "at": "2026-10-28T14:29:18.887Z",
+          "elapsedMs": 12
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js"
+          },
+          "sequence": 6,
+          "at": "2026-10-28T14:29:18.890Z",
+          "elapsedMs": 15
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab to the original trigger, then Enter",
+          "actionId": "keyboard-opens-dialog",
+          "sequence": 7,
+          "at": "2026-10-28T14:29:18.924Z",
+          "elapsedMs": 49
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "body",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 8,
+          "at": "2026-10-28T14:29:18.925Z",
+          "elapsedMs": 50
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 9,
+          "at": "2026-10-28T14:29:18.926Z",
+          "elapsedMs": 51
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "key": "Enter",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 10,
+          "at": "2026-10-28T14:29:18.932Z",
+          "elapsedMs": 57
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "click",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 11,
+          "at": "2026-10-28T14:29:18.932Z",
+          "elapsedMs": 57
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 12,
+          "at": "2026-10-28T14:29:18.933Z",
+          "elapsedMs": 58
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Keyboard opens the calendar",
+          "actionId": "keyboard-opens-dialog",
+          "data": {
+            "status": "passed",
+            "expected": "Native Tab reaches the trigger; Enter opens the actual calendar.",
+            "actual": "Native Tab reached the trigger; Enter must open the actual calendar."
+          },
+          "sequence": 13,
+          "at": "2026-10-28T14:29:18.934Z",
+          "elapsedMs": 59
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (1)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 14,
+          "at": "2026-10-28T14:29:18.940Z",
+          "elapsedMs": 65
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 15,
+          "at": "2026-10-28T14:29:18.941Z",
+          "elapsedMs": 66
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 16,
+          "at": "2026-10-28T14:29:18.941Z",
+          "elapsedMs": 66
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 1,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-17",
+            "label": "Tuesday 17 November",
+            "text": "17"
+          },
+          "sequence": 17,
+          "at": "2026-10-28T14:29:18.945Z",
+          "elapsedMs": 70
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (2)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 18,
+          "at": "2026-10-28T14:29:18.945Z",
+          "elapsedMs": 70
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 19,
+          "at": "2026-10-28T14:29:18.945Z",
+          "elapsedMs": 70
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 20,
+          "at": "2026-10-28T14:29:18.945Z",
+          "elapsedMs": 70
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 2,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Wednesday 18 November",
+            "text": "18"
+          },
+          "sequence": 21,
+          "at": "2026-10-28T14:29:18.949Z",
+          "elapsedMs": 74
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (3)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 22,
+          "at": "2026-10-28T14:29:18.949Z",
+          "elapsedMs": 74
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 23,
+          "at": "2026-10-28T14:29:18.949Z",
+          "elapsedMs": 74
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 24,
+          "at": "2026-10-28T14:29:18.949Z",
+          "elapsedMs": 74
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 3,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Thursday 19 November",
+            "text": "19"
+          },
+          "sequence": 25,
+          "at": "2026-10-28T14:29:18.953Z",
+          "elapsedMs": 78
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (4)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 26,
+          "at": "2026-10-28T14:29:18.953Z",
+          "elapsedMs": 78
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 27,
+          "at": "2026-10-28T14:29:18.954Z",
+          "elapsedMs": 79
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 28,
+          "at": "2026-10-28T14:29:18.954Z",
+          "elapsedMs": 79
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 4,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Saturday 21 November",
+            "text": "21"
+          },
+          "sequence": 29,
+          "at": "2026-10-28T14:29:18.957Z",
+          "elapsedMs": 82
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (5)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 30,
+          "at": "2026-10-28T14:29:18.957Z",
+          "elapsedMs": 82
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 31,
+          "at": "2026-10-28T14:29:18.958Z",
+          "elapsedMs": 83
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 32,
+          "at": "2026-10-28T14:29:18.958Z",
+          "elapsedMs": 83
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 5,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-22",
+            "label": "Sunday 22 November",
+            "text": "22"
+          },
+          "sequence": 33,
+          "at": "2026-10-28T14:29:18.961Z",
+          "elapsedMs": 86
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (6)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 34,
+          "at": "2026-10-28T14:29:18.961Z",
+          "elapsedMs": 86
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 35,
+          "at": "2026-10-28T14:29:18.961Z",
+          "elapsedMs": 86
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 36,
+          "at": "2026-10-28T14:29:18.962Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 6,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-24",
+            "label": "Tuesday 24 November",
+            "text": "24"
+          },
+          "sequence": 37,
+          "at": "2026-10-28T14:29:18.965Z",
+          "elapsedMs": 90
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (7)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 38,
+          "at": "2026-10-28T14:29:18.965Z",
+          "elapsedMs": 90
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 39,
+          "at": "2026-10-28T14:29:18.965Z",
+          "elapsedMs": 90
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 40,
+          "at": "2026-10-28T14:29:18.966Z",
+          "elapsedMs": 91
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 7,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-25",
+            "label": "Wednesday 25 November",
+            "text": "25"
+          },
+          "sequence": 41,
+          "at": "2026-10-28T14:29:18.969Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (8)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 42,
+          "at": "2026-10-28T14:29:18.969Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 43,
+          "at": "2026-10-28T14:29:18.969Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 44,
+          "at": "2026-10-28T14:29:18.970Z",
+          "elapsedMs": 95
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 8,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-16",
+            "label": "Monday 16 November",
+            "text": "16"
+          },
+          "sequence": 45,
+          "at": "2026-10-28T14:29:18.973Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (9)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 46,
+          "at": "2026-10-28T14:29:18.973Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 47,
+          "at": "2026-10-28T14:29:18.973Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 48,
+          "at": "2026-10-28T14:29:18.973Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 9,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-17",
+            "label": "Tuesday 17 November",
+            "text": "17"
+          },
+          "sequence": 49,
+          "at": "2026-10-28T14:29:18.977Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (10)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 50,
+          "at": "2026-10-28T14:29:18.977Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 51,
+          "at": "2026-10-28T14:29:18.977Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 52,
+          "at": "2026-10-28T14:29:18.977Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 10,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Wednesday 18 November",
+            "text": "18"
+          },
+          "sequence": 53,
+          "at": "2026-10-28T14:29:18.981Z",
+          "elapsedMs": 106
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (11)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 54,
+          "at": "2026-10-28T14:29:18.981Z",
+          "elapsedMs": 106
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 55,
+          "at": "2026-10-28T14:29:18.981Z",
+          "elapsedMs": 106
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 56,
+          "at": "2026-10-28T14:29:18.981Z",
+          "elapsedMs": 106
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 11,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Thursday 19 November",
+            "text": "19"
+          },
+          "sequence": 57,
+          "at": "2026-10-28T14:29:18.984Z",
+          "elapsedMs": 109
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (12)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 58,
+          "at": "2026-10-28T14:29:18.984Z",
+          "elapsedMs": 109
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 59,
+          "at": "2026-10-28T14:29:18.985Z",
+          "elapsedMs": 110
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 60,
+          "at": "2026-10-28T14:29:18.985Z",
+          "elapsedMs": 110
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 12,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Saturday 21 November",
+            "text": "21"
+          },
+          "sequence": 61,
+          "at": "2026-10-28T14:29:18.988Z",
+          "elapsedMs": 113
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (13)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 62,
+          "at": "2026-10-28T14:29:18.988Z",
+          "elapsedMs": 113
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 63,
+          "at": "2026-10-28T14:29:18.989Z",
+          "elapsedMs": 114
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 64,
+          "at": "2026-10-28T14:29:18.989Z",
+          "elapsedMs": 114
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 13,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-22",
+            "label": "Sunday 22 November",
+            "text": "22"
+          },
+          "sequence": 65,
+          "at": "2026-10-28T14:29:18.992Z",
+          "elapsedMs": 117
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (14)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 66,
+          "at": "2026-10-28T14:29:18.992Z",
+          "elapsedMs": 117
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 67,
+          "at": "2026-10-28T14:29:18.992Z",
+          "elapsedMs": 117
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 68,
+          "at": "2026-10-28T14:29:18.992Z",
+          "elapsedMs": 117
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 14,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-24",
+            "label": "Tuesday 24 November",
+            "text": "24"
+          },
+          "sequence": 69,
+          "at": "2026-10-28T14:29:18.995Z",
+          "elapsedMs": 120
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (15)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 70,
+          "at": "2026-10-28T14:29:18.995Z",
+          "elapsedMs": 120
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 71,
+          "at": "2026-10-28T14:29:18.996Z",
+          "elapsedMs": 121
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 72,
+          "at": "2026-10-28T14:29:18.996Z",
+          "elapsedMs": 121
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 15,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-25",
+            "label": "Wednesday 25 November",
+            "text": "25"
+          },
+          "sequence": 73,
+          "at": "2026-10-28T14:29:18.999Z",
+          "elapsedMs": 124
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (16)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 74,
+          "at": "2026-10-28T14:29:18.999Z",
+          "elapsedMs": 124
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 75,
+          "at": "2026-10-28T14:29:18.999Z",
+          "elapsedMs": 124
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 76,
+          "at": "2026-10-28T14:29:18.999Z",
+          "elapsedMs": 124
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 16,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-16",
+            "label": "Monday 16 November",
+            "text": "16"
+          },
+          "sequence": 77,
+          "at": "2026-10-28T14:29:19.002Z",
+          "elapsedMs": 127
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (17)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 78,
+          "at": "2026-10-28T14:29:19.002Z",
+          "elapsedMs": 127
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 79,
+          "at": "2026-10-28T14:29:19.003Z",
+          "elapsedMs": 128
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 80,
+          "at": "2026-10-28T14:29:19.003Z",
+          "elapsedMs": 128
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 17,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-17",
+            "label": "Tuesday 17 November",
+            "text": "17"
+          },
+          "sequence": 81,
+          "at": "2026-10-28T14:29:19.006Z",
+          "elapsedMs": 131
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (18)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 82,
+          "at": "2026-10-28T14:29:19.006Z",
+          "elapsedMs": 131
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 83,
+          "at": "2026-10-28T14:29:19.006Z",
+          "elapsedMs": 131
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 84,
+          "at": "2026-10-28T14:29:19.006Z",
+          "elapsedMs": 131
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 18,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Wednesday 18 November",
+            "text": "18"
+          },
+          "sequence": 85,
+          "at": "2026-10-28T14:29:19.009Z",
+          "elapsedMs": 134
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (19)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 86,
+          "at": "2026-10-28T14:29:19.009Z",
+          "elapsedMs": 134
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 87,
+          "at": "2026-10-28T14:29:19.009Z",
+          "elapsedMs": 134
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 88,
+          "at": "2026-10-28T14:29:19.009Z",
+          "elapsedMs": 134
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 19,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Thursday 19 November",
+            "text": "19"
+          },
+          "sequence": 89,
+          "at": "2026-10-28T14:29:19.012Z",
+          "elapsedMs": 137
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (20)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 90,
+          "at": "2026-10-28T14:29:19.012Z",
+          "elapsedMs": 137
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 91,
+          "at": "2026-10-28T14:29:19.013Z",
+          "elapsedMs": 138
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 92,
+          "at": "2026-10-28T14:29:19.013Z",
+          "elapsedMs": 138
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 20,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Saturday 21 November",
+            "text": "21"
+          },
+          "sequence": 93,
+          "at": "2026-10-28T14:29:19.016Z",
+          "elapsedMs": 141
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (21)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 94,
+          "at": "2026-10-28T14:29:19.016Z",
+          "elapsedMs": 141
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 95,
+          "at": "2026-10-28T14:29:19.016Z",
+          "elapsedMs": 141
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 96,
+          "at": "2026-10-28T14:29:19.016Z",
+          "elapsedMs": 141
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 21,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-22",
+            "label": "Sunday 22 November",
+            "text": "22"
+          },
+          "sequence": 97,
+          "at": "2026-10-28T14:29:19.019Z",
+          "elapsedMs": 144
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (22)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 98,
+          "at": "2026-10-28T14:29:19.019Z",
+          "elapsedMs": 144
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 99,
+          "at": "2026-10-28T14:29:19.019Z",
+          "elapsedMs": 144
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 100,
+          "at": "2026-10-28T14:29:19.020Z",
+          "elapsedMs": 145
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 22,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-24",
+            "label": "Tuesday 24 November",
+            "text": "24"
+          },
+          "sequence": 101,
+          "at": "2026-10-28T14:29:19.023Z",
+          "elapsedMs": 148
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (23)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 102,
+          "at": "2026-10-28T14:29:19.023Z",
+          "elapsedMs": 148
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 103,
+          "at": "2026-10-28T14:29:19.023Z",
+          "elapsedMs": 148
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 104,
+          "at": "2026-10-28T14:29:19.023Z",
+          "elapsedMs": 148
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 23,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-25",
+            "label": "Wednesday 25 November",
+            "text": "25"
+          },
+          "sequence": 105,
+          "at": "2026-10-28T14:29:19.026Z",
+          "elapsedMs": 151
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (24)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 106,
+          "at": "2026-10-28T14:29:19.026Z",
+          "elapsedMs": 151
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 107,
+          "at": "2026-10-28T14:29:19.026Z",
+          "elapsedMs": 151
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-16\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 108,
+          "at": "2026-10-28T14:29:19.026Z",
+          "elapsedMs": 151
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 24,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-16",
+            "label": "Monday 16 November",
+            "text": "16"
+          },
+          "sequence": 109,
+          "at": "2026-10-28T14:29:19.029Z",
+          "elapsedMs": 154
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Native Tab reaches the Close control",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "status": "failed",
+            "expected": "The actual Close calendar button receives native focus within the declared Tab bound.",
+            "actual": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-16\",\"label\":\"Monday 16 November\",\"text\":\"16\"}."
+          },
+          "sequence": 110,
+          "at": "2026-10-28T14:29:19.029Z",
+          "elapsedMs": 154
+        },
+        {
+          "provenance": "controller",
+          "kind": "error",
+          "label": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-16\",\"label\":\"Monday 16 November\",\"text\":\"16\"}.",
+          "sequence": 111,
+          "at": "2026-10-28T14:29:19.029Z",
+          "elapsedMs": 154
+        }
+      ],
+      "focus": [
+        {
+          "step": 0,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-16",
+          "label": "Monday 16 November",
+          "text": "16"
+        },
+        {
+          "step": 1,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Tuesday 17 November",
+          "text": "17"
+        },
+        {
+          "step": 2,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Wednesday 18 November",
+          "text": "18"
+        },
+        {
+          "step": 3,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Thursday 19 November",
+          "text": "19"
+        },
+        {
+          "step": 4,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Saturday 21 November",
+          "text": "21"
+        },
+        {
+          "step": 5,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-22",
+          "label": "Sunday 22 November",
+          "text": "22"
+        },
+        {
+          "step": 6,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-24",
+          "label": "Tuesday 24 November",
+          "text": "24"
+        },
+        {
+          "step": 7,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-25",
+          "label": "Wednesday 25 November",
+          "text": "25"
+        },
+        {
+          "step": 8,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-16",
+          "label": "Monday 16 November",
+          "text": "16"
+        },
+        {
+          "step": 9,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Tuesday 17 November",
+          "text": "17"
+        },
+        {
+          "step": 10,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Wednesday 18 November",
+          "text": "18"
+        },
+        {
+          "step": 11,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Thursday 19 November",
+          "text": "19"
+        },
+        {
+          "step": 12,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Saturday 21 November",
+          "text": "21"
+        },
+        {
+          "step": 13,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-22",
+          "label": "Sunday 22 November",
+          "text": "22"
+        },
+        {
+          "step": 14,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-24",
+          "label": "Tuesday 24 November",
+          "text": "24"
+        },
+        {
+          "step": 15,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-25",
+          "label": "Wednesday 25 November",
+          "text": "25"
+        },
+        {
+          "step": 16,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-16",
+          "label": "Monday 16 November",
+          "text": "16"
+        },
+        {
+          "step": 17,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Tuesday 17 November",
+          "text": "17"
+        },
+        {
+          "step": 18,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Wednesday 18 November",
+          "text": "18"
+        },
+        {
+          "step": 19,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Thursday 19 November",
+          "text": "19"
+        },
+        {
+          "step": 20,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Saturday 21 November",
+          "text": "21"
+        },
+        {
+          "step": 21,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-22",
+          "label": "Sunday 22 November",
+          "text": "22"
+        },
+        {
+          "step": 22,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-24",
+          "label": "Tuesday 24 November",
+          "text": "24"
+        },
+        {
+          "step": 23,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-25",
+          "label": "Wednesday 25 November",
+          "text": "25"
+        },
+        {
+          "step": 24,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-16",
+          "label": "Monday 16 November",
+          "text": "16"
+        }
+      ],
+      "selectedValueBefore": "",
+      "selectedValueAfter": "",
+      "service": {
+        "availabilityChecks": 0,
+        "validatedDates": [],
+        "outcomeCount": 0,
+        "outcomes": []
+      },
+      "limitations": [
+        "Additional authored-fixture preservation checks; historical frozen-contract acceptance is unchanged.",
+        "Each check uses a fresh Chromium process, browser context, and protected fictional service session.",
+        "Focus acceptance uses Playwright utility-world locator queries and native :focus, never page-main-world activeElement getters.",
+        "Finite pointer and forward-Tab paths are not exhaustive accessibility, actual AT, participant, or formal-verification evidence.",
+        "Trace page instrumentation is lower-trust context; acceptance comes from controller actions, native locator state and the protected FixtureHost.",
+        "Close reachability is bounded to 24 native forward Tab presses."
+      ],
+      "error": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-16\",\"label\":\"Monday 16 November\",\"text\":\"16\"}."
+    },
+    {
+      "id": "8848f43b-ad85-4959-a40b-c2389087f556",
+      "kind": "pointer-booking",
+      "status": "failed",
+      "passed": false,
+      "startedAt": "2026-10-28T14:29:19.044Z",
+      "completedAt": "2026-10-28T14:29:22.258Z",
+      "durationMs": 3215,
+      "identity": {
+        "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+        "buildId": "e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e",
+        "bundleDigest": "fd38a6909ee02a1738cbc0d0bcabffd150e387895dd0cc9bb8ff4860cf934dbc",
+        "toolchainDigest": "fc6e97e8cd7e6af98b4b3ffe0a124cad9abbd994da38c1be8dddc4a3f7f7d69c",
+        "fixtureId": "northstar-appointments",
+        "sessionId": "cb6292f1-6413-46be-8a50-5c6a7e4fd6c9",
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4"
+      },
+      "scenario": {
+        "id": "combined",
+        "name": "All at once",
+        "description": "German labels, late validation, long content, and an unavailable first date.",
+        "locale": "de",
+        "delayedValidationMs": 900,
+        "unavailableFirst": true,
+        "longLabels": true,
+        "seed": 6803
+      },
+      "intendedDate": "2026-11-17",
+      "attendee": "Preservation Pointer",
+      "checks": [
+        {
+          "id": "pointer-opens-dialog",
+          "label": "Pointer opens the calendar",
+          "expected": "The original date trigger opens the actual calendar.",
+          "status": "passed",
+          "actual": "Calendar visibility after pointer activation."
+        },
+        {
+          "id": "enabled-intended-choice",
+          "label": "Intended date is enabled",
+          "expected": "The protected scenario supplies an enabled intended date.",
+          "status": "passed",
+          "actual": "Protected intended date 2026-11-17; unavailable=false."
+        },
+        {
+          "id": "availability-request-response",
+          "label": "Pointer activation checks real availability",
+          "expected": "A real successful availability request and available response match the explicit date.",
+          "status": "failed",
+          "actual": "HTTP no response; availabilityChecks=0; selectedValue=; response=null."
+        },
+        {
+          "id": "pointer-selection-committed",
+          "label": "Pointer commits the intended choice",
+          "expected": "The selected-date value matches the explicit available date.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "pointer-confirmation",
+          "label": "Pointer confirmation stores an appointment",
+          "expected": "The fictional attendee and date reach the protected appointment endpoint.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "exact-single-outcome",
+          "label": "Exactly one correct protected outcome",
+          "expected": "One stored result matches session, source, service, explicit date and fictional attendee.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        }
+      ],
+      "trace": [
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /s/cb6292f1-6413-46be-8a50-5c6a7e4fd6c9",
+          "requestId": "request-1",
+          "data": {
+            "url": "http://127.0.0.1:62522/s/cb6292f1-6413-46be-8a50-5c6a7e4fd6c9",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 1,
+          "at": "2026-10-28T14:29:19.146Z",
+          "elapsedMs": 5
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /s/cb6292f1-6413-46be-8a50-5c6a7e4fd6c9",
+          "requestId": "request-1",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/s/cb6292f1-6413-46be-8a50-5c6a7e4fd6c9"
+          },
+          "sequence": 2,
+          "at": "2026-10-28T14:29:19.148Z",
+          "elapsedMs": 7
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 3,
+          "at": "2026-10-28T14:29:19.151Z",
+          "elapsedMs": 10
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 4,
+          "at": "2026-10-28T14:29:19.151Z",
+          "elapsedMs": 10
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css"
+          },
+          "sequence": 5,
+          "at": "2026-10-28T14:29:19.153Z",
+          "elapsedMs": 12
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js"
+          },
+          "sequence": 6,
+          "at": "2026-10-28T14:29:19.156Z",
+          "elapsedMs": 15
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Pointer-click the date trigger",
+          "actionId": "pointer-opens-dialog",
+          "sequence": 7,
+          "at": "2026-10-28T14:29:19.184Z",
+          "elapsedMs": 43
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 8,
+          "at": "2026-10-28T14:29:19.221Z",
+          "elapsedMs": 80
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "click",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 9,
+          "at": "2026-10-28T14:29:19.225Z",
+          "elapsedMs": 84
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 10,
+          "at": "2026-10-28T14:29:19.226Z",
+          "elapsedMs": 85
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Pointer opens the calendar",
+          "actionId": "pointer-opens-dialog",
+          "data": {
+            "status": "passed",
+            "expected": "The original date trigger opens the actual calendar.",
+            "actual": "Calendar visibility after pointer activation."
+          },
+          "sequence": 11,
+          "at": "2026-10-28T14:29:19.227Z",
+          "elapsedMs": 86
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Intended date is enabled",
+          "actionId": "enabled-intended-choice",
+          "data": {
+            "status": "passed",
+            "expected": "The protected scenario supplies an enabled intended date.",
+            "actual": "Protected intended date 2026-11-17; unavailable=false."
+          },
+          "sequence": 12,
+          "at": "2026-10-28T14:29:19.228Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Pointer-click the enabled intended date 2026-11-17",
+          "actionId": "availability-request-response",
+          "sequence": 13,
+          "at": "2026-10-28T14:29:19.228Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "click",
+          "target": "span",
+          "data": {
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 14,
+          "at": "2026-10-28T14:29:19.253Z",
+          "elapsedMs": 112
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Pointer activation checks real availability",
+          "actionId": "availability-request-response",
+          "data": {
+            "status": "failed",
+            "expected": "A real successful availability request and available response match the explicit date.",
+            "actual": "HTTP no response; availabilityChecks=0; selectedValue=; response=null."
+          },
+          "sequence": 15,
+          "at": "2026-10-28T14:29:22.234Z",
+          "elapsedMs": 3093
+        },
+        {
+          "provenance": "controller",
+          "kind": "error",
+          "label": "HTTP no response; availabilityChecks=0; selectedValue=; response=null.",
+          "sequence": 16,
+          "at": "2026-10-28T14:29:22.234Z",
+          "elapsedMs": 3093
+        }
+      ],
+      "focus": [],
+      "selectedValueBefore": "",
+      "selectedValueAfter": "",
+      "service": {
+        "availabilityChecks": 0,
+        "validatedDates": [],
+        "outcomeCount": 0,
+        "outcomes": []
+      },
+      "limitations": [
+        "Additional authored-fixture preservation checks; historical frozen-contract acceptance is unchanged.",
+        "Each check uses a fresh Chromium process, browser context, and protected fictional service session.",
+        "Focus acceptance uses Playwright utility-world locator queries and native :focus, never page-main-world activeElement getters.",
+        "Finite pointer and forward-Tab paths are not exhaustive accessibility, actual AT, participant, or formal-verification evidence.",
+        "Trace page instrumentation is lower-trust context; acceptance comes from controller actions, native locator state and the protected FixtureHost.",
+        "Close reachability is bounded to 24 native forward Tab presses."
+      ],
+      "error": "HTTP no response; availabilityChecks=0; selectedValue=; response=null."
+    },
+    {
+      "id": "91ab86ab-0182-4a8b-bb62-fafb463ad269",
+      "kind": "close-control-keyboard",
+      "status": "failed",
+      "passed": false,
+      "startedAt": "2026-10-28T14:29:22.259Z",
+      "completedAt": "2026-10-28T14:29:22.518Z",
+      "durationMs": 260,
+      "identity": {
+        "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+        "buildId": "e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e",
+        "bundleDigest": "fd38a6909ee02a1738cbc0d0bcabffd150e387895dd0cc9bb8ff4860cf934dbc",
+        "toolchainDigest": "fc6e97e8cd7e6af98b4b3ffe0a124cad9abbd994da38c1be8dddc4a3f7f7d69c",
+        "fixtureId": "northstar-appointments",
+        "sessionId": "17fc0960-4a58-4c4a-98c1-6ca0157175de",
+        "browser": "Chromium",
+        "browserVersion": "156.0.8078.4"
+      },
+      "scenario": {
+        "id": "combined",
+        "name": "All at once",
+        "description": "German labels, late validation, long content, and an unavailable first date.",
+        "locale": "de",
+        "delayedValidationMs": 900,
+        "unavailableFirst": true,
+        "longLabels": true,
+        "seed": 6803
+      },
+      "intendedDate": "2026-11-17",
+      "attendee": "Preservation Pointer",
+      "checks": [
+        {
+          "id": "keyboard-opens-dialog",
+          "label": "Keyboard opens the calendar",
+          "expected": "Native Tab reaches the trigger; Enter opens the actual calendar.",
+          "status": "passed",
+          "actual": "Native Tab reached the trigger; Enter must open the actual calendar."
+        },
+        {
+          "id": "close-reachable-by-tab",
+          "label": "Native Tab reaches the Close control",
+          "expected": "The actual Close calendar button receives native focus within the declared Tab bound.",
+          "status": "failed",
+          "actual": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-21\",\"label\":\"Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung\",\"text\":\"21\"}."
+        },
+        {
+          "id": "close-activated-with-enter",
+          "label": "Enter activates the Close control",
+          "expected": "Pressing Enter with actual Close focus closes the calendar.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "close-restores-trigger",
+          "label": "Close restores native trigger focus",
+          "expected": "The surviving original trigger has browser-native focus.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "close-preserves-value",
+          "label": "Closing preserves the prior selection",
+          "expected": "Opening, tabbing and closing do not commit or change a selection.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        },
+        {
+          "id": "close-does-not-book",
+          "label": "Closing stores no booking",
+          "expected": "The protected service has no appointment outcome.",
+          "status": "not-run",
+          "actual": "Dependent path was not executed after the recorded barrier or environment error."
+        }
+      ],
+      "trace": [
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /s/17fc0960-4a58-4c4a-98c1-6ca0157175de",
+          "requestId": "request-1",
+          "data": {
+            "url": "http://127.0.0.1:62522/s/17fc0960-4a58-4c4a-98c1-6ca0157175de",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 1,
+          "at": "2026-10-28T14:29:22.367Z",
+          "elapsedMs": 6
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /s/17fc0960-4a58-4c4a-98c1-6ca0157175de",
+          "requestId": "request-1",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/s/17fc0960-4a58-4c4a-98c1-6ca0157175de"
+          },
+          "sequence": 2,
+          "at": "2026-10-28T14:29:22.369Z",
+          "elapsedMs": 8
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 3,
+          "at": "2026-10-28T14:29:22.373Z",
+          "elapsedMs": 12
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "request",
+          "label": "GET /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+            "method": "GET",
+            "postData": null
+          },
+          "sequence": 4,
+          "at": "2026-10-28T14:29:22.373Z",
+          "elapsedMs": 12
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css",
+          "requestId": "request-2",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/style.css"
+          },
+          "sequence": 5,
+          "at": "2026-10-28T14:29:22.373Z",
+          "elapsedMs": 12
+        },
+        {
+          "provenance": "browser-network",
+          "kind": "response",
+          "label": "200 /b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js",
+          "requestId": "request-3",
+          "data": {
+            "status": 200,
+            "url": "http://127.0.0.1:62522/b/e2223e991005caad97b8313b459a43bfad24a96778f9eb4b5588b1c187912e5e/bundle.js"
+          },
+          "sequence": 6,
+          "at": "2026-10-28T14:29:22.376Z",
+          "elapsedMs": 15
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab to the original trigger, then Enter",
+          "actionId": "keyboard-opens-dialog",
+          "sequence": 7,
+          "at": "2026-10-28T14:29:22.404Z",
+          "elapsedMs": 43
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "body",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 8,
+          "at": "2026-10-28T14:29:22.405Z",
+          "elapsedMs": 44
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 9,
+          "at": "2026-10-28T14:29:22.405Z",
+          "elapsedMs": 44
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "key": "Enter",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 10,
+          "at": "2026-10-28T14:29:22.411Z",
+          "elapsedMs": 50
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "click",
+          "target": "[data-testid=\"slot-trigger\"]",
+          "data": {
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 11,
+          "at": "2026-10-28T14:29:22.411Z",
+          "elapsedMs": 50
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 12,
+          "at": "2026-10-28T14:29:22.413Z",
+          "elapsedMs": 52
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Keyboard opens the calendar",
+          "actionId": "keyboard-opens-dialog",
+          "data": {
+            "status": "passed",
+            "expected": "Native Tab reaches the trigger; Enter opens the actual calendar.",
+            "actual": "Native Tab reached the trigger; Enter must open the actual calendar."
+          },
+          "sequence": 13,
+          "at": "2026-10-28T14:29:22.413Z",
+          "elapsedMs": 52
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (1)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 14,
+          "at": "2026-10-28T14:29:22.418Z",
+          "elapsedMs": 57
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 15,
+          "at": "2026-10-28T14:29:22.418Z",
+          "elapsedMs": 57
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 16,
+          "at": "2026-10-28T14:29:22.418Z",
+          "elapsedMs": 57
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 1,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "18"
+          },
+          "sequence": 17,
+          "at": "2026-10-28T14:29:22.421Z",
+          "elapsedMs": 60
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (2)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 18,
+          "at": "2026-10-28T14:29:22.421Z",
+          "elapsedMs": 60
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 19,
+          "at": "2026-10-28T14:29:22.422Z",
+          "elapsedMs": 61
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 20,
+          "at": "2026-10-28T14:29:22.422Z",
+          "elapsedMs": 61
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 2,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "19"
+          },
+          "sequence": 21,
+          "at": "2026-10-28T14:29:22.426Z",
+          "elapsedMs": 65
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (3)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 22,
+          "at": "2026-10-28T14:29:22.426Z",
+          "elapsedMs": 65
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 23,
+          "at": "2026-10-28T14:29:22.426Z",
+          "elapsedMs": 65
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 24,
+          "at": "2026-10-28T14:29:22.427Z",
+          "elapsedMs": 66
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 3,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "21"
+          },
+          "sequence": 25,
+          "at": "2026-10-28T14:29:22.430Z",
+          "elapsedMs": 69
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (4)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 26,
+          "at": "2026-10-28T14:29:22.430Z",
+          "elapsedMs": 69
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 27,
+          "at": "2026-10-28T14:29:22.430Z",
+          "elapsedMs": 69
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 28,
+          "at": "2026-10-28T14:29:22.430Z",
+          "elapsedMs": 69
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 4,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-22",
+            "label": "Sonntag, 22. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "22"
+          },
+          "sequence": 29,
+          "at": "2026-10-28T14:29:22.433Z",
+          "elapsedMs": 72
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (5)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 30,
+          "at": "2026-10-28T14:29:22.433Z",
+          "elapsedMs": 72
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 31,
+          "at": "2026-10-28T14:29:22.434Z",
+          "elapsedMs": 73
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 32,
+          "at": "2026-10-28T14:29:22.434Z",
+          "elapsedMs": 73
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 5,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-24",
+            "label": "Dienstag, 24. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "24"
+          },
+          "sequence": 33,
+          "at": "2026-10-28T14:29:22.437Z",
+          "elapsedMs": 76
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (6)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 34,
+          "at": "2026-10-28T14:29:22.437Z",
+          "elapsedMs": 76
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 35,
+          "at": "2026-10-28T14:29:22.437Z",
+          "elapsedMs": 76
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 36,
+          "at": "2026-10-28T14:29:22.438Z",
+          "elapsedMs": 77
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 6,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-25",
+            "label": "Mittwoch, 25. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "25"
+          },
+          "sequence": 37,
+          "at": "2026-10-28T14:29:22.441Z",
+          "elapsedMs": 80
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (7)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 38,
+          "at": "2026-10-28T14:29:22.441Z",
+          "elapsedMs": 80
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 39,
+          "at": "2026-10-28T14:29:22.441Z",
+          "elapsedMs": 80
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 40,
+          "at": "2026-10-28T14:29:22.441Z",
+          "elapsedMs": 80
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 7,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-17",
+            "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "17"
+          },
+          "sequence": 41,
+          "at": "2026-10-28T14:29:22.444Z",
+          "elapsedMs": 83
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (8)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 42,
+          "at": "2026-10-28T14:29:22.444Z",
+          "elapsedMs": 83
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 43,
+          "at": "2026-10-28T14:29:22.445Z",
+          "elapsedMs": 84
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 44,
+          "at": "2026-10-28T14:29:22.445Z",
+          "elapsedMs": 84
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 8,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "18"
+          },
+          "sequence": 45,
+          "at": "2026-10-28T14:29:22.448Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (9)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 46,
+          "at": "2026-10-28T14:29:22.448Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 47,
+          "at": "2026-10-28T14:29:22.448Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 48,
+          "at": "2026-10-28T14:29:22.448Z",
+          "elapsedMs": 87
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 9,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "19"
+          },
+          "sequence": 49,
+          "at": "2026-10-28T14:29:22.451Z",
+          "elapsedMs": 90
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (10)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 50,
+          "at": "2026-10-28T14:29:22.451Z",
+          "elapsedMs": 90
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 51,
+          "at": "2026-10-28T14:29:22.452Z",
+          "elapsedMs": 91
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 52,
+          "at": "2026-10-28T14:29:22.452Z",
+          "elapsedMs": 91
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 10,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "21"
+          },
+          "sequence": 53,
+          "at": "2026-10-28T14:29:22.455Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (11)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 54,
+          "at": "2026-10-28T14:29:22.455Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 55,
+          "at": "2026-10-28T14:29:22.455Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 56,
+          "at": "2026-10-28T14:29:22.455Z",
+          "elapsedMs": 94
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 11,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-22",
+            "label": "Sonntag, 22. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "22"
+          },
+          "sequence": 57,
+          "at": "2026-10-28T14:29:22.459Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (12)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 58,
+          "at": "2026-10-28T14:29:22.459Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 59,
+          "at": "2026-10-28T14:29:22.459Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 60,
+          "at": "2026-10-28T14:29:22.459Z",
+          "elapsedMs": 98
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 12,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-24",
+            "label": "Dienstag, 24. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "24"
+          },
+          "sequence": 61,
+          "at": "2026-10-28T14:29:22.463Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (13)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 62,
+          "at": "2026-10-28T14:29:22.463Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 63,
+          "at": "2026-10-28T14:29:22.463Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 64,
+          "at": "2026-10-28T14:29:22.463Z",
+          "elapsedMs": 102
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 13,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-25",
+            "label": "Mittwoch, 25. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "25"
+          },
+          "sequence": 65,
+          "at": "2026-10-28T14:29:22.466Z",
+          "elapsedMs": 105
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (14)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 66,
+          "at": "2026-10-28T14:29:22.466Z",
+          "elapsedMs": 105
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 67,
+          "at": "2026-10-28T14:29:22.466Z",
+          "elapsedMs": 105
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 68,
+          "at": "2026-10-28T14:29:22.466Z",
+          "elapsedMs": 105
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 14,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-17",
+            "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "17"
+          },
+          "sequence": 69,
+          "at": "2026-10-28T14:29:22.469Z",
+          "elapsedMs": 108
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (15)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 70,
+          "at": "2026-10-28T14:29:22.469Z",
+          "elapsedMs": 108
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 71,
+          "at": "2026-10-28T14:29:22.470Z",
+          "elapsedMs": 109
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 72,
+          "at": "2026-10-28T14:29:22.470Z",
+          "elapsedMs": 109
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 15,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "18"
+          },
+          "sequence": 73,
+          "at": "2026-10-28T14:29:22.473Z",
+          "elapsedMs": 112
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (16)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 74,
+          "at": "2026-10-28T14:29:22.473Z",
+          "elapsedMs": 112
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 75,
+          "at": "2026-10-28T14:29:22.473Z",
+          "elapsedMs": 112
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 76,
+          "at": "2026-10-28T14:29:22.473Z",
+          "elapsedMs": 112
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 16,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "19"
+          },
+          "sequence": 77,
+          "at": "2026-10-28T14:29:22.476Z",
+          "elapsedMs": 115
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (17)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 78,
+          "at": "2026-10-28T14:29:22.476Z",
+          "elapsedMs": 115
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 79,
+          "at": "2026-10-28T14:29:22.477Z",
+          "elapsedMs": 116
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 80,
+          "at": "2026-10-28T14:29:22.477Z",
+          "elapsedMs": 116
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 17,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "21"
+          },
+          "sequence": 81,
+          "at": "2026-10-28T14:29:22.480Z",
+          "elapsedMs": 119
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (18)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 82,
+          "at": "2026-10-28T14:29:22.480Z",
+          "elapsedMs": 119
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 83,
+          "at": "2026-10-28T14:29:22.480Z",
+          "elapsedMs": 119
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 84,
+          "at": "2026-10-28T14:29:22.481Z",
+          "elapsedMs": 120
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 18,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-22",
+            "label": "Sonntag, 22. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "22"
+          },
+          "sequence": 85,
+          "at": "2026-10-28T14:29:22.483Z",
+          "elapsedMs": 122
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (19)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 86,
+          "at": "2026-10-28T14:29:22.483Z",
+          "elapsedMs": 122
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-22\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 87,
+          "at": "2026-10-28T14:29:22.484Z",
+          "elapsedMs": 123
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 88,
+          "at": "2026-10-28T14:29:22.484Z",
+          "elapsedMs": 123
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 19,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-24",
+            "label": "Dienstag, 24. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "24"
+          },
+          "sequence": 89,
+          "at": "2026-10-28T14:29:22.487Z",
+          "elapsedMs": 126
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (20)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 90,
+          "at": "2026-10-28T14:29:22.487Z",
+          "elapsedMs": 126
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-24\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 91,
+          "at": "2026-10-28T14:29:22.487Z",
+          "elapsedMs": 126
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 92,
+          "at": "2026-10-28T14:29:22.487Z",
+          "elapsedMs": 126
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 20,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-25",
+            "label": "Mittwoch, 25. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "25"
+          },
+          "sequence": 93,
+          "at": "2026-10-28T14:29:22.490Z",
+          "elapsedMs": 129
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (21)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 94,
+          "at": "2026-10-28T14:29:22.490Z",
+          "elapsedMs": 129
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-25\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 95,
+          "at": "2026-10-28T14:29:22.490Z",
+          "elapsedMs": 129
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 96,
+          "at": "2026-10-28T14:29:22.490Z",
+          "elapsedMs": 129
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 21,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-17",
+            "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "17"
+          },
+          "sequence": 97,
+          "at": "2026-10-28T14:29:22.493Z",
+          "elapsedMs": 132
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (22)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 98,
+          "at": "2026-10-28T14:29:22.493Z",
+          "elapsedMs": 132
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-17\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 99,
+          "at": "2026-10-28T14:29:22.494Z",
+          "elapsedMs": 133
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 100,
+          "at": "2026-10-28T14:29:22.494Z",
+          "elapsedMs": 133
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 22,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-18",
+            "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "18"
+          },
+          "sequence": 101,
+          "at": "2026-10-28T14:29:22.497Z",
+          "elapsedMs": 136
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (23)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 102,
+          "at": "2026-10-28T14:29:22.497Z",
+          "elapsedMs": 136
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-18\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 103,
+          "at": "2026-10-28T14:29:22.497Z",
+          "elapsedMs": 136
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 104,
+          "at": "2026-10-28T14:29:22.497Z",
+          "elapsedMs": 136
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 23,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-19",
+            "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "19"
+          },
+          "sequence": 105,
+          "at": "2026-10-28T14:29:22.500Z",
+          "elapsedMs": 139
+        },
+        {
+          "provenance": "controller",
+          "kind": "action",
+          "label": "Native Tab toward the Close calendar control (24)",
+          "actionId": "close-reachable-by-tab",
+          "sequence": 106,
+          "at": "2026-10-28T14:29:22.500Z",
+          "elapsedMs": 139
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "action",
+          "label": "keydown",
+          "target": "div[role=\"button\"][data-date=\"2026-11-19\"]",
+          "data": {
+            "key": "Tab",
+            "shiftKey": false,
+            "trusted": true
+          },
+          "sequence": 107,
+          "at": "2026-10-28T14:29:22.500Z",
+          "elapsedMs": 139
+        },
+        {
+          "provenance": "page-instrumentation",
+          "kind": "focus",
+          "label": "focusin",
+          "target": "div[role=\"button\"][data-date=\"2026-11-21\"]",
+          "data": {
+            "trusted": true
+          },
+          "sequence": 108,
+          "at": "2026-10-28T14:29:22.501Z",
+          "elapsedMs": 140
+        },
+        {
+          "provenance": "controller",
+          "kind": "focus",
+          "label": "Browser-native focus after Tab",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "step": 24,
+            "closeFocused": false,
+            "triggerFocused": false,
+            "testId": null,
+            "date": "2026-11-21",
+            "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+            "text": "21"
+          },
+          "sequence": 109,
+          "at": "2026-10-28T14:29:22.504Z",
+          "elapsedMs": 143
+        },
+        {
+          "provenance": "controller",
+          "kind": "assertion",
+          "label": "Native Tab reaches the Close control",
+          "actionId": "close-reachable-by-tab",
+          "data": {
+            "status": "failed",
+            "expected": "The actual Close calendar button receives native focus within the declared Tab bound.",
+            "actual": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-21\",\"label\":\"Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung\",\"text\":\"21\"}."
+          },
+          "sequence": 110,
+          "at": "2026-10-28T14:29:22.504Z",
+          "elapsedMs": 143
+        },
+        {
+          "provenance": "controller",
+          "kind": "error",
+          "label": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-21\",\"label\":\"Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung\",\"text\":\"21\"}.",
+          "sequence": 111,
+          "at": "2026-10-28T14:29:22.504Z",
+          "elapsedMs": 143
+        }
+      ],
+      "focus": [
+        {
+          "step": 0,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "17"
+        },
+        {
+          "step": 1,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "18"
+        },
+        {
+          "step": 2,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "19"
+        },
+        {
+          "step": 3,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "21"
+        },
+        {
+          "step": 4,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-22",
+          "label": "Sonntag, 22. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "22"
+        },
+        {
+          "step": 5,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-24",
+          "label": "Dienstag, 24. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "24"
+        },
+        {
+          "step": 6,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-25",
+          "label": "Mittwoch, 25. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "25"
+        },
+        {
+          "step": 7,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "17"
+        },
+        {
+          "step": 8,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "18"
+        },
+        {
+          "step": 9,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "19"
+        },
+        {
+          "step": 10,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "21"
+        },
+        {
+          "step": 11,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-22",
+          "label": "Sonntag, 22. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "22"
+        },
+        {
+          "step": 12,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-24",
+          "label": "Dienstag, 24. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "24"
+        },
+        {
+          "step": 13,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-25",
+          "label": "Mittwoch, 25. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "25"
+        },
+        {
+          "step": 14,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "17"
+        },
+        {
+          "step": 15,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "18"
+        },
+        {
+          "step": 16,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "19"
+        },
+        {
+          "step": 17,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "21"
+        },
+        {
+          "step": 18,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-22",
+          "label": "Sonntag, 22. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "22"
+        },
+        {
+          "step": 19,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-24",
+          "label": "Dienstag, 24. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "24"
+        },
+        {
+          "step": 20,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-25",
+          "label": "Mittwoch, 25. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "25"
+        },
+        {
+          "step": 21,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-17",
+          "label": "Dienstag, 17. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "17"
+        },
+        {
+          "step": 22,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-18",
+          "label": "Mittwoch, 18. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "18"
+        },
+        {
+          "step": 23,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-19",
+          "label": "Donnerstag, 19. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "19"
+        },
+        {
+          "step": 24,
+          "closeFocused": false,
+          "triggerFocused": false,
+          "testId": null,
+          "date": "2026-11-21",
+          "label": "Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung",
+          "text": "21"
+        }
+      ],
+      "selectedValueBefore": "",
+      "selectedValueAfter": "",
+      "service": {
+        "availabilityChecks": 0,
+        "validatedDates": [],
+        "outcomeCount": 0,
+        "outcomes": []
+      },
+      "limitations": [
+        "Additional authored-fixture preservation checks; historical frozen-contract acceptance is unchanged.",
+        "Each check uses a fresh Chromium process, browser context, and protected fictional service session.",
+        "Focus acceptance uses Playwright utility-world locator queries and native :focus, never page-main-world activeElement getters.",
+        "Finite pointer and forward-Tab paths are not exhaustive accessibility, actual AT, participant, or formal-verification evidence.",
+        "Trace page instrumentation is lower-trust context; acceptance comes from controller actions, native locator state and the protected FixtureHost.",
+        "Close reachability is bounded to 24 native forward Tab presses."
+      ],
+      "error": "Close native focus=false; Tab presses=24; last native focus={\"step\":24,\"closeFocused\":false,\"triggerFocused\":false,\"testId\":null,\"date\":\"2026-11-21\",\"label\":\"Samstag, 21. November · Persönliche Beratung und weiterführende Unterstützung\",\"text\":\"21\"}."
+    }
+  ],
+  "limitations": [
+    "Additional authored-fixture preservation checks; historical frozen-contract acceptance is unchanged.",
+    "Each check uses a fresh Chromium process, browser context, and protected fictional service session.",
+    "Focus acceptance uses Playwright utility-world locator queries and native :focus, never page-main-world activeElement getters.",
+    "Finite pointer and forward-Tab paths are not exhaustive accessibility, actual AT, participant, or formal-verification evidence.",
+    "Trace page instrumentation is lower-trust context; acceptance comes from controller actions, native locator state and the protected FixtureHost."
+  ],
+  "input": {
+    "kind": "accepted-guard-source",
+    "guardDigest": "4eefe4e31d047ab7708f3fcee203d05e467ca75b7f1fa09498ac9c988236d1bc",
+    "frozenContractDigests": {
+      "baseline": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+      "cancel-pending": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+      "modal-boundary": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb"
+    },
+    "historicalAcceptance": "Unchanged; these additional preservation checks do not rewrite the frozen-contract record."
+  },
+  "integrity": {
+    "algorithm": "sha256",
+    "contentDigest": "8ab6fde567279d530a9c1245c94a1a44fecca572870565592f5066c94165f8f6",
+    "traceDigests": [
+      {
+        "runId": "680efcfb-0bc0-4d74-bdd4-6f8eb119aba6",
+        "digest": "ecc47e808de0066ddead5325f413c78cc603bfd332306a9605747ac426179283"
+      },
+      {
+        "runId": "26948a68-0d7b-48d5-af49-1eebacd69a78",
+        "digest": "fff026a79673a8b5aa38bcb768955fe1e627eaa77bf3329b629f489dffebefbf"
+      },
+      {
+        "runId": "8848f43b-ad85-4959-a40b-c2389087f556",
+        "digest": "41bc4ebb488aa7c534e4190d49b4e0f81ce4f729fd2e36e2af28ebbb2ffe6563"
+      },
+      {
+        "runId": "91ab86ab-0182-4a8b-bb62-fafb463ad269",
+        "digest": "1780dbc3724c70698f51bcb96d9553c63dab2fd02825a3c2901d8719889e2c80"
+      }
+    ]
+  }
+}

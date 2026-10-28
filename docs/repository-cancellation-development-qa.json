@@ -1,0 +1,22 @@
+{
+  "schema": "passage.repository-cancellation-check.v1",
+  "startedAt": "2026-10-28T13:30:26.802Z",
+  "completedAt": "2026-10-28T13:30:27.549Z",
+  "evidenceClass": "synthetic-integration",
+  "sourceDigest": "862dd50f18ffc76d49e37c6a08a97f82a474e5a889b7f6fe24ae642f0768bd50",
+  "runtime": {
+    "context": "colima-passage",
+    "image": "sha256:63ac66a10aa94048d181a77bf05d38674c79cada6aacd5d4563aabf0000ae4a5"
+  },
+  "runningObserved": true,
+  "acceptedLateResult": false,
+  "remainingContainer": null,
+  "result": {
+    "accepted": false,
+    "error": "Isolated build failed: The operation was aborted"
+  },
+  "passed": true,
+  "limitations": [
+    "One real cancellation during a fixed worker build; not a hostile-code isolation audit or application acceptance."
+  ]
+}

@@ -143,19 +143,26 @@ export interface VerificationResult {
   artifacts: { name: string; digest: string; url: string; mediaType: string }[];
   limitations: string[];
 }
+export interface GenerationProfile {
+  maxOutputTokens: number;
+  timeoutMs: number;
+  temperature?: number;
+  topP?: number;
+  reasoningEffort?: string;
+  thinkingEnabled?: boolean;
+  forceNonemptyContent?: boolean;
+  responseFormat?: "json_object" | "prompt_schema";
+}
 export interface ModelReceipt {
   reasoningTokens?: number;
   finalOutputDigest?: string;
+  outputProtocol?: "structured-json" | "single-source";
   provider: LiveProvider | "offline-fixture";
   purpose?: ProviderPurpose | "offline";
   servedModel?: string | null;
-  generation?: {
-    maxOutputTokens: number;
-    timeoutMs: number;
-    reasoningEffort?: string;
-    thinkingEnabled?: boolean;
-    responseFormat?: "json_object" | "prompt_schema";
-  };
+  generation?: GenerationProfile;
+  generationProfileFingerprint?: string;
+  baseUrl?: string;
   model: string;
   requestId: string | null;
   promptVersion: string;
@@ -261,6 +268,8 @@ export interface ProviderStatus {
   model: string;
   baseUrl: string;
   reason: string;
+  generation?: GenerationProfile;
+  generationProfileFingerprint?: string;
 }
 export interface ProviderUsageSummary {
   provider: LiveProvider;
@@ -297,13 +306,11 @@ export interface ProviderUsageData {
     servedModel?: string | null;
     reasoningTokens?: number;
     finalOutputDigest?: string;
-    generation?: {
-      maxOutputTokens: number;
-      timeoutMs: number;
-      reasoningEffort?: string;
-      thinkingEnabled?: boolean;
-      responseFormat?: "json_object" | "prompt_schema";
-    };
+    outputProtocol?: "structured-json" | "single-source";
+    generation?: GenerationProfile;
+    generationProfileFingerprint?: string;
+    baseUrl?: string;
+    admissionBudgetUsd?: number | null;
     pricing?: {
       inputUsdPerMillion: number;
       outputUsdPerMillion: number;

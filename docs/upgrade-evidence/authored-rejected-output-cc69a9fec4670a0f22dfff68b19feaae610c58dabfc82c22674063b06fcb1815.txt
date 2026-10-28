@@ -1,0 +1,1 @@
+{"files":["src/components/AppointmentSlotTrigger.jsx","src/components/AppointmentModal.jsx","src/hooks/useKeyboardNavigation.js","src/utils/focusManagement.js","src/services/bookingApi.js","src/components/ConfirmationDialog.jsx","src/App.jsx","src/main.js"]}

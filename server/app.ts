@@ -12,6 +12,14 @@ import {
   captureImportSchema,
 } from "./captures.js";
 import { buildEvidenceBundle } from "./bundle.js";
+import { JourneyService } from "./journey-service.js";
+import { registerJourneyRoutes } from "./journey-routes.js";
+import { RepositoryJourneyService } from "./repository-journey-service.js";
+import { registerRepositoryJourneyRoutes } from "./repository-journey-routes.js";
+import type { RepositoryOutcomeObserver } from "../engine/repository-worker.js";
+import { RepositoryWorkerError, startRepositoryPreview, stopRepositoryPreview } from "../engine/repository-worker.js";
+import { FixtureHost } from "../engine/host.js";
+import { CaptureReview, captureReviewStartSchema, captureReviewDecisionSchema, captureReviewVerifySchema } from "./capture-review.js";
 
 const mode = z.enum(["offline", "live"]);
 const idSchema = z.string().min(1).max(120);
@@ -73,6 +81,7 @@ export interface AppOptions {
   dataDir?: string;
   engine?: Engine;
   provider?: ProviderConfig;
+  repositoryOutcomeObservers?: ReadonlyMap<string, RepositoryOutcomeObserver>;
 }
 
 export async function createApp(options: AppOptions = {}) {
@@ -82,6 +91,9 @@ export async function createApp(options: AppOptions = {}) {
   const provider = new RepairProvider(store, options.provider);
   const orchestrator = new Orchestrator(store, provider, options.engine);
   const captures = new Captures(store);
+  const compiler = new JourneyService(store, provider);
+  const repository = new RepositoryJourneyService(store, provider, options.repositoryOutcomeObservers);
+  const captureReview = orchestrator.engine instanceof FixtureHost ? new CaptureReview(store, captures, orchestrator.engine) : null;
   const retentionTimer = setInterval(() => captures.purgeExpired(), 60000);
   retentionTimer.unref();
   const app = Fastify({
@@ -133,6 +145,9 @@ export async function createApp(options: AppOptions = {}) {
       return reply
         .status(error.statusCode)
         .send({ error: { code: error.code, message: error.message } });
+    if (error instanceof RepositoryWorkerError)
+      return reply.status(error.code === "WORKER_UNQUALIFIED" ? 503 : 422)
+        .send({ error: { code: error.code, message: error.message } });
     const rawStatus = (error as { statusCode?: number }).statusCode;
     const status = rawStatus && rawStatus < 500 ? rawStatus : 500;
     return reply.status(status).send({
@@ -155,6 +170,8 @@ export async function createApp(options: AppOptions = {}) {
       error: { code: "NOT_FOUND", message: "This API route does not exist." },
     }),
   );
+  registerJourneyRoutes(app, compiler);
+  registerRepositoryJourneyRoutes(app, repository);
   const runId = (request: FastifyRequest) =>
     idSchema.parse((request.params as { id: string }).id);
   const idempotent = <T>(
@@ -342,6 +359,13 @@ export async function createApp(options: AppOptions = {}) {
       .status(201)
       .send(captures.create(captureCreateSchema.parse(request.body))),
   );
+  const boundCapture = () => {
+    if (!captureReview) throw new AppError("CAPTURE_HOST_UNAVAILABLE", "A real protected fixture host is required to bind an operator attempt.", 503);
+    return captureReview;
+  };
+  app.post("/v1/assistive-sessions/bound", async (request, reply) => reply.status(201).send(await boundCapture().start(captureReviewStartSchema.parse(request.body))));
+  app.post("/v1/assistive-sessions/:id/verify-outcome", async request => { captureReviewVerifySchema.parse(request.body); return boundCapture().verify(runId(request)); });
+  app.post("/v1/assistive-sessions/:id/review", request => boundCapture().review(runId(request), captureReviewDecisionSchema.parse(request.body)));
   app.get("/v1/assistive-sessions", async (request) => {
     const query = z
       .object({ runId: idSchema.optional() })
@@ -381,7 +405,7 @@ export async function createApp(options: AppOptions = {}) {
   app.post("/v1/repositories/import", async () => {
     throw new AppError(
       "UNSUPPORTED_REPOSITORY_IMPORT",
-      "This local release supports the six authored React fixture applications. Remote repository import requires an isolated build adapter and is not available here.",
+      "Use the Journey Compiler repository workspace with an immutable reviewed public-source manifest and the qualified fixed-dependency worker. Arbitrary repository scripts are not supported by this legacy endpoint.",
       422,
     );
   });
@@ -478,17 +502,27 @@ export async function createApp(options: AppOptions = {}) {
   });
   app.addHook("onClose", async () => {
     clearInterval(retentionTimer);
+    await repository.close();
+    await stopRepositoryPreview();
+    await compiler.close();
     await orchestrator.close();
     store.close();
   });
   try {
     await orchestrator.start();
+    await compiler.start();
+    repository.start();
+    if (!options.dataDir && repository.sessions().some(session => session.build || session.replays.length))
+      await startRepositoryPreview();
     await app.ready();
   } catch (error) {
     clearInterval(retentionTimer);
+    await repository.close().catch(() => undefined);
+    await stopRepositoryPreview().catch(() => undefined);
+    await compiler.close().catch(() => undefined);
     await orchestrator.close().catch(() => undefined);
     store.close();
     throw error;
   }
-  return { app, store, provider, orchestrator, captures };
+  return { app, store, provider, orchestrator, captures, compiler, repository };
 }

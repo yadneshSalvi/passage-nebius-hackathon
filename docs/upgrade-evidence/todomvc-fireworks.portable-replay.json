@@ -1,0 +1,746 @@
+{
+  "schema": "passage-repository-guard-replay/v1",
+  "build": {
+    "schema": "passage.repository-build.v1",
+    "id": "e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d",
+    "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "sourceDigest": "9891efa6fe37f8d8c7184711839f612a23d75b63ff95e2d5cdc1287dcc324f1a",
+    "bundleDigest": "8ec3ecdc5e421548a53a253d32222b28ecb30182d0020d577d5ddc810ff68bfc",
+    "previewUrl": "http://127.0.0.1:62645/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/index.html",
+    "files": [
+      {
+        "path": "examples/react/src/index.js",
+        "sha256": "5f7a9a0fa40f0680b927efc306b6a5a2a780e0eae0c2b16be55ffba36ddabd7e"
+      },
+      {
+        "path": "examples/react/src/todo/app.css",
+        "sha256": "3f75fd17df69bdbec69f014ea7f81daec632d8215876ed53f43ab16172ad0c4d"
+      },
+      {
+        "path": "examples/react/src/todo/app.jsx",
+        "sha256": "9062e9b90d3ef5c292e84cc2e765797d1336373271d7c5f39944d704f98d661f"
+      },
+      {
+        "path": "examples/react/src/todo/components/footer.jsx",
+        "sha256": "36cdfa5e44e268eac560551a035cf51335883a761ef94eae4f9c20dcb48d5fdf"
+      },
+      {
+        "path": "examples/react/src/todo/components/header.jsx",
+        "sha256": "0c266389617ea90e8d0a7d25762d8023410ee3ce89ff99b8210efe3180f12b23"
+      },
+      {
+        "path": "examples/react/src/todo/components/input.jsx",
+        "sha256": "d2129658b1e445fa9b2d50d22c80f5be8563285636d26b9936f7ac54ce5a34f0"
+      },
+      {
+        "path": "examples/react/src/todo/components/item.jsx",
+        "sha256": "ab28aa8ac2ba685e7e8aff91a12f2d1e0dbeb8244387eb60444264a821e979f0"
+      },
+      {
+        "path": "examples/react/src/todo/components/main.jsx",
+        "sha256": "09164b4bb70f4162ca2d32e3961133653fd0f9934244ba21eb85477218008a28"
+      },
+      {
+        "path": "examples/react/src/todo/constants.js",
+        "sha256": "9ed0dc00e202fc727747beea153a68863f72bf399c2974132300303dad6d7325"
+      },
+      {
+        "path": "examples/react/src/todo/reducer.js",
+        "sha256": "57a59689cf665b27f2fd1172857f9bcf249475c5b6fa5b9da78e92c0f9b8cf2b"
+      }
+    ],
+    "createdAt": "2026-10-28T13:17:21.312Z",
+    "outcomeVerification": "not-configured",
+    "isolation": {
+      "runtime": "docker-linux",
+      "context": "colima-passage",
+      "image": "sha256:63ac66a10aa94048d181a77bf05d38674c79cada6aacd5d4563aabf0000ae4a5",
+      "network": "none",
+      "hostMounts": false,
+      "readOnlyRoot": true,
+      "user": "1000:1000",
+      "capabilities": "none",
+      "memoryBytes": 805306368,
+      "pidsLimit": 96
+    }
+  },
+  "execution": {
+    "version": "passage-temporal-execution/v1",
+    "id": "bc370a03-8732-41b7-b84a-634303eee507",
+    "identity": {
+      "executionId": "bc370a03-8732-41b7-b84a-634303eee507",
+      "sourceDigest": "9891efa6fe37f8d8c7184711839f612a23d75b63ff95e2d5cdc1287dcc324f1a",
+      "buildId": "e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d",
+      "sessionId": "portable-guard",
+      "adapter": "external-react-static-v1",
+      "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9"
+    },
+    "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+    "status": "passed",
+    "passed": true,
+    "startedAt": "2026-10-28T13:17:21.491Z",
+    "completedAt": "2026-10-28T13:17:21.594Z",
+    "durationMs": 103,
+    "actionsExecuted": [
+      "write-task",
+      "create-task",
+      "start-tab",
+      "tab-all",
+      "tab-item",
+      "tab-edit",
+      "open-edit",
+      "edit-visible",
+      "change-task",
+      "cancel-edit",
+      "editor-closed",
+      "leave-task",
+      "cancelled-value",
+      "reopen-focus",
+      "reopen",
+      "edit-again",
+      "new-title",
+      "save-edit",
+      "save-closed",
+      "saved-value"
+    ],
+    "checks": [
+      {
+        "id": "task-created",
+        "label": "Task is created and visible in the list",
+        "actionId": "create-task",
+        "status": "passed",
+        "expected": "Pick up a prescription",
+        "actual": "Pick up a prescription",
+        "traceSequence": 5
+      },
+      {
+        "id": "keyboard-entry",
+        "label": "The task can be edited from the keyboard",
+        "actionId": "tab-edit",
+        "status": "passed",
+        "expected": "Actual focus is within the visible bound element.",
+        "actual": "Focus inside.",
+        "traceSequence": 16
+      },
+      {
+        "id": "editor-opens-on-enter",
+        "label": "Pressing Enter on focused task opens the editor",
+        "actionId": "open-edit",
+        "status": "passed",
+        "expected": "Actual focus is within the visible bound element.",
+        "actual": "Focus inside.",
+        "traceSequence": 20
+      },
+      {
+        "id": "editor-visible",
+        "label": "Editor becomes visible after opening",
+        "actionId": "edit-visible",
+        "status": "passed",
+        "expected": "Actual focus is within the visible bound element.",
+        "actual": "Focus inside.",
+        "traceSequence": 22
+      },
+      {
+        "id": "cancel-preserves",
+        "label": "Escape and subsequent focus change preserve the prior title",
+        "actionId": "cancelled-value",
+        "status": "passed",
+        "expected": "Pick up a prescription",
+        "actual": "Pick up a prescription",
+        "traceSequence": 31
+      },
+      {
+        "id": "save-works",
+        "label": "An intentional edit is still saved",
+        "actionId": "saved-value",
+        "status": "passed",
+        "expected": "Pick up the prescription at 5",
+        "actual": "Pick up the prescription at 5",
+        "traceSequence": 44
+      }
+    ],
+    "trace": [
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Enter a task",
+        "actionId": "write-task",
+        "data": {
+          "kind": "fill"
+        },
+        "sequence": 1,
+        "at": "2026-10-28T13:17:21.497Z",
+        "elapsedMs": 6
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "input",
+        "label": "input",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 2,
+        "at": "2026-10-28T13:17:21.523Z",
+        "elapsedMs": 32
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Create the task",
+        "actionId": "create-task",
+        "data": {
+          "kind": "press",
+          "key": "Enter"
+        },
+        "sequence": 3,
+        "at": "2026-10-28T13:17:21.523Z",
+        "elapsedMs": 32
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "key": "Enter",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 4,
+        "at": "2026-10-28T13:17:21.527Z",
+        "elapsedMs": 36
+      },
+      {
+        "provenance": "controller",
+        "kind": "assertion",
+        "label": "Task is created and visible in the list",
+        "actionId": "create-task",
+        "data": {
+          "assertionId": "task-created",
+          "status": "passed",
+          "expected": "Pick up a prescription",
+          "actual": "Pick up a prescription"
+        },
+        "sequence": 5,
+        "at": "2026-10-28T13:17:21.548Z",
+        "elapsedMs": 57
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Start keyboard traversal",
+        "actionId": "start-tab",
+        "data": {
+          "kind": "focus"
+        },
+        "sequence": 6,
+        "at": "2026-10-28T13:17:21.548Z",
+        "elapsedMs": 57
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Move past complete-all",
+        "actionId": "tab-all",
+        "data": {
+          "kind": "press",
+          "key": "Tab"
+        },
+        "sequence": 7,
+        "at": "2026-10-28T13:17:21.549Z",
+        "elapsedMs": 58
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "key": "Tab",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 8,
+        "at": "2026-10-28T13:17:21.550Z",
+        "elapsedMs": 59
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"toggle-all\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 9,
+        "at": "2026-10-28T13:17:21.550Z",
+        "elapsedMs": 59
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Move to task completion",
+        "actionId": "tab-item",
+        "data": {
+          "kind": "press",
+          "key": "Tab"
+        },
+        "sequence": 10,
+        "at": "2026-10-28T13:17:21.551Z",
+        "elapsedMs": 60
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"toggle-all\"]",
+        "data": {
+          "key": "Tab",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 11,
+        "at": "2026-10-28T13:17:21.551Z",
+        "elapsedMs": 60
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"todo-item-toggle\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 12,
+        "at": "2026-10-28T13:17:21.552Z",
+        "elapsedMs": 61
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Reach the task editing control",
+        "actionId": "tab-edit",
+        "data": {
+          "kind": "press",
+          "key": "Tab"
+        },
+        "sequence": 13,
+        "at": "2026-10-28T13:17:21.552Z",
+        "elapsedMs": 61
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"todo-item-toggle\"]",
+        "data": {
+          "key": "Tab",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 14,
+        "at": "2026-10-28T13:17:21.552Z",
+        "elapsedMs": 61
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"todo-item-label\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 15,
+        "at": "2026-10-28T13:17:21.553Z",
+        "elapsedMs": 62
+      },
+      {
+        "provenance": "controller",
+        "kind": "assertion",
+        "label": "The task can be edited from the keyboard",
+        "actionId": "tab-edit",
+        "data": {
+          "assertionId": "keyboard-entry",
+          "status": "passed",
+          "expected": "Actual focus is within the visible bound element.",
+          "actual": "Focus inside."
+        },
+        "sequence": 16,
+        "at": "2026-10-28T13:17:21.556Z",
+        "elapsedMs": 65
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Open editing with Enter",
+        "actionId": "open-edit",
+        "data": {
+          "kind": "press",
+          "key": "Enter"
+        },
+        "sequence": 17,
+        "at": "2026-10-28T13:17:21.556Z",
+        "elapsedMs": 65
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"todo-item-label\"]",
+        "data": {
+          "key": "Enter",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 18,
+        "at": "2026-10-28T13:17:21.556Z",
+        "elapsedMs": 65
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 19,
+        "at": "2026-10-28T13:17:21.557Z",
+        "elapsedMs": 66
+      },
+      {
+        "provenance": "controller",
+        "kind": "assertion",
+        "label": "Pressing Enter on focused task opens the editor",
+        "actionId": "open-edit",
+        "data": {
+          "assertionId": "editor-opens-on-enter",
+          "status": "passed",
+          "expected": "Actual focus is within the visible bound element.",
+          "actual": "Focus inside."
+        },
+        "sequence": 20,
+        "at": "2026-10-28T13:17:21.560Z",
+        "elapsedMs": 69
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Wait for editing",
+        "actionId": "edit-visible",
+        "data": {
+          "kind": "waitFor"
+        },
+        "sequence": 21,
+        "at": "2026-10-28T13:17:21.560Z",
+        "elapsedMs": 69
+      },
+      {
+        "provenance": "controller",
+        "kind": "assertion",
+        "label": "Editor becomes visible after opening",
+        "actionId": "edit-visible",
+        "data": {
+          "assertionId": "editor-visible",
+          "status": "passed",
+          "expected": "Actual focus is within the visible bound element.",
+          "actual": "Focus inside."
+        },
+        "sequence": 22,
+        "at": "2026-10-28T13:17:21.564Z",
+        "elapsedMs": 73
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Draft a different task",
+        "actionId": "change-task",
+        "data": {
+          "kind": "fill"
+        },
+        "sequence": 23,
+        "at": "2026-10-28T13:17:21.564Z",
+        "elapsedMs": 73
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "input",
+        "label": "input",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 24,
+        "at": "2026-10-28T13:17:21.569Z",
+        "elapsedMs": 78
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Cancel with Escape",
+        "actionId": "cancel-edit",
+        "data": {
+          "kind": "press",
+          "key": "Escape"
+        },
+        "sequence": 25,
+        "at": "2026-10-28T13:17:21.569Z",
+        "elapsedMs": 78
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "key": "Escape",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 26,
+        "at": "2026-10-28T13:17:21.572Z",
+        "elapsedMs": 81
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Editing closes on cancellation",
+        "actionId": "editor-closed",
+        "data": {
+          "kind": "waitFor"
+        },
+        "sequence": 27,
+        "at": "2026-10-28T13:17:21.573Z",
+        "elapsedMs": 82
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Move focus after cancellation",
+        "actionId": "leave-task",
+        "data": {
+          "kind": "focus"
+        },
+        "sequence": 28,
+        "at": "2026-10-28T13:17:21.574Z",
+        "elapsedMs": 83
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 29,
+        "at": "2026-10-28T13:17:21.576Z",
+        "elapsedMs": 85
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Inspect the preserved task",
+        "actionId": "cancelled-value",
+        "data": {
+          "kind": "checkpoint"
+        },
+        "sequence": 30,
+        "at": "2026-10-28T13:17:21.576Z",
+        "elapsedMs": 85
+      },
+      {
+        "provenance": "controller",
+        "kind": "assertion",
+        "label": "Escape and subsequent focus change preserve the prior title",
+        "actionId": "cancelled-value",
+        "data": {
+          "assertionId": "cancel-preserves",
+          "status": "passed",
+          "expected": "Pick up a prescription",
+          "actual": "Pick up a prescription"
+        },
+        "sequence": 31,
+        "at": "2026-10-28T13:17:21.577Z",
+        "elapsedMs": 86
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Return to task",
+        "actionId": "reopen-focus",
+        "data": {
+          "kind": "focus"
+        },
+        "sequence": 32,
+        "at": "2026-10-28T13:17:21.577Z",
+        "elapsedMs": 86
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"todo-item-label\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 33,
+        "at": "2026-10-28T13:17:21.579Z",
+        "elapsedMs": 88
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Edit the task again",
+        "actionId": "reopen",
+        "data": {
+          "kind": "press",
+          "key": "Enter"
+        },
+        "sequence": 34,
+        "at": "2026-10-28T13:17:21.579Z",
+        "elapsedMs": 88
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"todo-item-label\"]",
+        "data": {
+          "key": "Enter",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 35,
+        "at": "2026-10-28T13:17:21.579Z",
+        "elapsedMs": 88
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "focus",
+        "label": "focusin",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 36,
+        "at": "2026-10-28T13:17:21.580Z",
+        "elapsedMs": 89
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Wait for editor",
+        "actionId": "edit-again",
+        "data": {
+          "kind": "waitFor"
+        },
+        "sequence": 37,
+        "at": "2026-10-28T13:17:21.580Z",
+        "elapsedMs": 89
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Make an intentional edit",
+        "actionId": "new-title",
+        "data": {
+          "kind": "fill"
+        },
+        "sequence": 38,
+        "at": "2026-10-28T13:17:21.581Z",
+        "elapsedMs": 90
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "input",
+        "label": "input",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "trusted": true
+        },
+        "sequence": 39,
+        "at": "2026-10-28T13:17:21.586Z",
+        "elapsedMs": 95
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Save with Enter",
+        "actionId": "save-edit",
+        "data": {
+          "kind": "press",
+          "key": "Enter"
+        },
+        "sequence": 40,
+        "at": "2026-10-28T13:17:21.586Z",
+        "elapsedMs": 95
+      },
+      {
+        "provenance": "page-instrumentation",
+        "kind": "action",
+        "label": "keydown",
+        "target": "[data-testid=\"text-input\"]",
+        "data": {
+          "key": "Enter",
+          "shiftKey": false,
+          "trusted": true
+        },
+        "sequence": 41,
+        "at": "2026-10-28T13:17:21.589Z",
+        "elapsedMs": 98
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Editing closes on save",
+        "actionId": "save-closed",
+        "data": {
+          "kind": "waitFor"
+        },
+        "sequence": 42,
+        "at": "2026-10-28T13:17:21.590Z",
+        "elapsedMs": 99
+      },
+      {
+        "provenance": "controller",
+        "kind": "action",
+        "label": "Inspect the saved task",
+        "actionId": "saved-value",
+        "data": {
+          "kind": "checkpoint"
+        },
+        "sequence": 43,
+        "at": "2026-10-28T13:17:21.591Z",
+        "elapsedMs": 100
+      },
+      {
+        "provenance": "controller",
+        "kind": "assertion",
+        "label": "An intentional edit is still saved",
+        "actionId": "saved-value",
+        "data": {
+          "assertionId": "save-works",
+          "status": "passed",
+          "expected": "Pick up the prescription at 5",
+          "actual": "Pick up the prescription at 5"
+        },
+        "sequence": 44,
+        "at": "2026-10-28T13:17:21.592Z",
+        "elapsedMs": 101
+      }
+    ],
+    "failureSignature": null,
+    "limitations": [
+      "Bounded browser and protected outcome checks; no claim of formal verification.",
+      "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+      "Contract approval: operator; authored-development."
+    ]
+  },
+  "businessOutcome": "not-configured",
+  "limitations": [
+    "No protected observer was supplied. Any outcome assertion errors rather than silently passing.",
+    "This checks the supplied manifest; self-declared revision identity does not prove upstream source ancestry."
+  ]
+}

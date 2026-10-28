@@ -34,6 +34,7 @@ import type {
 import { useStore } from "./App";
 import { ProviderUsage } from "./ProviderUsage";
 import { post, put } from "./api";
+import { FeaturedSourceRepair, FirstJourney } from "./JourneyCompiler";
 import {
   isDevelopmentRoute,
   providerName,
@@ -56,261 +57,73 @@ import {
 } from "./ui";
 
 export function Welcome() {
-  const { data, repository, loading } = useStore();
-  const fixture = data?.fixtures[0];
-  const latest = data?.runs.find((run) => run.baseline);
-  const observed = latest?.baseline?.observations.slice(0, 3) ?? [];
+  const { data, loading } = useStore();
   return (
-    <div className="welcome">
-      <section className="hero">
-        <div className="hero-copy">
-          <div className="eyebrow hero-eyebrow">
-            <span className="tiny-path" /> ACCESSIBILITY, AT THE SOURCE
-          </div>
-          <h1>
-            Every journey
+    <div className="welcome story-welcome">
+      <section className="story-introduction">
+        <div className="eyebrow hero-eyebrow">
+          <span className="tiny-path" /> ACCESSIBILITY, AT THE SOURCE
+        </div>
+        <h1>
+          <span>
+            Someone got stuck.
             <br />
-            deserves a<br />
-            <em>way through.</em>
-          </h1>
-          <p className="hero-description">
-            Turn the moment someone gets stuck into a lasting source repair.
-            Follow the journey. Fix the barrier. Prove the way is clear.
-          </p>
-          <div className="hero-actions">
-            <Link
-              to={
-                fixture
-                  ? `/journeys/new?fixture=${fixture.id}`
-                  : "/journeys/new"
-              }
-              className="button button-large"
-            >
-              Try a blocked journey <ArrowRight size={19} />
-            </Link>
-            <Link className="hero-secondary" to="/journeys">
-              Explore journeys <ArrowUpRight size={17} />
-            </Link>
-          </div>
-          <div className="hero-footnote">
-            <Keyboard size={16} />
-            <span>Keyboard-first. Evidence-led. Human review always.</span>
-          </div>
-        </div>
-        <div className="hero-visual">
-          <div className="visual-topline">
-            <span className="small-overline">A JOURNEY, NOT JUST AN ISSUE</span>
-            <span className="sample-label">Authored sample</span>
-          </div>
-          <div className="journey-illustration">
-            <div className="illustration-label">
-              <span className="dot" />
-              {fixture?.organization ?? "A fictional appointment service"}
-              <span className="mono">01</span>
-            </div>
-            <h2>{fixture?.task ?? "Confirm an available appointment"}</h2>
-            <div className="journey-path-visual">
-              <svg viewBox="0 0 440 190" fill="none" aria-hidden="true">
-                <path
-                  className="path-base"
-                  d="M28 31H160Q190 31 190 61V113Q190 143 220 143H410"
-                />
-                <path className="path-active" d="M28 31H160Q190 31 190 61V76" />
-                <circle cx="28" cy="31" r="6" fill="#075E54" />
-                <circle
-                  cx="190"
-                  cy="81"
-                  r="9"
-                  fill="#F6F4EE"
-                  stroke="#A35E39"
-                  strokeWidth="3"
-                />
-                <path
-                  d="M187 78L193 84M193 78L187 84"
-                  stroke="#A35E39"
-                  strokeWidth="1.5"
-                />
-                <circle
-                  cx="410"
-                  cy="143"
-                  r="6"
-                  fill="#F6F4EE"
-                  stroke="#A9B9AF"
-                  strokeWidth="2"
-                />
-              </svg>
-              <div className="path-start">
-                <span>01</span>Find a service
-              </div>
-              <div className="path-barrier">
-                <span>02 · THE BARRIER</span>
-                {fixture?.barrier ??
-                  "The control cannot be used with a keyboard."}
-              </div>
-              <div className="path-end">
-                <span>03</span>Confirm the outcome
-              </div>
-            </div>
-            <div className="illustration-bottom">
-              <span>
-                <Keyboard size={16} /> Keyboard journey
-              </span>
-              <span>
-                Fictional data <LockKeyhole size={13} />
-              </span>
-            </div>
-          </div>
-          <div className="evidence-note">
-            <div className="evidence-note-icon">
-              <Code2 size={21} />
-            </div>
-            <div>
-              <strong>A source change. A path forward.</strong>
-              <span>Reproduce → repair → independently verify</span>
-            </div>
-            <ArrowUpRight size={20} />
-          </div>
-          <div className="visual-caption">
-            The task is the measure. A passing scan is only part of the story.
-          </div>
-        </div>
+          </span>
+          <em>Make a way through.</em>
+        </h1>
+        <p>
+          <span className="story-intro-long">
+            Show Passage the blocked task. Review the promise, repair the
+            source, and keep a test that protects the journey.
+          </span>
+          <span className="story-intro-short">
+            Repair the source. Keep the journey working.
+          </span>
+        </p>
       </section>
+      <FeaturedSourceRepair />
+      <FirstJourney data={data} loading={loading} />
       <section className="principle-strip" aria-label="How Passage works">
         <div>
           <span className="principle-number">01</span>
           <div>
-            <h3>Start where it breaks</h3>
-            <p>A real task, a visible barrier.</p>
+            <h3>Observe the barrier</h3>
+            <p>Actions, focus, and actual application events.</p>
           </div>
         </div>
         <div>
           <span className="principle-number">02</span>
           <div>
-            <h3>Repair the source</h3>
-            <p>A focused, reviewable change.</p>
+            <h3>Review the promise</h3>
+            <p>Evidence and inferred requirements stay distinct.</p>
           </div>
         </div>
         <div>
           <span className="principle-number">03</span>
           <div>
-            <h3>Challenge the result</h3>
-            <p>Independent checks. Honest limits.</p>
+            <h3>Keep the guard</h3>
+            <p>A source repair and a repeatable journey check.</p>
           </div>
         </div>
       </section>
-      <section className="sample-section">
-        <div className="section-head">
-          <div>
-            <p className="eyebrow">THE JOURNEY LIBRARY</p>
-            <h2>
-              Small interactions.
-              <br />
-              <em>Meaningful consequences.</em>
-            </h2>
-          </div>
-          <div>
-            <p>
-              Explore authored applications with deliberately seeded barriers.
-              <br className="desktop-break" /> Each sample has a task worth
-              completing.
-            </p>
-            <ArrowLink to="/journeys">Explore all journeys</ArrowLink>
-          </div>
-        </div>
-        <div className="fixture-grid homepage-grid">
-          {data?.fixtures.slice(0, 3).map((item, index) => (
-            <Link
-              key={item.id}
-              className="fixture-card"
-              to={`/journeys/new?fixture=${item.id}`}
-            >
-              <FixtureArt fixture={item} />
-              <div className="fixture-card-content">
-                <div className="fixture-meta">
-                  <span>{familyLabel[item.family]}</span>
-                  <span className="mono">0{index + 1}</span>
-                </div>
-                <h3>
-                  {item.name}
-                  <ArrowUpRight size={21} />
-                </h3>
-                <p>{item.description}</p>
-                <div className="fixture-card-bottom">
-                  <span>{item.organization}</span>
-                  <span>
-                    Try journey <ArrowRight size={15} />
-                  </span>
-                </div>
-              </div>
-            </Link>
-          ))}
-          {!data ? (
-            <div className="sample-placeholder">
-              {loading ? (
-                <>
-                  <CircleDashed size={28} />
-                  <p>Loading the authored journey library…</p>
-                </>
-              ) : (
-                <>
-                  <Route size={28} />
-                  <p>The sample library is waiting for the local service.</p>
-                </>
-              )}
-            </div>
-          ) : null}
-        </div>
-      </section>
-      <section className="trust-section">
-        <div className="trust-heading">
-          <span className="eyebrow">PROOF YOU CAN FOLLOW</span>
+      <section className="story-library section-head">
+        <div>
+          <p className="eyebrow">A CLEARLY BOUNDED PROTOTYPE</p>
           <h2>
-            Access is an outcome.
+            Small interactions.
             <br />
-            <em>Keep the evidence close.</em>
+            <em>Lasting expectations.</em>
           </h2>
         </div>
-        <div className="trust-items">
-          <div>
-            <ShieldCheck size={24} />
-            <h3>Independent by design</h3>
-            <p>
-              The repair cannot rewrite its own acceptance checks. Browser
-              behavior and stored outcomes are checked separately.
-            </p>
-          </div>
-          <div>
-            <Fingerprint size={24} />
-            <h3>Every claim has a source</h3>
-            <p>
-              Review exact revisions, model receipts, failed attempts, and
-              challenge results. Export the evidence with the patch.
-            </p>
-          </div>
-          <div>
-            <Keyboard size={24} />
-            <h3>People complete the picture</h3>
-            <p>
-              Automated keyboard checks do not establish a screen-reader
-              experience. Human validation stays visibly pending.
-            </p>
-          </div>
+        <div>
+          <p>
+            Authored React applications, fictional data, real browser runs.
+            Repository and assistive-technology support are shown with their
+            recorded scope.
+          </p>
+          <ArrowLink to="/journeys">Explore supported journeys</ArrowLink>
         </div>
       </section>
-      {latest ? (
-        <section className="recent-note">
-          <div>
-            <p className="eyebrow">YOUR MOST RECENT JOURNEY</p>
-            <h3>
-              {data?.fixtures.find((f) => f.id === latest.fixtureId)?.name}
-            </h3>
-            <RunStatusDisplay run={latest} />
-          </div>
-          <ArrowLink to={`/repairs/${latest.id}`}>
-            Continue the investigation
-          </ArrowLink>
-        </section>
-      ) : null}
     </div>
   );
 }
@@ -808,6 +621,89 @@ export function Settings() {
                 </div>
               ) : null}
             </dl>
+            {data?.provider.generation ? (
+              <details
+                className="compiler-disclosure"
+                style={{ marginTop: 14 }}
+              >
+                <summary>
+                  Requested generation profile <Fingerprint size={16} />
+                </summary>
+                <dl className="simple-facts">
+                  {data.provider.generation.temperature !== undefined ||
+                  data.provider.generation.topP !== undefined ? (
+                    <div>
+                      <dt>Requested sampling</dt>
+                      <dd>
+                        {data.provider.generation.temperature !== undefined
+                          ? `Temperature ${data.provider.generation.temperature}`
+                          : ""}
+                        {data.provider.generation.temperature !== undefined &&
+                        data.provider.generation.topP !== undefined
+                          ? " · "
+                          : ""}
+                        {data.provider.generation.topP !== undefined
+                          ? `top_p ${data.provider.generation.topP}`
+                          : ""}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {data.provider.generation.thinkingEnabled !== undefined ? (
+                    <div>
+                      <dt>Thinking</dt>
+                      <dd>
+                        {data.provider.generation.thinkingEnabled
+                          ? "Enabled"
+                          : "Disabled"}
+                      </dd>
+                    </div>
+                  ) : null}
+                  {data.provider.generation.reasoningEffort ? (
+                    <div>
+                      <dt>Reasoning effort</dt>
+                      <dd>{data.provider.generation.reasoningEffort}</dd>
+                    </div>
+                  ) : null}
+                  {data.provider.generation.forceNonemptyContent !==
+                  undefined ? (
+                    <div>
+                      <dt>Force nonempty request</dt>
+                      <dd>
+                        {data.provider.generation.forceNonemptyContent
+                          ? "Enabled"
+                          : "Disabled"}
+                      </dd>
+                    </div>
+                  ) : null}
+                  <div>
+                    <dt>Response allowance</dt>
+                    <dd>
+                      {data.provider.generation.maxOutputTokens.toLocaleString()}{" "}
+                      tokens · {data.provider.generation.timeoutMs / 1000}s
+                      timeout
+                    </dd>
+                  </div>
+                  {data.provider.generationProfileFingerprint ? (
+                    <div>
+                      <dt>Profile fingerprint</dt>
+                      <dd className="mono break-anywhere">
+                        {data.provider.generationProfileFingerprint}
+                      </dd>
+                    </div>
+                  ) : null}
+                  <div>
+                    <dt>Requested endpoint</dt>
+                    <dd className="mono break-anywhere">
+                      {data.provider.baseUrl}
+                    </dd>
+                  </div>
+                </dl>
+                <p className="small muted">
+                  Completion validation above applies to this exact requested
+                  profile. Recorded receipts retain their own sampling settings.
+                </p>
+              </details>
+            ) : null}
             <ProviderUsage provider={data?.provider.provider} />
             <Notice
               tone={
@@ -832,9 +728,10 @@ export function Settings() {
               <h2>Repository & execution</h2>
             </div>
             <p>
-              This edition builds and checks the scoped authored React fixtures
-              locally. It does not execute arbitrary repositories, deploy cloud
-              workers, or create pull requests.
+              Authored React fixtures run locally. Public source manifests use a
+              separately qualified disposable worker with fixed dependencies.
+              Arbitrary repository scripts, cloud deployment, and pull request
+              publication remain unavailable.
             </p>
             <button className="button button-secondary" onClick={repository}>
               View supported scope <ArrowRight size={16} />

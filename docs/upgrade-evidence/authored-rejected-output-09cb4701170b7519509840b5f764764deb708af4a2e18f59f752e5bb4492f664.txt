@@ -1,0 +1,58 @@
+{
+  "locations": [
+    {
+      "lineIds": [
+        "file-1:line-130",
+        "file-1:line-131",
+        "file-1:line-132",
+        "file-1:line-133",
+        "file-1:line-134",
+        "file-1:line-135",
+        "file-1:line-136",
+        "file-1:line-137",
+        "file-1:line-138",
+        "file-1:line-139",
+        "file-1:line-140",
+        "file-1:line-141",
+        "file-1:line-142",
+        "file-1:line-143"
+      ],
+      "symbol": "date-cell-rendering",
+      "reason": "Date cells are rendered as role=button but have no onClick handler, so pointer clicks do not initiate availability checks or commit a date.",
+      "evidenceRefs": [],
+      "reportedObservationRefs": [
+        "source-observation_40ab00ee-e77f-4f8c-841a-f112cf0afbd4"
+      ]
+    },
+    {
+      "lineIds": [
+        "file-1:line-33",
+        "file-1:line-34",
+        "file-1:line-35",
+        "file-1:line-36",
+        "file-1:line-37",
+        "file-1:line-38",
+        "file-1:line-39",
+        "file-1:line-40",
+        "file-1:line-41",
+        "file-1:line-42",
+        "file-1:line-43",
+        "file-1:line-44",
+        "file-1:line-45",
+        "file-1:line-46",
+        "file-1:line-47",
+        "file-1:line-48",
+        "file-1:line-49",
+        "file-1:line-50",
+        "file-1:line-51",
+        "file-1:line-52"
+      ],
+      "symbol": "modal-tab-navigation",
+      "reason": "Tab key handling in handleModalKeyDown only cycles focus among date cells (collected via querySelectorAll('[data-date]:not(.unavailable)')), excluding the Close button, so keyboard navigation cannot reach the Close calendar control.",
+      "evidenceRefs": [],
+      "reportedObservationRefs": [
+        "source-observation_40ab00ee-e77f-4f8c-841a-f112cf0afbd4"
+      ]
+    }
+  ]
+}

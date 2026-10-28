@@ -1,0 +1,3434 @@
+{
+  "schema": "passage-journey-guard/v1",
+  "generatedAt": "2026-10-28T13:33:01.818Z",
+  "task": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+  "fixtureId": "northstar-appointments",
+  "scope": "authored-fixture",
+  "review": {
+    "id": "contract-review_5eecc83d-9a6a-4b50-a458-65a7b71c172c",
+    "draftDigest": "e6dc8fd307501c9b08eca94b6b2e4ccc2663d127bb1b593406bf93c29bf7649b",
+    "contractDigest": "c5a16015186423154119b086c4dddfc7e76da0945e11f675ecb50f31026d4bb0",
+    "approvedAt": "2026-10-28T13:21:14.612Z",
+    "maintainer": "Codex development intent reviewer (not maintainer)",
+    "interactionReviewer": "Codex automated development reviewer",
+    "acknowledgeInferred": true,
+    "evidenceClass": "automated-development-review",
+    "reviewProvenance": "automated-development",
+    "independentlyReviewed": false
+  },
+  "draftDigest": "e6dc8fd307501c9b08eca94b6b2e4ccc2663d127bb1b593406bf93c29bf7649b",
+  "contractsBySchedule": {
+    "baseline": {
+      "version": "passage-temporal/v1",
+      "id": "authored-appointment-baseline",
+      "revision": 1,
+      "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+      "bindings": {
+        "trigger": {
+          "kind": "testId",
+          "value": "slot-trigger"
+        },
+        "panel": {
+          "kind": "testId",
+          "value": "slot-panel"
+        },
+        "value": {
+          "kind": "testId",
+          "value": "selected-date",
+          "read": "value"
+        },
+        "choice": {
+          "kind": "css",
+          "value": "[data-date=\"2026-11-16\"]"
+        },
+        "name": {
+          "kind": "testId",
+          "value": "attendee-input",
+          "read": "value"
+        },
+        "confirm": {
+          "kind": "testId",
+          "value": "confirm-appointment"
+        },
+        "confirmation": {
+          "kind": "testId",
+          "value": "confirmation"
+        },
+        "confirmationHeading": {
+          "kind": "testId",
+          "value": "confirmation-heading"
+        }
+      },
+      "actions": [
+        {
+          "id": "reach-trigger",
+          "label": "Tab to the appointment control",
+          "required": true,
+          "kind": "press",
+          "key": "Tab"
+        },
+        {
+          "id": "open",
+          "label": "Open appointments with Enter",
+          "requires": [
+            "reach-trigger"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Enter",
+          "binding": "trigger"
+        },
+        {
+          "id": "opened",
+          "label": "Observe the opened dialog",
+          "requires": [
+            "open"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "panel",
+          "state": "visible"
+        },
+        {
+          "id": "activate-choice",
+          "label": "Activate the intended appointment with Enter",
+          "requires": [
+            "opened"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Enter",
+          "binding": "choice"
+        },
+        {
+          "id": "pending",
+          "label": "Observe an actual pending availability request",
+          "requires": [
+            "activate-choice"
+          ],
+          "required": true,
+          "kind": "event",
+          "event": "availability.pending"
+        },
+        {
+          "id": "release",
+          "label": "Deliver the actual protected availability response",
+          "requires": [
+            "pending"
+          ],
+          "required": true,
+          "kind": "event",
+          "event": "availability.release"
+        },
+        {
+          "id": "selection-closed",
+          "label": "Wait for committed selection to close the dialog",
+          "requires": [
+            "release"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "panel",
+          "state": "hidden"
+        },
+        {
+          "id": "reach-name",
+          "label": "Tab to the attendee name",
+          "requires": [
+            "selection-closed"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Tab"
+        },
+        {
+          "id": "enter-name",
+          "label": "Enter the fictional attendee",
+          "requires": [
+            "reach-name"
+          ],
+          "required": true,
+          "kind": "fill",
+          "binding": "name",
+          "value": "Alex Morgan"
+        },
+        {
+          "id": "reach-confirm",
+          "label": "Tab to confirmation",
+          "requires": [
+            "enter-name"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Tab"
+        },
+        {
+          "id": "confirm",
+          "label": "Confirm the requested appointment with Enter",
+          "requires": [
+            "reach-confirm"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Enter",
+          "binding": "confirm"
+        },
+        {
+          "id": "saved",
+          "label": "Observe the real confirmation",
+          "requires": [
+            "confirm"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "confirmation",
+          "state": "visible"
+        }
+      ],
+      "assertions": [
+        {
+          "id": "opening-preserves-value",
+          "label": "Opening does not commit a choice",
+          "after": "opened",
+          "kind": "valuePreserved",
+          "binding": "value",
+          "since": "initial"
+        },
+        {
+          "id": "explicit-choice-committed",
+          "label": "Committed date matches the explicit choice",
+          "after": "selection-closed",
+          "kind": "valueEquals",
+          "binding": "value",
+          "expected": "2026-11-16"
+        },
+        {
+          "id": "selection-restores-focus",
+          "label": "Selection restores focus to the trigger",
+          "after": "selection-closed",
+          "kind": "closedFocusRestored",
+          "panel": "panel",
+          "trigger": "trigger"
+        },
+        {
+          "id": "protected-correct-single-outcome",
+          "label": "Exactly one protected record matches the explicit choice",
+          "after": "saved",
+          "kind": "outcome",
+          "expected": {
+            "date": "2026-11-16",
+            "attendee": "Alex Morgan"
+          },
+          "count": 1
+        },
+        {
+          "id": "confirmation-focus",
+          "label": "Focus reaches the stored confirmation",
+          "after": "saved",
+          "kind": "focusWithin",
+          "binding": "confirmationHeading"
+        }
+      ],
+      "allowedEvents": [
+        {
+          "id": "availability.pending",
+          "label": "Observe a pending availability request",
+          "requires": [
+            "activate-choice"
+          ]
+        },
+        {
+          "id": "availability.release",
+          "label": "Deliver the real held response",
+          "requires": [
+            "pending"
+          ]
+        }
+      ],
+      "bounds": {
+        "maxActions": 40,
+        "maxDurationMs": 15000,
+        "actionTimeoutMs": 3000
+      },
+      "digest": "209101309317d4058bffa9b1fc92e35a7a6dfeb2b1d2525cb4b95af5e2c02720",
+      "approval": {
+        "actor": "Codex automated development reviewer",
+        "role": "operator",
+        "approvedAt": "2026-10-28T13:21:14.612Z",
+        "evidenceClass": "authored-development",
+        "digest": "209101309317d4058bffa9b1fc92e35a7a6dfeb2b1d2525cb4b95af5e2c02720"
+      }
+    },
+    "cancel-pending": {
+      "version": "passage-temporal/v1",
+      "id": "authored-appointment-cancel-pending",
+      "revision": 1,
+      "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+      "bindings": {
+        "trigger": {
+          "kind": "testId",
+          "value": "slot-trigger"
+        },
+        "panel": {
+          "kind": "testId",
+          "value": "slot-panel"
+        },
+        "value": {
+          "kind": "testId",
+          "value": "selected-date",
+          "read": "value"
+        },
+        "choice": {
+          "kind": "css",
+          "value": "[data-date=\"2026-11-16\"]"
+        },
+        "name": {
+          "kind": "testId",
+          "value": "attendee-input",
+          "read": "value"
+        },
+        "confirm": {
+          "kind": "testId",
+          "value": "confirm-appointment"
+        },
+        "confirmation": {
+          "kind": "testId",
+          "value": "confirmation"
+        },
+        "confirmationHeading": {
+          "kind": "testId",
+          "value": "confirmation-heading"
+        }
+      },
+      "actions": [
+        {
+          "id": "reach-trigger",
+          "label": "Tab to the appointment control",
+          "required": true,
+          "kind": "press",
+          "key": "Tab"
+        },
+        {
+          "id": "open",
+          "label": "Open appointments with Enter",
+          "requires": [
+            "reach-trigger"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Enter",
+          "binding": "trigger"
+        },
+        {
+          "id": "opened",
+          "label": "Observe the opened dialog",
+          "requires": [
+            "open"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "panel",
+          "state": "visible"
+        },
+        {
+          "id": "explore-forward",
+          "label": "Explore the next appointment",
+          "requires": [
+            "opened"
+          ],
+          "kind": "press",
+          "key": "ArrowRight"
+        },
+        {
+          "id": "explore-back",
+          "label": "Return to the intended appointment",
+          "requires": [
+            "opened"
+          ],
+          "kind": "press",
+          "key": "ArrowLeft"
+        },
+        {
+          "id": "activate-choice",
+          "label": "Activate the intended appointment with Enter",
+          "requires": [
+            "opened"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Enter",
+          "binding": "choice"
+        },
+        {
+          "id": "pending",
+          "label": "Observe an actual pending availability request",
+          "requires": [
+            "activate-choice"
+          ],
+          "required": true,
+          "kind": "event",
+          "event": "availability.pending"
+        },
+        {
+          "id": "cancel",
+          "label": "Press Escape while the real response is held",
+          "requires": [
+            "pending"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Escape"
+        },
+        {
+          "id": "closed",
+          "label": "Observe closure before releasing the response",
+          "requires": [
+            "cancel"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "panel",
+          "state": "hidden"
+        },
+        {
+          "id": "release",
+          "label": "Deliver the actual protected availability response",
+          "requires": [
+            "closed"
+          ],
+          "required": true,
+          "kind": "event",
+          "event": "availability.release"
+        }
+      ],
+      "assertions": [
+        {
+          "id": "opening-preserves-value",
+          "label": "Opening does not commit a choice",
+          "after": "opened",
+          "kind": "valuePreserved",
+          "binding": "value",
+          "since": "initial"
+        },
+        {
+          "id": "pending-preserves-value",
+          "label": "Pending selection has not committed",
+          "after": "pending",
+          "kind": "valuePreserved",
+          "binding": "value",
+          "since": "initial"
+        },
+        {
+          "id": "cancel-restores-focus",
+          "label": "Cancellation closes and restores focus",
+          "after": "closed",
+          "kind": "closedFocusRestored",
+          "panel": "panel",
+          "trigger": "trigger"
+        },
+        {
+          "id": "late-response-cannot-commit",
+          "label": "Cancelled response cannot commit a date",
+          "after": "release",
+          "kind": "valuePreserved",
+          "binding": "value",
+          "since": "initial"
+        },
+        {
+          "id": "late-response-cannot-steal-focus",
+          "label": "Late completion retains closure and restored focus",
+          "after": "release",
+          "kind": "closedFocusRestored",
+          "panel": "panel",
+          "trigger": "trigger"
+        },
+        {
+          "id": "no-cancelled-booking",
+          "label": "Cancellation created no protected booking",
+          "after": "release",
+          "kind": "outcome",
+          "expected": {},
+          "count": 0
+        }
+      ],
+      "allowedEvents": [
+        {
+          "id": "availability.pending",
+          "label": "Observe a pending availability request",
+          "requires": [
+            "activate-choice"
+          ]
+        },
+        {
+          "id": "availability.release",
+          "label": "Deliver the real held response",
+          "requires": [
+            "pending"
+          ]
+        }
+      ],
+      "bounds": {
+        "maxActions": 40,
+        "maxDurationMs": 15000,
+        "actionTimeoutMs": 3000
+      },
+      "digest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+      "approval": {
+        "actor": "Codex automated development reviewer",
+        "role": "operator",
+        "approvedAt": "2026-10-28T13:21:14.612Z",
+        "evidenceClass": "authored-development",
+        "digest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed"
+      }
+    },
+    "modal-boundary": {
+      "version": "passage-temporal/v1",
+      "id": "authored-appointment-modal-boundary",
+      "revision": 1,
+      "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+      "bindings": {
+        "trigger": {
+          "kind": "testId",
+          "value": "slot-trigger"
+        },
+        "panel": {
+          "kind": "testId",
+          "value": "slot-panel"
+        },
+        "value": {
+          "kind": "testId",
+          "value": "selected-date",
+          "read": "value"
+        },
+        "choice": {
+          "kind": "css",
+          "value": "[data-date=\"2026-11-16\"]"
+        },
+        "name": {
+          "kind": "testId",
+          "value": "attendee-input",
+          "read": "value"
+        },
+        "confirm": {
+          "kind": "testId",
+          "value": "confirm-appointment"
+        },
+        "confirmation": {
+          "kind": "testId",
+          "value": "confirmation"
+        },
+        "confirmationHeading": {
+          "kind": "testId",
+          "value": "confirmation-heading"
+        }
+      },
+      "actions": [
+        {
+          "id": "reach-trigger",
+          "label": "Tab to the appointment control",
+          "required": true,
+          "kind": "press",
+          "key": "Tab"
+        },
+        {
+          "id": "open",
+          "label": "Open appointments with Enter",
+          "requires": [
+            "reach-trigger"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Enter",
+          "binding": "trigger"
+        },
+        {
+          "id": "opened",
+          "label": "Observe the opened dialog",
+          "requires": [
+            "open"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "panel",
+          "state": "visible"
+        },
+        {
+          "id": "cancel",
+          "label": "Close the modal using Escape",
+          "requires": [
+            "opened"
+          ],
+          "required": true,
+          "kind": "press",
+          "key": "Escape"
+        },
+        {
+          "id": "closed",
+          "label": "Observe closure",
+          "requires": [
+            "cancel"
+          ],
+          "required": true,
+          "kind": "waitFor",
+          "binding": "panel",
+          "state": "hidden"
+        }
+      ],
+      "assertions": [
+        {
+          "id": "opening-preserves-value",
+          "label": "Opening does not commit a choice",
+          "after": "opened",
+          "kind": "valuePreserved",
+          "binding": "value",
+          "since": "initial"
+        },
+        {
+          "id": "modal-focus-contained",
+          "label": "Tab and reverse Tab stay inside the modal",
+          "after": "opened",
+          "kind": "modalContainment",
+          "binding": "panel",
+          "steps": 12
+        },
+        {
+          "id": "closure-restores-focus",
+          "label": "Closure restores focus to the trigger",
+          "after": "closed",
+          "kind": "closedFocusRestored",
+          "panel": "panel",
+          "trigger": "trigger"
+        },
+        {
+          "id": "cancel-preserves-value",
+          "label": "Closing preserves the original value",
+          "after": "closed",
+          "kind": "valuePreserved",
+          "binding": "value",
+          "since": "initial"
+        }
+      ],
+      "allowedEvents": [],
+      "bounds": {
+        "maxActions": 40,
+        "maxDurationMs": 15000,
+        "actionTimeoutMs": 3000
+      },
+      "digest": "0a3c023976fd6650b7a7b74ab9f10fa84ff96e8e54107c24799d904abdbb4d71",
+      "approval": {
+        "actor": "Codex automated development reviewer",
+        "role": "operator",
+        "approvedAt": "2026-10-28T13:21:14.612Z",
+        "evidenceClass": "authored-development",
+        "digest": "0a3c023976fd6650b7a7b74ab9f10fa84ff96e8e54107c24799d904abdbb4d71"
+      }
+    }
+  },
+  "patches": [],
+  "evidence": {
+    "captures": [
+      {
+        "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808",
+        "createdAt": "2026-10-28T13:21:14.543Z",
+        "variant": "original",
+        "scheduleId": "cancel-pending",
+        "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+        "buildId": "ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde",
+        "previewUrl": "http://127.0.0.1:63754/s/9aae1678-9d24-4db6-9e3c-82b349834d9b",
+        "trace": [
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:1",
+            "sequence": 1,
+            "atMs": 38,
+            "kind": "request",
+            "label": "GET /s/9aae1678-9d24-4db6-9e3c-82b349834d9b",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/s/9aae1678-9d24-4db6-9e3c-82b349834d9b\",\"method\":\"GET\",\"postData\":null}",
+            "provenance": "browser-network",
+            "correlationId": "request-1"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:2",
+            "sequence": 2,
+            "atMs": 46,
+            "kind": "response",
+            "label": "200 /s/9aae1678-9d24-4db6-9e3c-82b349834d9b",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/s/9aae1678-9d24-4db6-9e3c-82b349834d9b\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-1"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:3",
+            "sequence": 3,
+            "atMs": 53,
+            "kind": "request",
+            "label": "GET /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css\",\"method\":\"GET\",\"postData\":null}",
+            "provenance": "browser-network",
+            "correlationId": "request-2"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:4",
+            "sequence": 4,
+            "atMs": 53,
+            "kind": "request",
+            "label": "GET /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js\",\"method\":\"GET\",\"postData\":null}",
+            "provenance": "browser-network",
+            "correlationId": "request-3"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:5",
+            "sequence": 5,
+            "atMs": 55,
+            "kind": "response",
+            "label": "200 /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-2"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:6",
+            "sequence": 6,
+            "atMs": 58,
+            "kind": "response",
+            "label": "200 /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-3"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:7",
+            "sequence": 7,
+            "atMs": 589,
+            "kind": "focus",
+            "label": "focusin",
+            "detail": "{\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "body"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:8",
+            "sequence": 8,
+            "atMs": 593,
+            "kind": "action",
+            "label": "Reset initial keyboard origin to document body",
+            "detail": "{\"setup\":true}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:9",
+            "sequence": 9,
+            "atMs": 600,
+            "kind": "action",
+            "label": "Tab to the appointment control",
+            "detail": "{\"kind\":\"press\",\"key\":\"Tab\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:10",
+            "sequence": 10,
+            "atMs": 606,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"Tab\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "body"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:11",
+            "sequence": 11,
+            "atMs": 608,
+            "kind": "focus",
+            "label": "focusin",
+            "detail": "{\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:12",
+            "sequence": 12,
+            "atMs": 610,
+            "kind": "action",
+            "label": "Open appointments with Enter",
+            "detail": "{\"kind\":\"press\",\"key\":\"Enter\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:13",
+            "sequence": 13,
+            "atMs": 620,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"Enter\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:14",
+            "sequence": 14,
+            "atMs": 621,
+            "kind": "action",
+            "label": "click",
+            "detail": "{\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:15",
+            "sequence": 15,
+            "atMs": 624,
+            "kind": "action",
+            "label": "Observe the opened dialog",
+            "detail": "{\"kind\":\"waitFor\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:16",
+            "sequence": 16,
+            "atMs": 626,
+            "kind": "assertion",
+            "label": "Opening does not commit a choice",
+            "detail": "{\"assertionId\":\"opening-preserves-value\",\"status\":\"passed\",\"expected\":\"\",\"actual\":\"\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:17",
+            "sequence": 17,
+            "atMs": 626,
+            "kind": "action",
+            "label": "Explore the next appointment",
+            "detail": "{\"kind\":\"press\",\"key\":\"ArrowRight\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:18",
+            "sequence": 18,
+            "atMs": 628,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"ArrowRight\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:19",
+            "sequence": 19,
+            "atMs": 628,
+            "kind": "action",
+            "label": "Return to the intended appointment",
+            "detail": "{\"kind\":\"press\",\"key\":\"ArrowLeft\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:20",
+            "sequence": 20,
+            "atMs": 629,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"ArrowLeft\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:21",
+            "sequence": 21,
+            "atMs": 629,
+            "kind": "action",
+            "label": "Activate the intended appointment with Enter",
+            "detail": "{\"kind\":\"press\",\"key\":\"Enter\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:22",
+            "sequence": 22,
+            "atMs": 633,
+            "kind": "assertion",
+            "label": "Blocked: Activate the intended appointment with Enter",
+            "detail": "{\"status\":\"failed\",\"code\":\"focus-unreachable\",\"actual\":\"Target choice does not have actual keyboard focus.\"}",
+            "provenance": "controller"
+          }
+        ],
+        "checks": [
+          {
+            "id": "opening-preserves-value",
+            "label": "Opening does not commit a choice",
+            "actionId": "opened",
+            "status": "passed",
+            "expected": "",
+            "actual": "",
+            "traceSequence": 16
+          },
+          {
+            "id": "action:activate-choice",
+            "label": "Activate the intended appointment with Enter",
+            "actionId": "activate-choice",
+            "status": "failed",
+            "expected": "The approved action is operable from the observed keyboard state.",
+            "actual": "Target choice does not have actual keyboard focus.",
+            "traceSequence": 22
+          },
+          {
+            "id": "pending-preserves-value",
+            "label": "Pending selection has not committed",
+            "actionId": "pending",
+            "status": "inconclusive",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          },
+          {
+            "id": "cancel-restores-focus",
+            "label": "Cancellation closes and restores focus",
+            "actionId": "closed",
+            "status": "inconclusive",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          },
+          {
+            "id": "late-response-cannot-commit",
+            "label": "Cancelled response cannot commit a date",
+            "actionId": "release",
+            "status": "inconclusive",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          },
+          {
+            "id": "late-response-cannot-steal-focus",
+            "label": "Late completion retains closure and restored focus",
+            "actionId": "release",
+            "status": "inconclusive",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          },
+          {
+            "id": "no-cancelled-booking",
+            "label": "Cancellation created no protected booking",
+            "actionId": "release",
+            "status": "inconclusive",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          }
+        ],
+        "status": "failed",
+        "outcome": null,
+        "execution": {
+          "version": "passage-temporal-execution/v1",
+          "id": "9c24d2bc-dace-4e5f-b88f-693125ba3f63",
+          "identity": {
+            "executionId": "9c24d2bc-dace-4e5f-b88f-693125ba3f63",
+            "sourceDigest": "0e44389ba8265017b6ccd4e240a0e61068427a796f4607226c995010c6a23c43",
+            "buildId": "ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde",
+            "sessionId": "9aae1678-9d24-4db6-9e3c-82b349834d9b",
+            "adapter": "authored-fixture-temporal-v1",
+            "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed"
+          },
+          "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+          "status": "failed",
+          "passed": false,
+          "startedAt": "2026-10-28T13:21:14.481Z",
+          "completedAt": "2026-10-28T13:21:14.520Z",
+          "durationMs": 39,
+          "actionsExecuted": [
+            "reach-trigger",
+            "open",
+            "opened",
+            "explore-forward",
+            "explore-back"
+          ],
+          "checks": [
+            {
+              "id": "opening-preserves-value",
+              "label": "Opening does not commit a choice",
+              "actionId": "opened",
+              "status": "passed",
+              "expected": "",
+              "actual": "",
+              "traceSequence": 16
+            },
+            {
+              "id": "action:activate-choice",
+              "label": "Activate the intended appointment with Enter",
+              "actionId": "activate-choice",
+              "status": "failed",
+              "expected": "The approved action is operable from the observed keyboard state.",
+              "actual": "Target choice does not have actual keyboard focus.",
+              "traceSequence": 22
+            },
+            {
+              "id": "pending-preserves-value",
+              "label": "Pending selection has not committed",
+              "actionId": "pending",
+              "status": "not-run",
+              "expected": "Executed checkpoint and assertion.",
+              "actual": "Checkpoint was omitted or execution stopped."
+            },
+            {
+              "id": "cancel-restores-focus",
+              "label": "Cancellation closes and restores focus",
+              "actionId": "closed",
+              "status": "not-run",
+              "expected": "Executed checkpoint and assertion.",
+              "actual": "Checkpoint was omitted or execution stopped."
+            },
+            {
+              "id": "late-response-cannot-commit",
+              "label": "Cancelled response cannot commit a date",
+              "actionId": "release",
+              "status": "not-run",
+              "expected": "Executed checkpoint and assertion.",
+              "actual": "Checkpoint was omitted or execution stopped."
+            },
+            {
+              "id": "late-response-cannot-steal-focus",
+              "label": "Late completion retains closure and restored focus",
+              "actionId": "release",
+              "status": "not-run",
+              "expected": "Executed checkpoint and assertion.",
+              "actual": "Checkpoint was omitted or execution stopped."
+            },
+            {
+              "id": "no-cancelled-booking",
+              "label": "Cancellation created no protected booking",
+              "actionId": "release",
+              "status": "not-run",
+              "expected": "Executed checkpoint and assertion.",
+              "actual": "Checkpoint was omitted or execution stopped."
+            }
+          ],
+          "trace": [
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "GET /s/9aae1678-9d24-4db6-9e3c-82b349834d9b",
+              "requestId": "request-1",
+              "data": {
+                "url": "http://127.0.0.1:63754/s/9aae1678-9d24-4db6-9e3c-82b349834d9b",
+                "method": "GET",
+                "postData": null
+              },
+              "sequence": 1,
+              "at": "2026-10-28T13:21:13.925Z",
+              "elapsedMs": 38
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /s/9aae1678-9d24-4db6-9e3c-82b349834d9b",
+              "requestId": "request-1",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/s/9aae1678-9d24-4db6-9e3c-82b349834d9b"
+              },
+              "sequence": 2,
+              "at": "2026-10-28T13:21:13.933Z",
+              "elapsedMs": 46
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "GET /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css",
+              "requestId": "request-2",
+              "data": {
+                "url": "http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css",
+                "method": "GET",
+                "postData": null
+              },
+              "sequence": 3,
+              "at": "2026-10-28T13:21:13.940Z",
+              "elapsedMs": 53
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "GET /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js",
+              "requestId": "request-3",
+              "data": {
+                "url": "http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js",
+                "method": "GET",
+                "postData": null
+              },
+              "sequence": 4,
+              "at": "2026-10-28T13:21:13.940Z",
+              "elapsedMs": 53
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css",
+              "requestId": "request-2",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/style.css"
+              },
+              "sequence": 5,
+              "at": "2026-10-28T13:21:13.942Z",
+              "elapsedMs": 55
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js",
+              "requestId": "request-3",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/b/ec441017b1c37e7ce6aebb49529fef02ca61f3b9bc4be4588240952053119bde/bundle.js"
+              },
+              "sequence": 6,
+              "at": "2026-10-28T13:21:13.945Z",
+              "elapsedMs": 58
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "focus",
+              "label": "focusin",
+              "target": "body",
+              "data": {
+                "trusted": true
+              },
+              "sequence": 7,
+              "at": "2026-10-28T13:21:14.476Z",
+              "elapsedMs": 589
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Reset initial keyboard origin to document body",
+              "data": {
+                "setup": true
+              },
+              "sequence": 8,
+              "at": "2026-10-28T13:21:14.480Z",
+              "elapsedMs": 593
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Tab to the appointment control",
+              "actionId": "reach-trigger",
+              "data": {
+                "kind": "press",
+                "key": "Tab"
+              },
+              "sequence": 9,
+              "at": "2026-10-28T13:21:14.487Z",
+              "elapsedMs": 600
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "body",
+              "data": {
+                "key": "Tab",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 10,
+              "at": "2026-10-28T13:21:14.493Z",
+              "elapsedMs": 606
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "focus",
+              "label": "focusin",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "trusted": true
+              },
+              "sequence": 11,
+              "at": "2026-10-28T13:21:14.495Z",
+              "elapsedMs": 608
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Open appointments with Enter",
+              "actionId": "open",
+              "data": {
+                "kind": "press",
+                "key": "Enter"
+              },
+              "sequence": 12,
+              "at": "2026-10-28T13:21:14.497Z",
+              "elapsedMs": 610
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "key": "Enter",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 13,
+              "at": "2026-10-28T13:21:14.507Z",
+              "elapsedMs": 620
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "click",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 14,
+              "at": "2026-10-28T13:21:14.508Z",
+              "elapsedMs": 621
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Observe the opened dialog",
+              "actionId": "opened",
+              "data": {
+                "kind": "waitFor"
+              },
+              "sequence": 15,
+              "at": "2026-10-28T13:21:14.511Z",
+              "elapsedMs": 624
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Opening does not commit a choice",
+              "actionId": "opened",
+              "data": {
+                "assertionId": "opening-preserves-value",
+                "status": "passed",
+                "expected": "",
+                "actual": ""
+              },
+              "sequence": 16,
+              "at": "2026-10-28T13:21:14.513Z",
+              "elapsedMs": 626
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Explore the next appointment",
+              "actionId": "explore-forward",
+              "data": {
+                "kind": "press",
+                "key": "ArrowRight"
+              },
+              "sequence": 17,
+              "at": "2026-10-28T13:21:14.513Z",
+              "elapsedMs": 626
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "key": "ArrowRight",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 18,
+              "at": "2026-10-28T13:21:14.515Z",
+              "elapsedMs": 628
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Return to the intended appointment",
+              "actionId": "explore-back",
+              "data": {
+                "kind": "press",
+                "key": "ArrowLeft"
+              },
+              "sequence": 19,
+              "at": "2026-10-28T13:21:14.515Z",
+              "elapsedMs": 628
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "key": "ArrowLeft",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 20,
+              "at": "2026-10-28T13:21:14.516Z",
+              "elapsedMs": 629
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Activate the intended appointment with Enter",
+              "actionId": "activate-choice",
+              "data": {
+                "kind": "press",
+                "key": "Enter"
+              },
+              "sequence": 21,
+              "at": "2026-10-28T13:21:14.516Z",
+              "elapsedMs": 629
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Blocked: Activate the intended appointment with Enter",
+              "actionId": "activate-choice",
+              "data": {
+                "status": "failed",
+                "code": "focus-unreachable",
+                "actual": "Target choice does not have actual keyboard focus."
+              },
+              "sequence": 22,
+              "at": "2026-10-28T13:21:14.520Z",
+              "elapsedMs": 633
+            }
+          ],
+          "failureSignature": "action:activate-choice:focus-unreachable",
+          "limitations": [
+            "Bounded browser and protected outcome checks; no claim of formal verification.",
+            "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+            "Contract approval: operator; authored-development."
+          ]
+        },
+        "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+        "limitations": [
+          "Bounded browser and protected outcome checks; no claim of formal verification.",
+          "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+          "Contract approval: operator; authored-development."
+        ],
+        "counterexample": {
+          "summary": "Target choice does not have actual keyboard focus.",
+          "events": [
+            {
+              "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:21",
+              "sequence": 21,
+              "atMs": 629,
+              "kind": "action",
+              "label": "Activate the intended appointment with Enter",
+              "detail": "{\"kind\":\"press\",\"key\":\"Enter\"}",
+              "provenance": "controller"
+            },
+            {
+              "id": "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:22",
+              "sequence": 22,
+              "atMs": 633,
+              "kind": "assertion",
+              "label": "Blocked: Activate the intended appointment with Enter",
+              "detail": "{\"status\":\"failed\",\"code\":\"focus-unreachable\",\"actual\":\"Target choice does not have actual keyboard focus.\"}",
+              "provenance": "controller"
+            }
+          ],
+          "attempts": 0,
+          "minimal": false
+        }
+      }
+    ],
+    "verifications": [
+      {
+        "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0",
+        "createdAt": "2026-10-28T13:21:33.020Z",
+        "variant": "reference",
+        "scheduleId": "cancel-pending",
+        "sourceDigest": "1c85e75ab70b21a2e824adfaa672ade87a6975e799823769dfe5644378b22420",
+        "buildId": "e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2",
+        "previewUrl": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+        "trace": [
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:1",
+            "sequence": 1,
+            "atMs": 32,
+            "kind": "request",
+            "label": "GET /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f\",\"method\":\"GET\",\"postData\":null}",
+            "provenance": "browser-network",
+            "correlationId": "request-1"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:2",
+            "sequence": 2,
+            "atMs": 41,
+            "kind": "response",
+            "label": "200 /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-1"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:3",
+            "sequence": 3,
+            "atMs": 51,
+            "kind": "request",
+            "label": "GET /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css\",\"method\":\"GET\",\"postData\":null}",
+            "provenance": "browser-network",
+            "correlationId": "request-2"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:4",
+            "sequence": 4,
+            "atMs": 52,
+            "kind": "request",
+            "label": "GET /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js\",\"method\":\"GET\",\"postData\":null}",
+            "provenance": "browser-network",
+            "correlationId": "request-3"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:5",
+            "sequence": 5,
+            "atMs": 53,
+            "kind": "response",
+            "label": "200 /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-2"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:6",
+            "sequence": 6,
+            "atMs": 57,
+            "kind": "response",
+            "label": "200 /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-3"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:7",
+            "sequence": 7,
+            "atMs": 588,
+            "kind": "focus",
+            "label": "focusin",
+            "detail": "{\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "body"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:8",
+            "sequence": 8,
+            "atMs": 595,
+            "kind": "action",
+            "label": "Reset initial keyboard origin to document body",
+            "detail": "{\"setup\":true}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:9",
+            "sequence": 9,
+            "atMs": 600,
+            "kind": "action",
+            "label": "Tab to the appointment control",
+            "detail": "{\"kind\":\"press\",\"key\":\"Tab\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:10",
+            "sequence": 10,
+            "atMs": 606,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"Tab\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "body"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:11",
+            "sequence": 11,
+            "atMs": 607,
+            "kind": "focus",
+            "label": "focusin",
+            "detail": "{\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:12",
+            "sequence": 12,
+            "atMs": 609,
+            "kind": "action",
+            "label": "Open appointments with Enter",
+            "detail": "{\"kind\":\"press\",\"key\":\"Enter\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:13",
+            "sequence": 13,
+            "atMs": 621,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"Enter\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:14",
+            "sequence": 14,
+            "atMs": 621,
+            "kind": "action",
+            "label": "click",
+            "detail": "{\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:15",
+            "sequence": 15,
+            "atMs": 624,
+            "kind": "focus",
+            "label": "focusin",
+            "detail": "{\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "button[data-date=\"2026-11-16\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:16",
+            "sequence": 16,
+            "atMs": 625,
+            "kind": "action",
+            "label": "Observe the opened dialog",
+            "detail": "{\"kind\":\"waitFor\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:17",
+            "sequence": 17,
+            "atMs": 627,
+            "kind": "assertion",
+            "label": "Opening does not commit a choice",
+            "detail": "{\"assertionId\":\"opening-preserves-value\",\"status\":\"passed\",\"expected\":\"\",\"actual\":\"\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:18",
+            "sequence": 18,
+            "atMs": 627,
+            "kind": "action",
+            "label": "Activate the intended appointment with Enter",
+            "detail": "{\"kind\":\"press\",\"key\":\"Enter\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:19",
+            "sequence": 19,
+            "atMs": 631,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"Enter\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "button[data-date=\"2026-11-16\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:20",
+            "sequence": 20,
+            "atMs": 631,
+            "kind": "action",
+            "label": "click",
+            "detail": "{\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "button[data-date=\"2026-11-16\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:21",
+            "sequence": 21,
+            "atMs": 633,
+            "kind": "request",
+            "label": "POST /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability\",\"method\":\"POST\",\"postData\":\"{\\\"date\\\":\\\"2026-11-16\\\"}\"}",
+            "provenance": "browser-network",
+            "correlationId": "request-4"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:22",
+            "sequence": 22,
+            "atMs": 634,
+            "kind": "action",
+            "label": "Observe an actual pending availability request",
+            "detail": "{\"kind\":\"event\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:23",
+            "sequence": 23,
+            "atMs": 634,
+            "kind": "dom",
+            "label": "Observed actual pending availability request",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:24",
+            "sequence": 24,
+            "atMs": 634,
+            "kind": "dom",
+            "label": "Completed availability.pending",
+            "detail": "Observed browser event.",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:25",
+            "sequence": 25,
+            "atMs": 637,
+            "kind": "assertion",
+            "label": "Pending selection has not committed",
+            "detail": "{\"assertionId\":\"pending-preserves-value\",\"status\":\"passed\",\"expected\":\"\",\"actual\":\"\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:26",
+            "sequence": 26,
+            "atMs": 637,
+            "kind": "action",
+            "label": "Press Escape while the real response is held",
+            "detail": "{\"kind\":\"press\",\"key\":\"Escape\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:27",
+            "sequence": 27,
+            "atMs": 638,
+            "kind": "action",
+            "label": "keydown",
+            "detail": "{\"key\":\"Escape\",\"shiftKey\":false,\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "button[data-date=\"2026-11-16\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:28",
+            "sequence": 28,
+            "atMs": 638,
+            "kind": "focus",
+            "label": "focusin",
+            "detail": "{\"trusted\":true}",
+            "provenance": "page-instrumentation",
+            "binding": "[data-testid=\"slot-trigger\"]"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:29",
+            "sequence": 29,
+            "atMs": 639,
+            "kind": "action",
+            "label": "Observe closure before releasing the response",
+            "detail": "{\"kind\":\"waitFor\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:30",
+            "sequence": 30,
+            "atMs": 641,
+            "kind": "assertion",
+            "label": "Cancellation closes and restores focus",
+            "detail": "{\"assertionId\":\"cancel-restores-focus\",\"status\":\"passed\",\"expected\":\"Panel closed and focus returned to the surviving trigger.\",\"actual\":\"Panel closed; trigger focused.\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:31",
+            "sequence": 31,
+            "atMs": 641,
+            "kind": "action",
+            "label": "Deliver the actual protected availability response",
+            "detail": "{\"kind\":\"event\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:32",
+            "sequence": 32,
+            "atMs": 763,
+            "kind": "response",
+            "label": "200 /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+            "detail": "{\"status\":200,\"url\":\"http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability\",\"body\":{\"available\":true}}",
+            "provenance": "browser-network",
+            "correlationId": "request-4"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:33",
+            "sequence": 33,
+            "atMs": 767,
+            "kind": "dom",
+            "label": "Delivered actual protected availability response",
+            "detail": "{\"url\":\"http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability\",\"status\":200}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:34",
+            "sequence": 34,
+            "atMs": 767,
+            "kind": "dom",
+            "label": "Completed availability.release",
+            "detail": "Observed browser event.",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:35",
+            "sequence": 35,
+            "atMs": 768,
+            "kind": "assertion",
+            "label": "Cancelled response cannot commit a date",
+            "detail": "{\"assertionId\":\"late-response-cannot-commit\",\"status\":\"passed\",\"expected\":\"\",\"actual\":\"\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:36",
+            "sequence": 36,
+            "atMs": 771,
+            "kind": "assertion",
+            "label": "Late completion retains closure and restored focus",
+            "detail": "{\"assertionId\":\"late-response-cannot-steal-focus\",\"status\":\"passed\",\"expected\":\"Panel closed and focus returned to the surviving trigger.\",\"actual\":\"Panel closed; trigger focused.\"}",
+            "provenance": "controller"
+          },
+          {
+            "id": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0:37",
+            "sequence": 37,
+            "atMs": 771,
+            "kind": "assertion",
+            "label": "Cancellation created no protected booking",
+            "detail": "{\"assertionId\":\"no-cancelled-booking\",\"status\":\"passed\",\"expected\":\"0 protected record(s) matching {}.\",\"actual\":\"0 record(s) from FixtureHost protected session 2a8140bd-891b-4fef-90dc-75ac5a2b0f0f: []\"}",
+            "provenance": "controller"
+          }
+        ],
+        "checks": [
+          {
+            "id": "opening-preserves-value",
+            "label": "Opening does not commit a choice",
+            "actionId": "opened",
+            "status": "passed",
+            "expected": "",
+            "actual": "",
+            "traceSequence": 17
+          },
+          {
+            "id": "pending-preserves-value",
+            "label": "Pending selection has not committed",
+            "actionId": "pending",
+            "status": "passed",
+            "expected": "",
+            "actual": "",
+            "traceSequence": 25
+          },
+          {
+            "id": "cancel-restores-focus",
+            "label": "Cancellation closes and restores focus",
+            "actionId": "closed",
+            "status": "passed",
+            "expected": "Panel closed and focus returned to the surviving trigger.",
+            "actual": "Panel closed; trigger focused.",
+            "traceSequence": 30
+          },
+          {
+            "id": "late-response-cannot-commit",
+            "label": "Cancelled response cannot commit a date",
+            "actionId": "release",
+            "status": "passed",
+            "expected": "",
+            "actual": "",
+            "traceSequence": 35
+          },
+          {
+            "id": "late-response-cannot-steal-focus",
+            "label": "Late completion retains closure and restored focus",
+            "actionId": "release",
+            "status": "passed",
+            "expected": "Panel closed and focus returned to the surviving trigger.",
+            "actual": "Panel closed; trigger focused.",
+            "traceSequence": 36
+          },
+          {
+            "id": "no-cancelled-booking",
+            "label": "Cancellation created no protected booking",
+            "actionId": "release",
+            "status": "passed",
+            "expected": "0 protected record(s) matching {}.",
+            "actual": "0 record(s) from FixtureHost protected session 2a8140bd-891b-4fef-90dc-75ac5a2b0f0f: []",
+            "traceSequence": 37
+          }
+        ],
+        "status": "passed",
+        "outcome": null,
+        "execution": {
+          "version": "passage-temporal-execution/v1",
+          "id": "f74d0198-0ad3-4bce-bdd5-da625131c845",
+          "identity": {
+            "executionId": "f74d0198-0ad3-4bce-bdd5-da625131c845",
+            "sourceDigest": "1c85e75ab70b21a2e824adfaa672ade87a6975e799823769dfe5644378b22420",
+            "buildId": "e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2",
+            "sessionId": "2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+            "adapter": "authored-fixture-temporal-v1",
+            "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed"
+          },
+          "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+          "status": "passed",
+          "passed": true,
+          "startedAt": "2026-10-28T13:21:32.819Z",
+          "completedAt": "2026-10-28T13:21:32.996Z",
+          "durationMs": 177,
+          "actionsExecuted": [
+            "reach-trigger",
+            "open",
+            "opened",
+            "activate-choice",
+            "pending",
+            "cancel",
+            "closed",
+            "release"
+          ],
+          "checks": [
+            {
+              "id": "opening-preserves-value",
+              "label": "Opening does not commit a choice",
+              "actionId": "opened",
+              "status": "passed",
+              "expected": "",
+              "actual": "",
+              "traceSequence": 17
+            },
+            {
+              "id": "pending-preserves-value",
+              "label": "Pending selection has not committed",
+              "actionId": "pending",
+              "status": "passed",
+              "expected": "",
+              "actual": "",
+              "traceSequence": 25
+            },
+            {
+              "id": "cancel-restores-focus",
+              "label": "Cancellation closes and restores focus",
+              "actionId": "closed",
+              "status": "passed",
+              "expected": "Panel closed and focus returned to the surviving trigger.",
+              "actual": "Panel closed; trigger focused.",
+              "traceSequence": 30
+            },
+            {
+              "id": "late-response-cannot-commit",
+              "label": "Cancelled response cannot commit a date",
+              "actionId": "release",
+              "status": "passed",
+              "expected": "",
+              "actual": "",
+              "traceSequence": 35
+            },
+            {
+              "id": "late-response-cannot-steal-focus",
+              "label": "Late completion retains closure and restored focus",
+              "actionId": "release",
+              "status": "passed",
+              "expected": "Panel closed and focus returned to the surviving trigger.",
+              "actual": "Panel closed; trigger focused.",
+              "traceSequence": 36
+            },
+            {
+              "id": "no-cancelled-booking",
+              "label": "Cancellation created no protected booking",
+              "actionId": "release",
+              "status": "passed",
+              "expected": "0 protected record(s) matching {}.",
+              "actual": "0 record(s) from FixtureHost protected session 2a8140bd-891b-4fef-90dc-75ac5a2b0f0f: []",
+              "traceSequence": 37
+            }
+          ],
+          "trace": [
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "GET /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+              "requestId": "request-1",
+              "data": {
+                "url": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+                "method": "GET",
+                "postData": null
+              },
+              "sequence": 1,
+              "at": "2026-10-28T13:21:32.256Z",
+              "elapsedMs": 32
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f",
+              "requestId": "request-1",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f"
+              },
+              "sequence": 2,
+              "at": "2026-10-28T13:21:32.265Z",
+              "elapsedMs": 41
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "GET /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css",
+              "requestId": "request-2",
+              "data": {
+                "url": "http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css",
+                "method": "GET",
+                "postData": null
+              },
+              "sequence": 3,
+              "at": "2026-10-28T13:21:32.275Z",
+              "elapsedMs": 51
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "GET /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js",
+              "requestId": "request-3",
+              "data": {
+                "url": "http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js",
+                "method": "GET",
+                "postData": null
+              },
+              "sequence": 4,
+              "at": "2026-10-28T13:21:32.276Z",
+              "elapsedMs": 52
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css",
+              "requestId": "request-2",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/style.css"
+              },
+              "sequence": 5,
+              "at": "2026-10-28T13:21:32.277Z",
+              "elapsedMs": 53
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js",
+              "requestId": "request-3",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/b/e1e1c2dab64070263b7e156816f9c4afafebff913918d5aa23667f6e1b4fa4b2/bundle.js"
+              },
+              "sequence": 6,
+              "at": "2026-10-28T13:21:32.281Z",
+              "elapsedMs": 57
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "focus",
+              "label": "focusin",
+              "target": "body",
+              "data": {
+                "trusted": true
+              },
+              "sequence": 7,
+              "at": "2026-10-28T13:21:32.812Z",
+              "elapsedMs": 588
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Reset initial keyboard origin to document body",
+              "data": {
+                "setup": true
+              },
+              "sequence": 8,
+              "at": "2026-10-28T13:21:32.819Z",
+              "elapsedMs": 595
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Tab to the appointment control",
+              "actionId": "reach-trigger",
+              "data": {
+                "kind": "press",
+                "key": "Tab"
+              },
+              "sequence": 9,
+              "at": "2026-10-28T13:21:32.824Z",
+              "elapsedMs": 600
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "body",
+              "data": {
+                "key": "Tab",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 10,
+              "at": "2026-10-28T13:21:32.830Z",
+              "elapsedMs": 606
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "focus",
+              "label": "focusin",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "trusted": true
+              },
+              "sequence": 11,
+              "at": "2026-10-28T13:21:32.831Z",
+              "elapsedMs": 607
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Open appointments with Enter",
+              "actionId": "open",
+              "data": {
+                "kind": "press",
+                "key": "Enter"
+              },
+              "sequence": 12,
+              "at": "2026-10-28T13:21:32.833Z",
+              "elapsedMs": 609
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "key": "Enter",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 13,
+              "at": "2026-10-28T13:21:32.845Z",
+              "elapsedMs": 621
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "click",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 14,
+              "at": "2026-10-28T13:21:32.845Z",
+              "elapsedMs": 621
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "focus",
+              "label": "focusin",
+              "target": "button[data-date=\"2026-11-16\"]",
+              "data": {
+                "trusted": true
+              },
+              "sequence": 15,
+              "at": "2026-10-28T13:21:32.848Z",
+              "elapsedMs": 624
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Observe the opened dialog",
+              "actionId": "opened",
+              "data": {
+                "kind": "waitFor"
+              },
+              "sequence": 16,
+              "at": "2026-10-28T13:21:32.849Z",
+              "elapsedMs": 625
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Opening does not commit a choice",
+              "actionId": "opened",
+              "data": {
+                "assertionId": "opening-preserves-value",
+                "status": "passed",
+                "expected": "",
+                "actual": ""
+              },
+              "sequence": 17,
+              "at": "2026-10-28T13:21:32.851Z",
+              "elapsedMs": 627
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Activate the intended appointment with Enter",
+              "actionId": "activate-choice",
+              "data": {
+                "kind": "press",
+                "key": "Enter"
+              },
+              "sequence": 18,
+              "at": "2026-10-28T13:21:32.851Z",
+              "elapsedMs": 627
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "button[data-date=\"2026-11-16\"]",
+              "data": {
+                "key": "Enter",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 19,
+              "at": "2026-10-28T13:21:32.855Z",
+              "elapsedMs": 631
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "click",
+              "target": "button[data-date=\"2026-11-16\"]",
+              "data": {
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 20,
+              "at": "2026-10-28T13:21:32.855Z",
+              "elapsedMs": 631
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "request",
+              "label": "POST /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+              "requestId": "request-4",
+              "data": {
+                "url": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+                "method": "POST",
+                "postData": "{\"date\":\"2026-11-16\"}"
+              },
+              "sequence": 21,
+              "at": "2026-10-28T13:21:32.857Z",
+              "elapsedMs": 633
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Observe an actual pending availability request",
+              "actionId": "pending",
+              "data": {
+                "kind": "event"
+              },
+              "sequence": 22,
+              "at": "2026-10-28T13:21:32.858Z",
+              "elapsedMs": 634
+            },
+            {
+              "provenance": "controller",
+              "kind": "event",
+              "label": "Observed actual pending availability request",
+              "data": {
+                "url": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability"
+              },
+              "sequence": 23,
+              "at": "2026-10-28T13:21:32.858Z",
+              "elapsedMs": 634
+            },
+            {
+              "provenance": "controller",
+              "kind": "event",
+              "label": "Completed availability.pending",
+              "actionId": "pending",
+              "sequence": 24,
+              "at": "2026-10-28T13:21:32.858Z",
+              "elapsedMs": 634
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Pending selection has not committed",
+              "actionId": "pending",
+              "data": {
+                "assertionId": "pending-preserves-value",
+                "status": "passed",
+                "expected": "",
+                "actual": ""
+              },
+              "sequence": 25,
+              "at": "2026-10-28T13:21:32.861Z",
+              "elapsedMs": 637
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Press Escape while the real response is held",
+              "actionId": "cancel",
+              "data": {
+                "kind": "press",
+                "key": "Escape"
+              },
+              "sequence": 26,
+              "at": "2026-10-28T13:21:32.861Z",
+              "elapsedMs": 637
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "action",
+              "label": "keydown",
+              "target": "button[data-date=\"2026-11-16\"]",
+              "data": {
+                "key": "Escape",
+                "shiftKey": false,
+                "trusted": true
+              },
+              "sequence": 27,
+              "at": "2026-10-28T13:21:32.862Z",
+              "elapsedMs": 638
+            },
+            {
+              "provenance": "page-instrumentation",
+              "kind": "focus",
+              "label": "focusin",
+              "target": "[data-testid=\"slot-trigger\"]",
+              "data": {
+                "trusted": true
+              },
+              "sequence": 28,
+              "at": "2026-10-28T13:21:32.862Z",
+              "elapsedMs": 638
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Observe closure before releasing the response",
+              "actionId": "closed",
+              "data": {
+                "kind": "waitFor"
+              },
+              "sequence": 29,
+              "at": "2026-10-28T13:21:32.863Z",
+              "elapsedMs": 639
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Cancellation closes and restores focus",
+              "actionId": "closed",
+              "data": {
+                "assertionId": "cancel-restores-focus",
+                "status": "passed",
+                "expected": "Panel closed and focus returned to the surviving trigger.",
+                "actual": "Panel closed; trigger focused."
+              },
+              "sequence": 30,
+              "at": "2026-10-28T13:21:32.865Z",
+              "elapsedMs": 641
+            },
+            {
+              "provenance": "controller",
+              "kind": "action",
+              "label": "Deliver the actual protected availability response",
+              "actionId": "release",
+              "data": {
+                "kind": "event"
+              },
+              "sequence": 31,
+              "at": "2026-10-28T13:21:32.865Z",
+              "elapsedMs": 641
+            },
+            {
+              "provenance": "browser-network",
+              "kind": "response",
+              "label": "200 /s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+              "requestId": "request-4",
+              "data": {
+                "status": 200,
+                "url": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+                "body": {
+                  "available": true
+                }
+              },
+              "sequence": 32,
+              "at": "2026-10-28T13:21:32.987Z",
+              "elapsedMs": 763
+            },
+            {
+              "provenance": "controller",
+              "kind": "event",
+              "label": "Delivered actual protected availability response",
+              "data": {
+                "url": "http://127.0.0.1:63754/s/2a8140bd-891b-4fef-90dc-75ac5a2b0f0f/availability",
+                "status": 200
+              },
+              "sequence": 33,
+              "at": "2026-10-28T13:21:32.991Z",
+              "elapsedMs": 767
+            },
+            {
+              "provenance": "controller",
+              "kind": "event",
+              "label": "Completed availability.release",
+              "actionId": "release",
+              "sequence": 34,
+              "at": "2026-10-28T13:21:32.991Z",
+              "elapsedMs": 767
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Cancelled response cannot commit a date",
+              "actionId": "release",
+              "data": {
+                "assertionId": "late-response-cannot-commit",
+                "status": "passed",
+                "expected": "",
+                "actual": ""
+              },
+              "sequence": 35,
+              "at": "2026-10-28T13:21:32.992Z",
+              "elapsedMs": 768
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Late completion retains closure and restored focus",
+              "actionId": "release",
+              "data": {
+                "assertionId": "late-response-cannot-steal-focus",
+                "status": "passed",
+                "expected": "Panel closed and focus returned to the surviving trigger.",
+                "actual": "Panel closed; trigger focused."
+              },
+              "sequence": 36,
+              "at": "2026-10-28T13:21:32.995Z",
+              "elapsedMs": 771
+            },
+            {
+              "provenance": "controller",
+              "kind": "assertion",
+              "label": "Cancellation created no protected booking",
+              "actionId": "release",
+              "data": {
+                "assertionId": "no-cancelled-booking",
+                "status": "passed",
+                "expected": "0 protected record(s) matching {}.",
+                "actual": "0 record(s) from FixtureHost protected session 2a8140bd-891b-4fef-90dc-75ac5a2b0f0f: []"
+              },
+              "sequence": 37,
+              "at": "2026-10-28T13:21:32.995Z",
+              "elapsedMs": 771
+            }
+          ],
+          "failureSignature": null,
+          "limitations": [
+            "Bounded browser and protected outcome checks; no claim of formal verification.",
+            "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+            "Contract approval: operator; authored-development."
+          ]
+        },
+        "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+        "limitations": [
+          "Bounded browser and protected outcome checks; no claim of formal verification.",
+          "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+          "Contract approval: operator; authored-development."
+        ],
+        "scheduleProposal": {
+          "id": "public-probe_7a0a3f2a-aa03-4bd9-868c-2d33cebb6bd4",
+          "label": "Cancel pending appointment schedule",
+          "steps": [
+            "reach-trigger",
+            "open",
+            "opened",
+            "activate-choice",
+            "pending",
+            "cancel",
+            "closed",
+            "release"
+          ],
+          "receipt": {
+            "provider": "fireworks",
+            "purpose": "development",
+            "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+            "generation": {
+              "responseFormat": "prompt_schema",
+              "maxOutputTokens": 32000,
+              "timeoutMs": 480000,
+              "reasoningEffort": "high"
+            },
+            "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+            "requestId": "chatcmpl-5a19d351e7ac42b1a63aedc763bb7397",
+            "promptVersion": "passage-bounded-schedule-v1",
+            "temperature": 0.2,
+            "inputTokens": 4627,
+            "outputTokens": 1959,
+            "durationMs": 17170,
+            "startedAt": "2026-10-28T13:21:14.618Z",
+            "completedAt": "2026-10-28T13:21:31.787Z",
+            "live": true,
+            "finalOutputDigest": "5ac983df4620f220268afe40decc30cdd3550c83d8a83525400bfb8cd02522c2"
+          }
+        }
+      }
+    ],
+    "revisions": [],
+    "drafts": [
+      {
+        "id": "contract-draft_65774b2e-9441-4eec-bb2a-596774797eff",
+        "version": 1,
+        "digest": "e6dc8fd307501c9b08eca94b6b2e4ccc2663d127bb1b593406bf93c29bf7649b",
+        "createdAt": "2026-10-28T13:21:14.608Z",
+        "method": "observed",
+        "summary": "Observed actions are linked to bounded development requirements. Each requirement remains inferred until the operator confirms its intent and bindings.",
+        "obligations": [
+          {
+            "id": "baseline:opening-preserves-value",
+            "text": "Opening does not commit a choice",
+            "origin": "inferred",
+            "evidenceRefs": [
+              "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:16"
+            ],
+            "assertionIds": [
+              "opening-preserves-value"
+            ]
+          },
+          {
+            "id": "baseline:explicit-choice-committed",
+            "text": "Committed date matches the explicit choice",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "explicit-choice-committed"
+            ]
+          },
+          {
+            "id": "baseline:selection-restores-focus",
+            "text": "Selection restores focus to the trigger",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "selection-restores-focus"
+            ]
+          },
+          {
+            "id": "baseline:protected-correct-single-outcome",
+            "text": "Exactly one protected record matches the explicit choice",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "protected-correct-single-outcome"
+            ]
+          },
+          {
+            "id": "baseline:confirmation-focus",
+            "text": "Focus reaches the stored confirmation",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "confirmation-focus"
+            ]
+          },
+          {
+            "id": "cancel-pending:opening-preserves-value",
+            "text": "Opening does not commit a choice",
+            "origin": "inferred",
+            "evidenceRefs": [
+              "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:16"
+            ],
+            "assertionIds": [
+              "opening-preserves-value"
+            ]
+          },
+          {
+            "id": "cancel-pending:pending-preserves-value",
+            "text": "Pending selection has not committed",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "pending-preserves-value"
+            ]
+          },
+          {
+            "id": "cancel-pending:cancel-restores-focus",
+            "text": "Cancellation closes and restores focus",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "cancel-restores-focus"
+            ]
+          },
+          {
+            "id": "cancel-pending:late-response-cannot-commit",
+            "text": "Cancelled response cannot commit a date",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "late-response-cannot-commit"
+            ]
+          },
+          {
+            "id": "cancel-pending:late-response-cannot-steal-focus",
+            "text": "Late completion retains closure and restored focus",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "late-response-cannot-steal-focus"
+            ]
+          },
+          {
+            "id": "cancel-pending:no-cancelled-booking",
+            "text": "Cancellation created no protected booking",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "no-cancelled-booking"
+            ]
+          },
+          {
+            "id": "modal-boundary:opening-preserves-value",
+            "text": "Opening does not commit a choice",
+            "origin": "inferred",
+            "evidenceRefs": [
+              "capture_55b8a489-c764-4ab5-a1cb-2f7d50b58808:16"
+            ],
+            "assertionIds": [
+              "opening-preserves-value"
+            ]
+          },
+          {
+            "id": "modal-boundary:modal-focus-contained",
+            "text": "Tab and reverse Tab stay inside the modal",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "modal-focus-contained"
+            ]
+          },
+          {
+            "id": "modal-boundary:closure-restores-focus",
+            "text": "Closure restores focus to the trigger",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "closure-restores-focus"
+            ]
+          },
+          {
+            "id": "modal-boundary:cancel-preserves-value",
+            "text": "Closing preserves the original value",
+            "origin": "inferred",
+            "evidenceRefs": [],
+            "assertionIds": [
+              "cancel-preserves-value"
+            ]
+          }
+        ],
+        "ambiguities": [
+          "Confirm that 16 November 2026 is the intended fictional date and that cancellation must preserve the previous choice.",
+          "Confirm that the calendar is modal and that closing it should return focus to its trigger.",
+          "Actual AT usability and independent human review remain unverified."
+        ],
+        "contract": {
+          "version": "passage-temporal/v1",
+          "id": "authored-appointment-baseline",
+          "revision": 1,
+          "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+          "bindings": {
+            "trigger": {
+              "kind": "testId",
+              "value": "slot-trigger"
+            },
+            "panel": {
+              "kind": "testId",
+              "value": "slot-panel"
+            },
+            "value": {
+              "kind": "testId",
+              "value": "selected-date",
+              "read": "value"
+            },
+            "choice": {
+              "kind": "css",
+              "value": "[data-date=\"2026-11-16\"]"
+            },
+            "name": {
+              "kind": "testId",
+              "value": "attendee-input",
+              "read": "value"
+            },
+            "confirm": {
+              "kind": "testId",
+              "value": "confirm-appointment"
+            },
+            "confirmation": {
+              "kind": "testId",
+              "value": "confirmation"
+            },
+            "confirmationHeading": {
+              "kind": "testId",
+              "value": "confirmation-heading"
+            }
+          },
+          "actions": [
+            {
+              "id": "reach-trigger",
+              "label": "Tab to the appointment control",
+              "required": true,
+              "kind": "press",
+              "key": "Tab"
+            },
+            {
+              "id": "open",
+              "label": "Open appointments with Enter",
+              "requires": [
+                "reach-trigger"
+              ],
+              "required": true,
+              "kind": "press",
+              "key": "Enter",
+              "binding": "trigger"
+            },
+            {
+              "id": "opened",
+              "label": "Observe the opened dialog",
+              "requires": [
+                "open"
+              ],
+              "required": true,
+              "kind": "waitFor",
+              "binding": "panel",
+              "state": "visible"
+            },
+            {
+              "id": "activate-choice",
+              "label": "Activate the intended appointment with Enter",
+              "requires": [
+                "opened"
+              ],
+              "required": true,
+              "kind": "press",
+              "key": "Enter",
+              "binding": "choice"
+            },
+            {
+              "id": "pending",
+              "label": "Observe an actual pending availability request",
+              "requires": [
+                "activate-choice"
+              ],
+              "required": true,
+              "kind": "event",
+              "event": "availability.pending"
+            },
+            {
+              "id": "release",
+              "label": "Deliver the actual protected availability response",
+              "requires": [
+                "pending"
+              ],
+              "required": true,
+              "kind": "event",
+              "event": "availability.release"
+            },
+            {
+              "id": "selection-closed",
+              "label": "Wait for committed selection to close the dialog",
+              "requires": [
+                "release"
+              ],
+              "required": true,
+              "kind": "waitFor",
+              "binding": "panel",
+              "state": "hidden"
+            },
+            {
+              "id": "reach-name",
+              "label": "Tab to the attendee name",
+              "requires": [
+                "selection-closed"
+              ],
+              "required": true,
+              "kind": "press",
+              "key": "Tab"
+            },
+            {
+              "id": "enter-name",
+              "label": "Enter the fictional attendee",
+              "requires": [
+                "reach-name"
+              ],
+              "required": true,
+              "kind": "fill",
+              "binding": "name",
+              "value": "Alex Morgan"
+            },
+            {
+              "id": "reach-confirm",
+              "label": "Tab to confirmation",
+              "requires": [
+                "enter-name"
+              ],
+              "required": true,
+              "kind": "press",
+              "key": "Tab"
+            },
+            {
+              "id": "confirm",
+              "label": "Confirm the requested appointment with Enter",
+              "requires": [
+                "reach-confirm"
+              ],
+              "required": true,
+              "kind": "press",
+              "key": "Enter",
+              "binding": "confirm"
+            },
+            {
+              "id": "saved",
+              "label": "Observe the real confirmation",
+              "requires": [
+                "confirm"
+              ],
+              "required": true,
+              "kind": "waitFor",
+              "binding": "confirmation",
+              "state": "visible"
+            }
+          ],
+          "assertions": [
+            {
+              "id": "opening-preserves-value",
+              "label": "Opening does not commit a choice",
+              "after": "opened",
+              "kind": "valuePreserved",
+              "binding": "value",
+              "since": "initial"
+            },
+            {
+              "id": "explicit-choice-committed",
+              "label": "Committed date matches the explicit choice",
+              "after": "selection-closed",
+              "kind": "valueEquals",
+              "binding": "value",
+              "expected": "2026-11-16"
+            },
+            {
+              "id": "selection-restores-focus",
+              "label": "Selection restores focus to the trigger",
+              "after": "selection-closed",
+              "kind": "closedFocusRestored",
+              "panel": "panel",
+              "trigger": "trigger"
+            },
+            {
+              "id": "protected-correct-single-outcome",
+              "label": "Exactly one protected record matches the explicit choice",
+              "after": "saved",
+              "kind": "outcome",
+              "expected": {
+                "date": "2026-11-16",
+                "attendee": "Alex Morgan"
+              },
+              "count": 1
+            },
+            {
+              "id": "confirmation-focus",
+              "label": "Focus reaches the stored confirmation",
+              "after": "saved",
+              "kind": "focusWithin",
+              "binding": "confirmationHeading"
+            }
+          ],
+          "allowedEvents": [
+            {
+              "id": "availability.pending",
+              "label": "Observe a pending availability request",
+              "requires": [
+                "activate-choice"
+              ]
+            },
+            {
+              "id": "availability.release",
+              "label": "Deliver the real held response",
+              "requires": [
+                "pending"
+              ]
+            }
+          ],
+          "bounds": {
+            "maxActions": 40,
+            "maxDurationMs": 15000,
+            "actionTimeoutMs": 3000
+          },
+          "digest": "209101309317d4058bffa9b1fc92e35a7a6dfeb2b1d2525cb4b95af5e2c02720",
+          "approval": {
+            "actor": "Passage development probe author",
+            "role": "operator",
+            "evidenceClass": "authored-development",
+            "approvedAt": "2026-10-28T13:21:14.607Z",
+            "digest": "209101309317d4058bffa9b1fc92e35a7a6dfeb2b1d2525cb4b95af5e2c02720"
+          }
+        },
+        "contractsBySchedule": {
+          "baseline": {
+            "version": "passage-temporal/v1",
+            "id": "authored-appointment-baseline",
+            "revision": 1,
+            "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+            "bindings": {
+              "trigger": {
+                "kind": "testId",
+                "value": "slot-trigger"
+              },
+              "panel": {
+                "kind": "testId",
+                "value": "slot-panel"
+              },
+              "value": {
+                "kind": "testId",
+                "value": "selected-date",
+                "read": "value"
+              },
+              "choice": {
+                "kind": "css",
+                "value": "[data-date=\"2026-11-16\"]"
+              },
+              "name": {
+                "kind": "testId",
+                "value": "attendee-input",
+                "read": "value"
+              },
+              "confirm": {
+                "kind": "testId",
+                "value": "confirm-appointment"
+              },
+              "confirmation": {
+                "kind": "testId",
+                "value": "confirmation"
+              },
+              "confirmationHeading": {
+                "kind": "testId",
+                "value": "confirmation-heading"
+              }
+            },
+            "actions": [
+              {
+                "id": "reach-trigger",
+                "label": "Tab to the appointment control",
+                "required": true,
+                "kind": "press",
+                "key": "Tab"
+              },
+              {
+                "id": "open",
+                "label": "Open appointments with Enter",
+                "requires": [
+                  "reach-trigger"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Enter",
+                "binding": "trigger"
+              },
+              {
+                "id": "opened",
+                "label": "Observe the opened dialog",
+                "requires": [
+                  "open"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "panel",
+                "state": "visible"
+              },
+              {
+                "id": "activate-choice",
+                "label": "Activate the intended appointment with Enter",
+                "requires": [
+                  "opened"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Enter",
+                "binding": "choice"
+              },
+              {
+                "id": "pending",
+                "label": "Observe an actual pending availability request",
+                "requires": [
+                  "activate-choice"
+                ],
+                "required": true,
+                "kind": "event",
+                "event": "availability.pending"
+              },
+              {
+                "id": "release",
+                "label": "Deliver the actual protected availability response",
+                "requires": [
+                  "pending"
+                ],
+                "required": true,
+                "kind": "event",
+                "event": "availability.release"
+              },
+              {
+                "id": "selection-closed",
+                "label": "Wait for committed selection to close the dialog",
+                "requires": [
+                  "release"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "panel",
+                "state": "hidden"
+              },
+              {
+                "id": "reach-name",
+                "label": "Tab to the attendee name",
+                "requires": [
+                  "selection-closed"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Tab"
+              },
+              {
+                "id": "enter-name",
+                "label": "Enter the fictional attendee",
+                "requires": [
+                  "reach-name"
+                ],
+                "required": true,
+                "kind": "fill",
+                "binding": "name",
+                "value": "Alex Morgan"
+              },
+              {
+                "id": "reach-confirm",
+                "label": "Tab to confirmation",
+                "requires": [
+                  "enter-name"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Tab"
+              },
+              {
+                "id": "confirm",
+                "label": "Confirm the requested appointment with Enter",
+                "requires": [
+                  "reach-confirm"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Enter",
+                "binding": "confirm"
+              },
+              {
+                "id": "saved",
+                "label": "Observe the real confirmation",
+                "requires": [
+                  "confirm"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "confirmation",
+                "state": "visible"
+              }
+            ],
+            "assertions": [
+              {
+                "id": "opening-preserves-value",
+                "label": "Opening does not commit a choice",
+                "after": "opened",
+                "kind": "valuePreserved",
+                "binding": "value",
+                "since": "initial"
+              },
+              {
+                "id": "explicit-choice-committed",
+                "label": "Committed date matches the explicit choice",
+                "after": "selection-closed",
+                "kind": "valueEquals",
+                "binding": "value",
+                "expected": "2026-11-16"
+              },
+              {
+                "id": "selection-restores-focus",
+                "label": "Selection restores focus to the trigger",
+                "after": "selection-closed",
+                "kind": "closedFocusRestored",
+                "panel": "panel",
+                "trigger": "trigger"
+              },
+              {
+                "id": "protected-correct-single-outcome",
+                "label": "Exactly one protected record matches the explicit choice",
+                "after": "saved",
+                "kind": "outcome",
+                "expected": {
+                  "date": "2026-11-16",
+                  "attendee": "Alex Morgan"
+                },
+                "count": 1
+              },
+              {
+                "id": "confirmation-focus",
+                "label": "Focus reaches the stored confirmation",
+                "after": "saved",
+                "kind": "focusWithin",
+                "binding": "confirmationHeading"
+              }
+            ],
+            "allowedEvents": [
+              {
+                "id": "availability.pending",
+                "label": "Observe a pending availability request",
+                "requires": [
+                  "activate-choice"
+                ]
+              },
+              {
+                "id": "availability.release",
+                "label": "Deliver the real held response",
+                "requires": [
+                  "pending"
+                ]
+              }
+            ],
+            "bounds": {
+              "maxActions": 40,
+              "maxDurationMs": 15000,
+              "actionTimeoutMs": 3000
+            },
+            "digest": "209101309317d4058bffa9b1fc92e35a7a6dfeb2b1d2525cb4b95af5e2c02720",
+            "approval": {
+              "actor": "Passage development probe author",
+              "role": "operator",
+              "evidenceClass": "authored-development",
+              "approvedAt": "2026-10-28T13:21:14.607Z",
+              "digest": "209101309317d4058bffa9b1fc92e35a7a6dfeb2b1d2525cb4b95af5e2c02720"
+            }
+          },
+          "cancel-pending": {
+            "version": "passage-temporal/v1",
+            "id": "authored-appointment-cancel-pending",
+            "revision": 1,
+            "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+            "bindings": {
+              "trigger": {
+                "kind": "testId",
+                "value": "slot-trigger"
+              },
+              "panel": {
+                "kind": "testId",
+                "value": "slot-panel"
+              },
+              "value": {
+                "kind": "testId",
+                "value": "selected-date",
+                "read": "value"
+              },
+              "choice": {
+                "kind": "css",
+                "value": "[data-date=\"2026-11-16\"]"
+              },
+              "name": {
+                "kind": "testId",
+                "value": "attendee-input",
+                "read": "value"
+              },
+              "confirm": {
+                "kind": "testId",
+                "value": "confirm-appointment"
+              },
+              "confirmation": {
+                "kind": "testId",
+                "value": "confirmation"
+              },
+              "confirmationHeading": {
+                "kind": "testId",
+                "value": "confirmation-heading"
+              }
+            },
+            "actions": [
+              {
+                "id": "reach-trigger",
+                "label": "Tab to the appointment control",
+                "required": true,
+                "kind": "press",
+                "key": "Tab"
+              },
+              {
+                "id": "open",
+                "label": "Open appointments with Enter",
+                "requires": [
+                  "reach-trigger"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Enter",
+                "binding": "trigger"
+              },
+              {
+                "id": "opened",
+                "label": "Observe the opened dialog",
+                "requires": [
+                  "open"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "panel",
+                "state": "visible"
+              },
+              {
+                "id": "explore-forward",
+                "label": "Explore the next appointment",
+                "requires": [
+                  "opened"
+                ],
+                "kind": "press",
+                "key": "ArrowRight"
+              },
+              {
+                "id": "explore-back",
+                "label": "Return to the intended appointment",
+                "requires": [
+                  "opened"
+                ],
+                "kind": "press",
+                "key": "ArrowLeft"
+              },
+              {
+                "id": "activate-choice",
+                "label": "Activate the intended appointment with Enter",
+                "requires": [
+                  "opened"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Enter",
+                "binding": "choice"
+              },
+              {
+                "id": "pending",
+                "label": "Observe an actual pending availability request",
+                "requires": [
+                  "activate-choice"
+                ],
+                "required": true,
+                "kind": "event",
+                "event": "availability.pending"
+              },
+              {
+                "id": "cancel",
+                "label": "Press Escape while the real response is held",
+                "requires": [
+                  "pending"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Escape"
+              },
+              {
+                "id": "closed",
+                "label": "Observe closure before releasing the response",
+                "requires": [
+                  "cancel"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "panel",
+                "state": "hidden"
+              },
+              {
+                "id": "release",
+                "label": "Deliver the actual protected availability response",
+                "requires": [
+                  "closed"
+                ],
+                "required": true,
+                "kind": "event",
+                "event": "availability.release"
+              }
+            ],
+            "assertions": [
+              {
+                "id": "opening-preserves-value",
+                "label": "Opening does not commit a choice",
+                "after": "opened",
+                "kind": "valuePreserved",
+                "binding": "value",
+                "since": "initial"
+              },
+              {
+                "id": "pending-preserves-value",
+                "label": "Pending selection has not committed",
+                "after": "pending",
+                "kind": "valuePreserved",
+                "binding": "value",
+                "since": "initial"
+              },
+              {
+                "id": "cancel-restores-focus",
+                "label": "Cancellation closes and restores focus",
+                "after": "closed",
+                "kind": "closedFocusRestored",
+                "panel": "panel",
+                "trigger": "trigger"
+              },
+              {
+                "id": "late-response-cannot-commit",
+                "label": "Cancelled response cannot commit a date",
+                "after": "release",
+                "kind": "valuePreserved",
+                "binding": "value",
+                "since": "initial"
+              },
+              {
+                "id": "late-response-cannot-steal-focus",
+                "label": "Late completion retains closure and restored focus",
+                "after": "release",
+                "kind": "closedFocusRestored",
+                "panel": "panel",
+                "trigger": "trigger"
+              },
+              {
+                "id": "no-cancelled-booking",
+                "label": "Cancellation created no protected booking",
+                "after": "release",
+                "kind": "outcome",
+                "expected": {},
+                "count": 0
+              }
+            ],
+            "allowedEvents": [
+              {
+                "id": "availability.pending",
+                "label": "Observe a pending availability request",
+                "requires": [
+                  "activate-choice"
+                ]
+              },
+              {
+                "id": "availability.release",
+                "label": "Deliver the real held response",
+                "requires": [
+                  "pending"
+                ]
+              }
+            ],
+            "bounds": {
+              "maxActions": 40,
+              "maxDurationMs": 15000,
+              "actionTimeoutMs": 3000
+            },
+            "digest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+            "approval": {
+              "actor": "Passage development probe author",
+              "role": "operator",
+              "evidenceClass": "authored-development",
+              "approvedAt": "2026-10-28T13:21:14.607Z",
+              "digest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed"
+            }
+          },
+          "modal-boundary": {
+            "version": "passage-temporal/v1",
+            "id": "authored-appointment-modal-boundary",
+            "revision": 1,
+            "title": "Cancel an appointment choice without allowing its later availability response to commit the cancelled choice.",
+            "bindings": {
+              "trigger": {
+                "kind": "testId",
+                "value": "slot-trigger"
+              },
+              "panel": {
+                "kind": "testId",
+                "value": "slot-panel"
+              },
+              "value": {
+                "kind": "testId",
+                "value": "selected-date",
+                "read": "value"
+              },
+              "choice": {
+                "kind": "css",
+                "value": "[data-date=\"2026-11-16\"]"
+              },
+              "name": {
+                "kind": "testId",
+                "value": "attendee-input",
+                "read": "value"
+              },
+              "confirm": {
+                "kind": "testId",
+                "value": "confirm-appointment"
+              },
+              "confirmation": {
+                "kind": "testId",
+                "value": "confirmation"
+              },
+              "confirmationHeading": {
+                "kind": "testId",
+                "value": "confirmation-heading"
+              }
+            },
+            "actions": [
+              {
+                "id": "reach-trigger",
+                "label": "Tab to the appointment control",
+                "required": true,
+                "kind": "press",
+                "key": "Tab"
+              },
+              {
+                "id": "open",
+                "label": "Open appointments with Enter",
+                "requires": [
+                  "reach-trigger"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Enter",
+                "binding": "trigger"
+              },
+              {
+                "id": "opened",
+                "label": "Observe the opened dialog",
+                "requires": [
+                  "open"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "panel",
+                "state": "visible"
+              },
+              {
+                "id": "cancel",
+                "label": "Close the modal using Escape",
+                "requires": [
+                  "opened"
+                ],
+                "required": true,
+                "kind": "press",
+                "key": "Escape"
+              },
+              {
+                "id": "closed",
+                "label": "Observe closure",
+                "requires": [
+                  "cancel"
+                ],
+                "required": true,
+                "kind": "waitFor",
+                "binding": "panel",
+                "state": "hidden"
+              }
+            ],
+            "assertions": [
+              {
+                "id": "opening-preserves-value",
+                "label": "Opening does not commit a choice",
+                "after": "opened",
+                "kind": "valuePreserved",
+                "binding": "value",
+                "since": "initial"
+              },
+              {
+                "id": "modal-focus-contained",
+                "label": "Tab and reverse Tab stay inside the modal",
+                "after": "opened",
+                "kind": "modalContainment",
+                "binding": "panel",
+                "steps": 12
+              },
+              {
+                "id": "closure-restores-focus",
+                "label": "Closure restores focus to the trigger",
+                "after": "closed",
+                "kind": "closedFocusRestored",
+                "panel": "panel",
+                "trigger": "trigger"
+              },
+              {
+                "id": "cancel-preserves-value",
+                "label": "Closing preserves the original value",
+                "after": "closed",
+                "kind": "valuePreserved",
+                "binding": "value",
+                "since": "initial"
+              }
+            ],
+            "allowedEvents": [],
+            "bounds": {
+              "maxActions": 40,
+              "maxDurationMs": 15000,
+              "actionTimeoutMs": 3000
+            },
+            "digest": "0a3c023976fd6650b7a7b74ab9f10fa84ff96e8e54107c24799d904abdbb4d71",
+            "approval": {
+              "actor": "Passage development probe author",
+              "role": "operator",
+              "evidenceClass": "authored-development",
+              "approvedAt": "2026-10-28T13:21:14.608Z",
+              "digest": "0a3c023976fd6650b7a7b74ab9f10fa84ff96e8e54107c24799d904abdbb4d71"
+            }
+          }
+        }
+      }
+    ],
+    "repairs": [],
+    "explorations": [
+      {
+        "id": "public-probe_7a0a3f2a-aa03-4bd9-868c-2d33cebb6bd4",
+        "sessionId": "journey-compiler_75b29c5b-23de-4563-97a5-de13e747b5aa",
+        "createdAt": "2026-10-28T13:21:14.616Z",
+        "contractDigest": "eaf490992aecef9c273b74e9be0959a187bdef40b81640b08c7ea51d8f6787ed",
+        "variant": "reference",
+        "scheduleId": "cancel-pending",
+        "status": "completed",
+        "classification": "public-development-probe",
+        "proposal": {
+          "label": "Cancel pending appointment schedule",
+          "steps": [
+            "reach-trigger",
+            "open",
+            "opened",
+            "activate-choice",
+            "pending",
+            "cancel",
+            "closed",
+            "release"
+          ]
+        },
+        "receipt": {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-5a19d351e7ac42b1a63aedc763bb7397",
+          "promptVersion": "passage-bounded-schedule-v1",
+          "temperature": 0.2,
+          "inputTokens": 4627,
+          "outputTokens": 1959,
+          "durationMs": 17170,
+          "startedAt": "2026-10-28T13:21:14.618Z",
+          "completedAt": "2026-10-28T13:21:31.787Z",
+          "live": true,
+          "finalOutputDigest": "5ac983df4620f220268afe40decc30cdd3550c83d8a83525400bfb8cd02522c2"
+        },
+        "resultId": "capture_9a8f442b-7da8-4c9c-8fff-e26cec522fb0",
+        "executionStatus": "passed",
+        "completedAt": "2026-10-28T13:21:33.021Z"
+      }
+    ],
+    "generationFailures": []
+  },
+  "limitations": [
+    "Operator-attested development review, not independent accessibility acceptance.",
+    "No participant benefit or actual AT qualification is implied.",
+    "Only exact source identities and completed schedules have execution evidence."
+  ]
+}

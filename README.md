@@ -2,13 +2,15 @@
 
 **Every journey deserves a way through.**
 
-Passage turns a blocked keyboard interaction into a source repair with inspectable evidence. Reproduce the barrier, review an interaction contract, generate a scoped React change with **NVIDIA Nemotron on Nebius Token Factory**, and let an independent browser verifier attempt the task against a protected appointment service.
+Passage turns a blocked task into a reviewed temporal contract, a source repair, and a runnable regression guard. Its Journey Compiler records actual browser events, separates observations from inferred requirements, asks **NVIDIA Nemotron** to inspect and patch bounded React source, and independently replays the frozen requirements.
 
-This is a working local engineering product for the **Coding and Agentic Engineering** track of the Nebius × NVIDIA Global AI Hackathon. It includes six authored applications, four interaction families, a repair workbench, meaningful challenges, immutable source/build receipts, and a consented human-evidence intake. All appointment data is fictional.
+This is a local engineering product for the **Coding and Agentic Engineering** track of the Nebius × NVIDIA Global AI Hackathon. The compiler supports authored appointment journeys and an isolated, fixed-dependency external React adapter. A real TodoMVC edit repair and an unchanged react-modal sound control use the same generic interpreter. The original six authored applications and four-family repair studio remain available. All task and appointment data in the development evidence is fictional.
+
+Read the [current upgrade evidence and limits](docs/journey-compiler.md) before interpreting a passing check as broader accessibility acceptance.
 
 ## Run locally
 
-Requires Node.js **22.12 or newer** (tested with 22.22.3), npm, and Chromium. Node's built-in SQLite API is used; its experimental warning is expected on Node 22.
+Requires Node.js **22.12 or newer** (tested with 22.22.3), npm, and Chromium. Node's built-in SQLite experimental warning is expected on Node 22.
 
 ```sh
 npm ci
@@ -16,64 +18,68 @@ npx playwright install chromium
 npm run dev
 ```
 
-Open [Passage](http://127.0.0.1:4101). The API listens on `127.0.0.1:4102`; isolated application previews use `127.0.0.1:4103`. All three services bind to loopback. The browser helper reuses an existing Playwright Chromium installation when available. An explicit `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` may select an already-installed compatible browser; every verification records its actual version.
+Open [Passage](http://127.0.0.1:4101). The API uses `127.0.0.1:4102`, the original authored preview host uses `127.0.0.1:4103`, and repository artifacts use `127.0.0.1:4104`. The compiler has a separate ephemeral loopback fixture port; saved capture links resolve its current origin after a restart. `PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH` can select an installed compatible browser.
 
-For a stable walkthrough without development hot reload, build once and run the production UI with the local API:
+For a stable walkthrough without hot reload:
 
 ```sh
 npm run build
 npm run demo
 ```
 
-The default **offline reference mode** needs no credentials. It applies an explicitly labeled, handcrafted source repair, builds that source, and runs the same real verifier. It never presents a reference patch as model output.
+The compiler's **observed draft** and **handcrafted reference** checks need no credentials. Observed mode organizes supplied requirements and trace references for review; it is not model generation. The original studio's offline repair is also explicitly labeled as a handcrafted reference. Live drafting, repair, and schedule exploration use the provider displayed in the interface.
 
-To use the actual NVIDIA model, copy `.env.example` to `.env`, supply your Nebius key, and deliberately enable live inference:
+To select the final NVIDIA route on Nebius:
 
 ```sh
-PASSAGE_PROVIDER=nebius NEBIUS_MODEL=nvidia/nemotron-3-super-120b-a12b PASSAGE_ALLOW_LIVE=true npm run demo
+PASSAGE_PROVIDER=nebius \
+NEBIUS_MODEL=nvidia/Nemotron-3-Ultra-550b-a55b \
+NEBIUS_BASE_URL=https://api.tokenfactory.us-central1.nebius.com/v1 \
+PASSAGE_NEBIUS_BUDGET_USD=4 \
+PASSAGE_ALLOW_LIVE=true npm run demo
 ```
 
-The server reads credentials in this order: explicit shell environment, project `.env`, then parent `.env` as a fallback. No credential reaches the client or fixture preview. Do not commit either environment file. **Nemotron 3 Super has completed real local repair validation on Nebius.** The command above overrides a different parent-file model without editing that file. The stronger Nebius Ultra route is catalog-supported but still needs real completion qualification before submission; no Ultra result on another provider is presented as Nebius evidence.
+The server reads credentials from the shell, project `.env`, then parent `.env`. No credential reaches the client, build worker or preview. Do not commit environment files. The exact regional Nebius Ultra route completed a fresh live contract → inspection → localization → repair → verification workflow on the independent TodoMVC source. Its receipts are separate from Fireworks development evidence and from the historical Super qualification.
 
-For explicitly authorized development, choose Fireworks Nemotron 3 Ultra:
+For explicitly authorized development:
 
 ```sh
 PASSAGE_PROVIDER=fireworks PASSAGE_ALLOW_LIVE=true npm run demo
 ```
 
-This uses `FIREWORKS_AI_API_KEY` and the pinned `accounts/fireworks/models/nemotron-3-ultra-nvfp4` route. It requests high reasoning with a 32,000-token response allowance and a 480-second timeout, supplies the output schema in the prompt, and validates returned JSON locally. `FIREWORKS_AI_MODEL` and `FIREWORKS_AI_BASE_URL` may select only supported routes. Together has a separate `TOGETHER_AI_*` configuration. The UI names the selected recipient and distinguishes development from submission. Adding keys never switches providers, and errors never trigger fallback.
+Fireworks uses `FIREWORKS_AI_API_KEY` and `accounts/fireworks/models/nemotron-3-ultra-nvfp4`: high reasoning, 32,000 output tokens, a 480-second timeout, schema in the prompt and strict local JSON validation. The current Nebius Ultra profile uses 32,000 tokens/480 seconds, temperature 1, top-p 0.95, thinking and `force_nonempty_content` enabled, with prompt schema. This follows [NVIDIA's coding-agent example](https://huggingface.co/nvidia/NVIDIA-Nemotron-3-Ultra-550B-A55B-NVFP4#api-client); the earlier external qualification used temperature 0.2 and remains a separate record. Settings shows qualification for the exact requested endpoint/model/generation fingerprint. Historical Nebius Super/Lightning profiles retain 6,000 tokens/120 seconds. Together has separate `TOGETHER_AI_*` settings. Keys never change the selected provider and failures never silently substitute a provider.
 
-Nebius remains the default submission provider and retains its **$2 local admission budget**. Its validated Super/Lightning profiles use 6,000 tokens and 120 seconds; explicitly selecting catalog-listed Ultra uses 16,000 tokens and 240 seconds, with completion qualification still pending. The separately authorized Fireworks/Together development routes have no artificial dollar cap; their calls are still paid and recorded. All routes keep serial execution, bounded attempts, immutable receipts and separate usage ledgers. Unknown usage remains conservative within the affected provider. See [architecture and safety](docs/architecture.md) for the exact model allowlist, pricing and limits.
+Nebius defaults to a $2 local admission limit. `PASSAGE_NEBIUS_BUDGET_USD` can set an allowance from $0 to $100 within the user's existing authorization; this upgrade's later qualification and the command above use a $4 local cap without resetting prior spend. This was an application configuration change within the existing paid allowance and redeemed credit, not a new purchase or approval. Fresh clones can omit the variable to retain the $2 default. Authorized Fireworks/Together development has no artificial dollar cap. Serial execution, bounded attempts and per-provider usage receipts remain active. Application estimates are not provider invoices. See [routing and historical safety details](docs/architecture.md), [current compiler evidence](docs/journey-compiler.md), and the exact receipt in the product.
 
 ## Try the complete journey
 
-1. Choose **Try a blocked journey** and consent to capturing the authored, fictional sample.
-2. The independent browser reproduces the keyboard failure. Inspect focus events, source mappings, enabled assertions, and the missing business outcome.
-3. Review the versioned **Contract**. Required business invariants cannot be removed. A changed contract makes earlier runs stale.
-4. Choose **Offline · handcrafted reference patch** or **Live · Nemotron** on the provider named in the interface, then generate a repair. Source validation and an immutable build precede actual keyboard verification.
-5. Open the original or repaired application in its own tab. The preview is the actual compiled source, with a fresh isolated session.
-6. In **Challenges**, try an unavailable first date, late validation, long labels, German shell/date labels, or all conditions together. Each result stays bound to its source and contract. Fixed widget controls can remain English; this is not a complete translation audit.
-7. Inspect the diff and receipt, download the **portable ZIP** (sources, patch, contract, receipts, screenshots, traces, verification JSON and SHA-256 checksums), and reopen the run from **Evidence**. Individual patch and manifest downloads are also available.
-8. For an actual consenting participant session, use the bound assistive-evidence form to record the exact environment and import an operator note or actual speech-viewer transcript. Text is content-hashed; imported observations are explicitly unreviewed. They do not automatically become verified human outcomes.
+1. Use **Try the keyboard** on the home page's actual application. Choose **Repair a journey**, state the task and consent to recording the fictional sample.
+2. **Record attempt** executes the selected bounded task in a fresh browser. Inspect actions, focus, real request/response events and the first failed assertion. Unexecuted checks remain inconclusive.
+3. **Review the contract** creates an observed or live typed draft. Review inferred requirements and evidence references. Select truthful review provenance: automated development or an operator's attestation. Neither is authenticated independent review.
+4. Freeze the exact draft. Live repair inspects source, validates exact citations, proposes a scoped patch and tests the frozen suite. New authored repairs also require a separately reported pointer-booking and keyboard-Close preservation gate. Failed citations and candidates remain visible; the agent cannot change acceptance rules to make its patch pass.
+5. **Challenge & keep** checks completion, modal boundaries, or Escape while a real availability response is held and later released. An optional live probe selects only approved actions and dependencies. Failed schedules can be reduced through fresh executions that reproduce the same failure signature.
+6. Download **Runnable guard** and check a later source revision. It contains the contract, source identities, runtime and lockfile, and needs no inference credentials or original database. Guards declaring the new combined policy require both frozen and preservation gates, with separate results; historical guards keep their original scope. A changed task requires a new review.
+7. For external source, open **External React repository**. Follow the [worker setup](docs/repository-worker.md), inspect exact Git blobs or import a public source manifest, and supply reviewed semantic bindings. No repository package scripts or arbitrary dependency installs run. The two [development cases](docs/journey-compiler.md#external-development-cases) disclose their adaptation and outcome scope.
+8. Attach actual screen-reader receipts to their exact external build. The original studio also has a fresh bound participant-session workflow with exact outcome verification and a separately named review. No participants or independent reviewers were available for this upgrade; their results are not invented.
 
-Cancellation preserves finished artifacts and prevents later success writes. Retry creates a new run. Refresh resumes persisted state. A server restart marks unfinished work interrupted instead of fabricating completion.
+The original four-family flow remains at `/journeys/new`, with its historical contract, challenge and portable evidence interfaces. Cancellation preserves completed artifacts. A restart marks unfinished jobs interrupted instead of fabricating success.
 
-## What is implemented
+## Implemented scope
 
-| Surface | Working local behavior |
-|---|---|
-| Journey library | Six authored applications across date pickers, comboboxes, modal wizards, and asynchronous validation |
-| Browser evidence | Actual Tab/Enter/Escape actions, active-element checks, screenshots, ARIA snapshots, and persisted business outcomes |
-| Source repair | Real server-side Nemotron integration, strict component scope, source diff, bounded retries, failed-candidate preservation |
-| Verification | Protected business service and verifier outside the repairable source; wrong-date repairs are rejected |
-| Contracts | Typed assertion vocabulary, protected invariants, optimistic versioning, immutable revisions and stale-result handling |
-| Challenge studio | Actual re-execution with visible conditions, seed, browser version, source digest and result |
-| Local reliability | SQLite WAL, idempotency keys, persisted event stream, cancellation fencing, crash recovery and cost ledger |
-| Human evidence | Consent, exact revision/environment binding, one-time text-manifest import, SHA-256 verification, private download, expiry and deletion tombstones |
-| Review and export | Candidate history, actual diff, model receipts, portable evidence ZIP, manifest, patch download and explicit limitations |
-| Interface | Responsive editorial studio, keyboard controls, focus states, reduced-motion and high-contrast preferences |
+| Capability | Working behavior |
+| --- | --- |
+| Journey Compiler | Actual trace evidence, typed proposed assertions, explicit corrections, exact draft review and frozen acceptance |
+| Temporal interpreter | Semantic bindings; bounded actions/events; value preservation, modal containment, focus return and exact protected outcome assertions |
+| External React adapter | Immutable public source, fixed locked dependencies in a disposable Linux worker, no host mounts/build network/provider secrets |
+| External cases | TodoMVC keyboard edit/cancel/save repair; unchanged react-modal Forms containment control, with upstream MIT notices |
+| Source repair | Generic manifest inspection and exact source citations; scoped cumulative patches; all failed receipts retained |
+| Continuing guard | Standalone replay, later revision checks, public bounded schedules and same-failure reduction |
+| Protected outcome | Actual fictional appointment record from the trusted authored service; external callbacks must be separately registered |
+| Assistive evidence | Actual Orca automation separated from participant results; fresh consented attempt binding, stored outcome verification, review attestation, expiry and deletion |
+| Local reliability | SQLite WAL, idempotency, cancellation fencing, interrupted-job recovery, source/build integrity and provider usage ledgers |
+| Product | Immediate actual task, failure-first trace detail, responsive workflow, readable scope/provenance, reduced-motion and high-contrast settings |
 
-## Verification
+## Verify and replay
 
 ```sh
 npm run typecheck
@@ -83,30 +89,37 @@ npm run test:e2e
 npm run verify:fixtures
 ```
 
-The fixture sweep launches a separate preview host on port 4193. To examine a particular sample or scenario:
+The suite covers durable state, hostile/malformed source and model data, credits and provider profiles, contract weakening, fabricated page events, exact citations, cumulative multi-file retry, cancel/modal behavior, wrong business results, AT receipt binding, complete UI flows and responsive accessibility. Deterministic tests do not call paid models.
 
-```sh
-npm run verify:fixtures -- civic-assistance combined
-```
-
-Replay an [actual generated Ultra source sample](docs/samples/README.md), or candidate JSX extracted from an evidence ZIP, without credentials or the original run database:
+The fixture sweep runs on a separate host at port 4193. Historical exact-source replay remains available without credentials or the original database:
 
 ```sh
 npm run verify:source -- northstar-appointments docs/samples/date-picker/DatePicker.jsx combined fc15b7706c15e8a79454fd81149a58145ce34402ab031f1927b3609c04e41e28
 ```
 
-This creates a fresh protected default contract and a separate ephemeral preview host. It records the actual source digest, verifier, browser and evidence under `.passage/source-replays/`; it makes no inference request and does not rewrite the historical receipt.
+Runnable compiler packages also work independently:
 
-The test suite includes durable-state/idempotency checks, malformed provider output, credit/budget handling, cross-origin protections, source-scope attacks, tampered build artifacts, real browser failure/repaired success, wrong-date false acceptance, UI workflow, responsive overflow checks and automated accessibility checks. No test calls a paid model unless a live call is explicitly initiated outside the deterministic suite.
+```sh
+# Inside an extracted authored guard package:
+npm ci --ignore-scripts
+npx playwright install chromium
+npm run verify:guard -- --guard guard.json --source path/to/next.jsx
+# Separately check pointer booking and keyboard access to the existing Close control:
+npm run verify:preservation -- --guard guard.json --source path/to/next.jsx --output preservation.json
 
-Actual Nemotron 3 Super repairs on Nebius and Ultra repairs on Fireworks passed the enabled checks and combined challenge for all four interaction families. The [measured evaluation](docs/evaluation.md) preserves failed attempts, protocol/prompt changes, exact receipts, the 21-request Nebius ledger (estimated $0.0536) and 15-request Fireworks ledger (estimated $0.2998). The deterministic suite has 63 passing tests and the UI workflow has 2 passing E2E tests. Public exact-source samples can be replayed without inference. These are engineering checks, **not** a human-impact study or held-out benchmark.
+# Inside an extracted external React guard package, after worker setup:
+npm run verify:repository-guard -- --guard guard.json
+npm run verify:repository-guard -- --guard guard.json --snapshot next-snapshot.json
+```
 
-## Scope, privacy, and honest limits
+The [historical evaluation](docs/evaluation.md) is unchanged: Super on Nebius and Ultra on Fireworks passed the original nine enabled checks and combined challenge across four authored families. Its 21-request Nebius ledger ($0.05358294 estimated), 15-request Fireworks ledger ($0.299835 estimated), 63 tests and two E2E tests are the original dated snapshot. The stronger temporal tests reproduce gaps outside that scope, including the exact old date source's modal escape/cancel race and the old combobox source's missing arrow exploration. Current upgrade outcomes and test counts are separate in [Journey Compiler](docs/journey-compiler.md).
 
-- Actual participant recruitment, specialist review, VoiceOver/Safari and NVDA/Windows validation, and a locked comparative benchmark have **not** been performed. Browser ARIA observations are not recorded screen-reader speech.
-- The local adapter accepts only the authored, scoped React interaction components. Arbitrary repository import/build, remote isolation, cloud deployment, and pull-request publication are unavailable. Their absence is shown in the product. No untrusted package scripts or model-selected shell commands execute on the host.
-- Local synthetic run artifacts persist under `.passage/` and are excluded from Git. Private assistive text captures have a separate revocable store and expiry policy; deletion cannot recall downloaded copies or external backups. See [privacy](docs/privacy.md).
-- Several fixtures share component ancestry. Scenario counts must not be presented as independent applications or people helped. No universal accessibility or WCAG certification is claimed.
-- The preview origin, CSP, source checks, network restrictions and protected backend form a limited adapter boundary. This is not a general hostile-code sandbox suitable for arbitrary repositories.
+## Evidence limits
 
-See [architecture](docs/architecture.md), [evaluation](docs/evaluation.md), [implementation ledger](docs/implementation-ledger.md), and [asset notices](NOTICE.md). Authored source and illustrations are [MIT licensed](LICENSE). Private planning files are intentionally excluded from this public project.
+- No participant study, independent specialist/maintainer review, VoiceOver/Safari or NVDA/Windows validation, locked holdout or matched-baseline comparison has occurred. Actual Orca automation uses the disclosed local compatibility configuration; see [the runner record](docs/actual-screen-reader.md). Browser focus and speech capture are not participant success.
+- External support is a fixed-dependency React/static-component adapter, not arbitrary monorepo support or a general hostile-code service. It runs no repository package scripts, model-selected shell commands, or repository-selected dependency installation. Deployment and pull-request publication remain unavailable.
+- TodoMVC checks its actual in-memory task state. No persistent storage or transaction is claimed. External business assertions need a separately registered protected observer and error if it is absent. Uploaded hashes do not authenticate upstream Git ancestry.
+- The two external cases are public development cases, one a component demo, with possible training exposure. They are not two repaired applications or a held-out benchmark. No universal accessibility or WCAG certification is claimed.
+- Run artifacts remain local under ignored `.passage/`. Private human text has a separate revocable store, expiry and deletion policy; deleting it cannot recall downloads or backups. See [privacy](docs/privacy.md).
+
+See [current compiler architecture and evidence](docs/journey-compiler.md), [implementation ledger](docs/implementation-ledger.md), [evaluation protocol](docs/upgrade-evaluation-protocol.md), and [asset notices](NOTICE.md). Authored code is [MIT licensed](LICENSE); external source notices remain with exported snapshots. Private planning files are excluded from Git.

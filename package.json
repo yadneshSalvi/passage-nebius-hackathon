@@ -14,7 +14,10 @@
     "test": "vitest run",
     "test:e2e": "playwright test",
     "verify:fixtures": "tsx scripts/verify-fixtures.ts",
-    "verify:source": "tsx scripts/verify-source.ts"
+    "verify:source": "tsx scripts/verify-source.ts",
+    "verify:guard": "tsx scripts/verify-journey-guard.ts",
+    "verify:preservation": "tsx scripts/check-authored-preservation.ts",
+    "verify:repository-guard": "tsx scripts/verify-repository-guard.ts"
   },
   "dependencies": {
     "@babel/parser": "7.28.4",

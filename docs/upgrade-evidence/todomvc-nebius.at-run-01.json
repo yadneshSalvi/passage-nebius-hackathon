@@ -1,0 +1,82 @@
+{
+  "schema": "passage.actual-at.v1",
+  "buildId": "e01b6565eb7a0c130739a9159325ea77a6e4e5de33dae77328829b0f0ed8a88d",
+  "sourceDigest": "690f06b51778ff623d101fd1e04e0baa3f6cc45c443a35e2ca7af130b0c343c0",
+  "sessionId": "6522f692-d992-41f1-9024-6a25f03841bd",
+  "startedAt": "2026-10-28T13:23:31.539Z",
+  "provenance": "automated-actual-screen-reader",
+  "screenReader": "Orca",
+  "guidepupVersion": "0.36.2",
+  "browser": "Firefox",
+  "platform": "linux/arm64 6.8.0-117-generic, isolated Colima VM",
+  "compatibility": "local-linux6-userspace-asset-qualification+system-speechd-fallback-links-v3",
+  "humanParticipant": false,
+  "independentlyReviewed": false,
+  "backendOutcomeVerified": false,
+  "steps": [
+    {
+      "action": "Create fictional task",
+      "at": "2026-10-28T13:23:38.118Z",
+      "spoken": ""
+    },
+    {
+      "action": "Tab",
+      "at": "2026-10-28T13:23:39.378Z",
+      "spoken": "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+      "focus": {
+        "tag": "INPUT",
+        "label": null,
+        "text": ""
+      }
+    },
+    {
+      "action": "Tab",
+      "at": "2026-10-28T13:23:40.659Z",
+      "spoken": "List with 1 item. check box not checked",
+      "focus": {
+        "tag": "INPUT",
+        "label": null,
+        "text": ""
+      }
+    },
+    {
+      "action": "Tab",
+      "at": "2026-10-28T13:23:41.933Z",
+      "spoken": "Pick up a prescription. clickable",
+      "focus": {
+        "tag": "LABEL",
+        "label": null,
+        "text": "Pick up a prescription"
+      }
+    },
+    {
+      "action": "Activate reached control with Enter",
+      "at": "2026-10-28T13:23:43.461Z",
+      "spoken": "Edit todo. entry. Pick up a prescription. Focus mode"
+    },
+    {
+      "action": "Escape then move focus",
+      "at": "2026-10-28T13:23:45.014Z",
+      "spoken": "check box not checked. Browse mode",
+      "actualTitle": "Pick up a prescription"
+    }
+  ],
+  "status": "captured",
+  "limitations": [
+    "Automated Orca observation is not a human participant study.",
+    "Speech is actual Orca output, not a synthesized DOM description."
+  ],
+  "browserVersion": "157.0",
+  "protocol": "todomvc-keyboard",
+  "taskOutcome": "cancelled-value-preserved",
+  "spokenPhraseLog": [
+    "Nightly. Passage · external source preview — Nightly frame. banner. New Todo Input. entry. What needs to be done?. Focus mode",
+    "",
+    "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+    "List with 1 item. check box not checked",
+    "Pick up a prescription. clickable",
+    "Edit todo. entry. Pick up a prescription. Focus mode",
+    "check box not checked. Browse mode"
+  ],
+  "completedAt": "2026-10-28T13:23:45.582Z"
+}

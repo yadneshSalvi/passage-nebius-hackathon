@@ -180,6 +180,7 @@ export function validateCandidateSource(source: string): {
       localRefs.add(node.id.name);
   });
   const scopedQueryProperties = new Set<object>();
+  const queryCallSites = new Map<object, Node>();
   walk(ast.program, (node) => {
     if (!["CallExpression", "OptionalCallExpression"].includes(node.type))
       return;
@@ -192,6 +193,7 @@ export function validateCandidateSource(source: string): {
       !["querySelector", "querySelectorAll"].includes(callee.property?.name)
     )
       return;
+    queryCallSites.set(callee.property, node);
     const target = callee.object;
     const literal = node.arguments?.[0];
     if (
@@ -257,8 +259,12 @@ export function validateCandidateSource(source: string): {
       n.type === "Identifier" &&
       forbiddenNames.has(String(n.name)) &&
       !scopedQueryProperties.has(n)
-    )
-      errors.add(`The component may not access ${String(n.name)}.`);
+    ) {
+      const name = String(n.name);
+      errors.add(["querySelector", "querySelectorAll"].includes(name)
+        ? `Unsupported ${name} access at ${describeNode(queryCallSites.get(n) ?? n)}. Only a direct call on an imported useRef-origin ref's .current is permitted: ref.current.querySelector('static selector') or ref.current.querySelectorAll('static selector'). Aliases, dynamic selectors, computed method names, and ancestor/global queries remain forbidden.`
+        : `The component may not access ${name}.`);
+    }
     if (
       (n.type === "StringLiteral" || n.type === "Literal") &&
       forbiddenNames.has(String(n.value))

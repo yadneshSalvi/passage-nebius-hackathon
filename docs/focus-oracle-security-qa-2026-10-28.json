@@ -1,0 +1,41 @@
+{
+  "schema": "passage.focus-oracle-security-qa/v1",
+  "recordedAt": "2026-10-28",
+  "evidenceClass": "automated-adversarial-browser-regression",
+  "humanParticipant": false,
+  "participantCount": 0,
+  "scope": "Imported application JavaScript must not override the controller focus oracle.",
+  "browser": "Actual Playwright Chromium",
+  "adversarialPageScript": "Object.defineProperty(Document.prototype, 'activeElement', { configurable: true, get() { return document.getElementById('inside'); } });",
+  "nativeObservation": "A getter reference captured before the application override reported actual activeElement.id outside before and after execution.",
+  "before": {
+    "runtime": "legacy-unversioned temporal interpreter before native-focus hardening",
+    "recordingMethod": "Historical stdout transcribed from the actual pre-hardening browser reproduction in this session, not rerun against a reconstructed implementation.",
+    "stdout": "{\n  \"actualBefore\": \"outside\",\n  \"actualAfter\": \"outside\",\n  \"status\": \"passed\",\n  \"checks\": [\n    {\n      \"id\": \"focus\",\n      \"label\": \"Focus is within modal\",\n      \"actionId\": \"observe\",\n      \"status\": \"passed\",\n      \"expected\": \"Actual focus is within the visible bound element.\",\n      \"actual\": \"Focus inside.\",\n      \"traceSequence\": 2\n    }\n  ]\n}",
+    "stdoutSha256": "7342540c8b08b926be05a096b1e6cc52750c82021f9ba520a19299f58405b88b"
+  },
+  "after": {
+    "runtime": "passage-temporal-native-focus-v2",
+    "recordingMethod": "Unmodified stdout from a fresh actual reproduction against the hardened current interpreter.",
+    "stdout": "{\n  \"actualBefore\": \"outside\",\n  \"actualAfter\": \"outside\",\n  \"status\": \"failed\",\n  \"verifierVersion\": \"passage-temporal-native-focus-v2\",\n  \"checks\": [\n    {\n      \"id\": \"focus\",\n      \"label\": \"Focus is within modal\",\n      \"actionId\": \"observe\",\n      \"status\": \"failed\",\n      \"expected\": \"Actual focus is within the visible bound element.\",\n      \"actual\": \"Focus escaped or modal absent.\",\n      \"traceSequence\": 2\n    }\n  ]\n}",
+    "stdoutSha256": "af56a62f680ecbc4953f4693ce76329c3d277c5e8fa6629f14f0e900e20e27e3"
+  },
+  "changes": [
+    "Focus checks use native CSS :focus through Playwright locator utility-world queries instead of main-world document.activeElement or Element.contains.",
+    "Applied to focusWithin, modalContainment, closure restoration and press/fill keyboard-target prerequisites.",
+    "New execution receipts include verifierVersion; prior v1 records remain unchanged."
+  ],
+  "regressions": [
+    "Forged activeElement cannot approve focus outside the bound region.",
+    "Actual reverse-Tab escape fails despite forged activeElement and contains.",
+    "Forged restoration and press/fill target focus fail.",
+    "Input values, text, attributes and visibility remain accurate under main-world prototype overrides."
+  ],
+  "tests": "tests/temporal.test.ts",
+  "limitations": [
+    "Native focus and standard Playwright visibility are sampled at bounded checkpoints, not continuously observed for every transient transition.",
+    "Untrusted application DOM content is not independently authenticated semantic or business truth.",
+    "Standard browser visibility does not establish perceivability, lack of obstruction or actual AT usability.",
+    "These automated adversarial checks are not a human participant session."
+  ]
+}

@@ -1,0 +1,3460 @@
+{
+  "schema": "passage-repository-guard/v1",
+  "generatedAt": "2026-10-28T13:33:01.802Z",
+  "task": "Edit a task using the keyboard; Escape preserves the original task",
+  "source": {
+    "schema": "passage.repository.v1",
+    "repositoryUrl": "https://github.com/tastejs/todomvc",
+    "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+    "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+    "entryPoint": "examples/react/src/index.js",
+    "rootElementId": "root",
+    "rootElementClass": "todoapp",
+    "files": [
+      {
+        "path": "examples/react/src/index.js",
+        "sha256": "5f7a9a0fa40f0680b927efc306b6a5a2a780e0eae0c2b16be55ffba36ddabd7e",
+        "content": "import { createRoot } from \"react-dom/client\";\nimport { HashRouter, Route, Routes } from \"react-router-dom\";\n\nimport { App } from \"./todo/app\";\nimport \"todomvc-app-css/index.css\";\nimport \"todomvc-common/base.css\";\n\ncreateRoot(document.getElementById(\"root\")).render(\n    <HashRouter>\n        <Routes>\n            <Route path=\"*\" element={<App />} />\n        </Routes>\n    </HashRouter>\n);\n"
+      },
+      {
+        "path": "examples/react/src/todo/app.css",
+        "sha256": "3f75fd17df69bdbec69f014ea7f81daec632d8215876ed53f43ab16172ad0c4d",
+        "content": "/* used for things that should be hidden in the ui,\nbut useful for people who use screen readers */\n.visually-hidden {\n    border: 0;\n    clip: rect(0 0 0 0);\n    clip-path: inset(50%);\n    height: 1px;\n    width: 1px;\n    margin: -1px;\n    padding: 0;\n    overflow: hidden;\n    position: absolute;\n    white-space: nowrap;\n}\n\n.toggle-all {\n    width: 40px !important;\n    height: 60px !important;\n    right: auto !important;\n}\n\n.toggle-all-label {\n    pointer-events: none;\n}\n"
+      },
+      {
+        "path": "examples/react/src/todo/app.jsx",
+        "sha256": "9062e9b90d3ef5c292e84cc2e765797d1336373271d7c5f39944d704f98d661f",
+        "content": "import { useReducer } from \"react\";\nimport { Header } from \"./components/header\";\nimport { Main } from \"./components/main\";\nimport { Footer } from \"./components/footer\";\n\nimport { todoReducer } from \"./reducer\";\n\nimport \"./app.css\";\n\nexport function App() {\n    const [todos, dispatch] = useReducer(todoReducer, []);\n\n    return (\n        <>\n            <Header dispatch={dispatch} />\n            <Main todos={todos} dispatch={dispatch} />\n            <Footer todos={todos} dispatch={dispatch} />\n        </>\n    );\n}\n"
+      },
+      {
+        "path": "examples/react/src/todo/components/footer.jsx",
+        "sha256": "36cdfa5e44e268eac560551a035cf51335883a761ef94eae4f9c20dcb48d5fdf",
+        "content": "import { useCallback, useMemo } from \"react\";\nimport { useLocation } from \"react-router-dom\";\nimport classnames from \"classnames\";\n\nimport { REMOVE_COMPLETED_ITEMS } from \"../constants\";\n\nexport function Footer({ todos, dispatch }) {\n    const { pathname: route } = useLocation();\n\n    const activeTodos = useMemo(() => todos.filter((todo) => !todo.completed), [todos]);\n    const completedCount = todos.length - activeTodos.length;\n\n    const removeCompleted = useCallback(() => dispatch({ type: REMOVE_COMPLETED_ITEMS }), [dispatch]);\n\n    return (\n        <footer className=\"footer\" data-testid=\"footer\" hidden={todos.length === 0}>\n            <span className=\"todo-count\">{`${activeTodos.length} ${activeTodos.length === 1 ? \"item\" : \"items\"} left!`}</span>\n            <ul className=\"filters\" data-testid=\"footer-navigation\">\n                <li>\n                    <a className={classnames({ selected: route === \"/\" })} href=\"#/\">All</a>\n                </li>\n                <li>\n                    <a className={classnames({ selected: route === \"/active\" })} href=\"#/active\">Active</a>\n                </li>\n                <li>\n                    <a className={classnames({ selected: route === \"/completed\" })} href=\"#/completed\">Completed</a>\n                </li>\n            </ul>\n            <button\n                className=\"clear-completed\"\n                hidden={completedCount === 0}\n                onClick={removeCompleted}\n            >\n                Clear completed\n            </button>\n        </footer>\n    );\n}\n"
+      },
+      {
+        "path": "examples/react/src/todo/components/header.jsx",
+        "sha256": "0c266389617ea90e8d0a7d25762d8023410ee3ce89ff99b8210efe3180f12b23",
+        "content": "import { useCallback } from \"react\";\nimport { Input } from \"./input\";\n\nimport { ADD_ITEM } from \"../constants\";\n\nexport function Header({ dispatch }) {\n    const addItem = useCallback((title) => dispatch({ type: ADD_ITEM, payload: { title } }), [dispatch]);\n\n    return (\n        <header className=\"header\" data-testid=\"header\">\n            <h1>todos</h1>\n            <Input onSubmit={addItem} label=\"New Todo Input\" placeholder=\"What needs to be done?\" />\n        </header>\n    );\n}\n"
+      },
+      {
+        "path": "examples/react/src/todo/components/input.jsx",
+        "sha256": "ccd8d46861920a85e27fcd903bfd6dfb5687cfb3e309c038a9939708e1647f06",
+        "content": "import { useCallback } from \"react\";\n\nexport function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false }) {\n    const handleBlur = useCallback(\n        (e) => {\n            if (!onBlur) return;\n            const value = e.target.value.trim();\n            onBlur(value);\n        },\n        [onBlur]\n    );\n\n    const handleKeyDown = useCallback(\n        (e) => {\n            if (e.key !== \"Enter\") return;\n            const value = e.target.value.trim();\n            // For new-todo, ignore empty submits. For edit, an empty\n            // submit means \"delete this todo\" — let the parent decide.\n            if (!editing && value.length === 0) return;\n            onSubmit(value);\n            // Only clear the new-todo input on submit; the edit input is\n            // about to unmount so leave it alone.\n            if (!editing) e.target.value = \"\";\n        },\n        [onSubmit, editing]\n    );\n\n    return (\n        <input\n            className={editing ? \"edit\" : \"new-todo\"}\n            type=\"text\"\n            data-testid=\"text-input\"\n            autoFocus\n            aria-label={label}\n            placeholder={placeholder}\n            defaultValue={defaultValue}\n            onBlur={handleBlur}\n            onKeyDown={handleKeyDown}\n        />\n    );\n}\n"
+      },
+      {
+        "path": "examples/react/src/todo/components/item.jsx",
+        "sha256": "49c48717b33728e6c001070e95ee29a290d8da9909f7cdf12000d20adc28a086",
+        "content": "import { memo, useState, useCallback } from \"react\";\nimport classnames from \"classnames\";\n\nimport { Input } from \"./input\";\n\nimport { TOGGLE_ITEM, REMOVE_ITEM, UPDATE_ITEM } from \"../constants\";\n\nexport const Item = memo(function Item({ todo, dispatch }) {\n    const [isWritable, setIsWritable] = useState(false);\n    const { title, completed, id } = todo;\n\n    const toggleItem = useCallback(() => dispatch({ type: TOGGLE_ITEM, payload: { id } }), [dispatch, id]);\n    const removeItem = useCallback(() => dispatch({ type: REMOVE_ITEM, payload: { id } }), [dispatch, id]);\n    const updateItem = useCallback(\n        (newTitle) => dispatch({ type: UPDATE_ITEM, payload: { id, title: newTitle } }),\n        [dispatch, id]\n    );\n\n    const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n\n    const commitEdit = useCallback(\n        (newTitle) => {\n            // Only act once per edit session — Enter then blur would\n            // otherwise dispatch twice.\n            if (!isWritable) return;\n            setIsWritable(false);\n            if (newTitle.length === 0) removeItem();\n            else updateItem(newTitle);\n        },\n        [isWritable, removeItem, updateItem]\n    );\n\n    return (\n        <li className={classnames({ completed, editing: isWritable })} data-testid=\"todo-item\">\n            <div className=\"view\">\n                <input\n                    className=\"toggle\"\n                    type=\"checkbox\"\n                    data-testid=\"todo-item-toggle\"\n                    checked={completed}\n                    onChange={toggleItem}\n                />\n                <label data-testid=\"todo-item-label\" onDoubleClick={handleDoubleClick}>\n                    {title}\n                </label>\n                <button\n                    className=\"destroy\"\n                    data-testid=\"todo-item-button\"\n                    aria-label=\"Delete todo\"\n                    onClick={removeItem}\n                />\n            </div>\n            {isWritable && (\n                <Input\n                    editing\n                    onSubmit={commitEdit}\n                    onBlur={commitEdit}\n                    label=\"Edit todo\"\n                    defaultValue={title}\n                />\n            )}\n        </li>\n    );\n});\n"
+      },
+      {
+        "path": "examples/react/src/todo/components/main.jsx",
+        "sha256": "09164b4bb70f4162ca2d32e3961133653fd0f9934244ba21eb85477218008a28",
+        "content": "import { useMemo, useCallback } from \"react\";\nimport { useLocation } from \"react-router-dom\";\n\nimport { Item } from \"./item\";\n\nimport { TOGGLE_ALL } from \"../constants\";\n\nexport function Main({ todos, dispatch }) {\n    const { pathname: route } = useLocation();\n\n    const visibleTodos = useMemo(\n        () =>\n            todos.filter((todo) => {\n                if (route === \"/active\")\n                    return !todo.completed;\n\n                if (route === \"/completed\")\n                    return todo.completed;\n\n                return todo;\n            }),\n        [todos, route]\n    );\n\n    const toggleAll = useCallback((e) => dispatch({ type: TOGGLE_ALL, payload: { completed: e.target.checked } }), [dispatch]);\n\n    return (\n        <main className=\"main\" data-testid=\"main\" hidden={todos.length === 0}>\n            <div className=\"toggle-all-container\">\n                <input\n                    className=\"toggle-all\"\n                    type=\"checkbox\"\n                    id=\"toggle-all\"\n                    data-testid=\"toggle-all\"\n                    checked={visibleTodos.length > 0 && visibleTodos.every((todo) => todo.completed)}\n                    onChange={toggleAll}\n                />\n                <label className=\"toggle-all-label\" htmlFor=\"toggle-all\">\n                    Toggle All Input\n                </label>\n            </div>\n            <ul className=\"todo-list\" data-testid=\"todo-list\">\n                {visibleTodos.map((todo) => (\n                    <Item todo={todo} key={todo.id} dispatch={dispatch} />\n                ))}\n            </ul>\n        </main>\n    );\n}\n"
+      },
+      {
+        "path": "examples/react/src/todo/constants.js",
+        "sha256": "9ed0dc00e202fc727747beea153a68863f72bf399c2974132300303dad6d7325",
+        "content": "export const ADD_ITEM = \"ADD_ITEM\";\nexport const UPDATE_ITEM = \"UPDATE_ITEM\";\nexport const REMOVE_ITEM = \"REMOVE_ITEM\";\nexport const TOGGLE_ITEM = \"TOGGLE_ITEM\";\nexport const REMOVE_ALL_ITEMS = \"REMOVE_ALL_ITEMS\";\nexport const TOGGLE_ALL = \"TOGGLE_ALL\";\nexport const REMOVE_COMPLETED_ITEMS = \"REMOVE_COMPLETED_ITEMS\";\n"
+      },
+      {
+        "path": "examples/react/src/todo/reducer.js",
+        "sha256": "57a59689cf665b27f2fd1172857f9bcf249475c5b6fa5b9da78e92c0f9b8cf2b",
+        "content": "import { ADD_ITEM, UPDATE_ITEM, REMOVE_ITEM, TOGGLE_ITEM, REMOVE_ALL_ITEMS, TOGGLE_ALL, REMOVE_COMPLETED_ITEMS } from \"./constants\";\n\n/* Borrowed from https://github.com/ai/nanoid/blob/3.0.2/non-secure/index.js\n\nThe MIT License (MIT)\n\nCopyright 2017 Andrey Sitnik <andrey@sitnik.ru>\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. */\n\n// This alphabet uses `A-Za-z0-9_-` symbols.\n// The order of characters is optimized for better gzip and brotli compression.\n// References to the same file (works both for gzip and brotli):\n// `'use`, `andom`, and `rict'`\n// References to the brotli default dictionary:\n// `-26T`, `1983`, `40px`, `75px`, `bush`, `jack`, `mind`, `very`, and `wolf`\nlet urlAlphabet = \"useandom-26T198340PX75pxJACKVERYMINDBUSHWOLF_GQZbfghjklqvwyzrict\";\n\nfunction nanoid(size = 21) {\n    let id = \"\";\n    // A compact alternative for `for (var i = 0; i < step; i++)`.\n    let i = size;\n    while (i--) {\n        // `| 0` is more compact and faster than `Math.floor()`.\n        id += urlAlphabet[(Math.random() * 64) | 0];\n    }\n    return id;\n}\n\nexport const todoReducer = (state, action) => {\n    switch (action.type) {\n        case ADD_ITEM:\n            return state.concat({ id: nanoid(), title: action.payload.title, completed: false });\n        case UPDATE_ITEM:\n            return state.map((todo) => (todo.id === action.payload.id ? { ...todo, title: action.payload.title } : todo));\n        case REMOVE_ITEM:\n            return state.filter((todo) => todo.id !== action.payload.id);\n        case TOGGLE_ITEM:\n            return state.map((todo) => (todo.id === action.payload.id ? { ...todo, completed: !todo.completed } : todo));\n        case REMOVE_ALL_ITEMS:\n            return [];\n        case TOGGLE_ALL:\n            return state.map((todo) => (todo.completed !== action.payload.completed ? { ...todo, completed: action.payload.completed } : todo));\n        case REMOVE_COMPLETED_ITEMS:\n            return state.filter((todo) => !todo.completed);\n    }\n\n    throw Error(`Unknown action: ${action.type}`);\n};\n"
+      }
+    ],
+    "disclosure": "public-source",
+    "moduleAliases": {}
+  },
+  "sourceNotices": [
+    {
+      "name": "todomvc-MIT.txt",
+      "content": "Everything in this repo is MIT License unless otherwise specified.\n\nCopyright (c) Addy Osmani, Sindre Sorhus, Pascal Hartig, Stephen Sawchuk.\n\nPermission is hereby granted, free of charge, to any person obtaining a copy of\nthis software and associated documentation files (the \"Software\"), to deal in\nthe Software without restriction, including without limitation the rights to\nuse, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of\nthe Software, and to permit persons to whom the Software is furnished to do so,\nsubject to the following conditions:\n\nThe above copyright notice and this permission notice shall be included in all\ncopies or substantial portions of the Software.\n\nTHE SOFTWARE IS PROVIDED \"AS IS\", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR\nIMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS\nFOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR\nCOPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER\nIN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN\nCONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.\n",
+      "sha256": "32238c5c6759b589ea768661b6eb0fcb42449b74d57cdf09928743f2e1eb748d",
+      "sourceUrl": "https://github.com/tastejs/todomvc/blob/ff43b02e59dfa604386bb382034b2cd07c2bcd8a/license.md",
+      "notice": "Attribution retained from the inspected upstream revision. This does not authenticate an arbitrary uploaded manifest's ancestry."
+    }
+  ],
+  "contract": {
+    "version": "passage-temporal/v1",
+    "id": "todomvc-keyboard-edit-cancel",
+    "revision": 2,
+    "title": "Edit a task using the keyboard; Escape preserves the original task",
+    "bindings": {
+      "newTask": {
+        "kind": "role",
+        "role": "textbox",
+        "name": "New Todo Input",
+        "read": "value"
+      },
+      "taskTitle": {
+        "kind": "testId",
+        "value": "todo-item-label",
+        "read": "text"
+      },
+      "editor": {
+        "kind": "role",
+        "role": "textbox",
+        "name": "Edit todo",
+        "read": "value"
+      }
+    },
+    "actions": [
+      {
+        "id": "write-task",
+        "label": "Enter a task",
+        "kind": "fill",
+        "binding": "newTask",
+        "value": "Pick up a prescription"
+      },
+      {
+        "id": "create-task",
+        "label": "Create the task",
+        "kind": "press",
+        "key": "Enter",
+        "binding": "newTask"
+      },
+      {
+        "id": "start-tab",
+        "label": "Start keyboard traversal",
+        "kind": "focus",
+        "binding": "newTask"
+      },
+      {
+        "id": "tab-all",
+        "label": "Move past complete-all",
+        "kind": "press",
+        "key": "Tab"
+      },
+      {
+        "id": "tab-item",
+        "label": "Move to task completion",
+        "kind": "press",
+        "key": "Tab"
+      },
+      {
+        "id": "tab-edit",
+        "label": "Reach the task editing control",
+        "kind": "press",
+        "key": "Tab"
+      },
+      {
+        "id": "open-edit",
+        "label": "Open editing with Enter",
+        "kind": "press",
+        "key": "Enter"
+      },
+      {
+        "id": "edit-visible",
+        "label": "Wait for editing",
+        "kind": "waitFor",
+        "binding": "editor",
+        "state": "visible"
+      },
+      {
+        "id": "change-task",
+        "label": "Draft a different task",
+        "kind": "fill",
+        "binding": "editor",
+        "value": "Cancelled edit should not save"
+      },
+      {
+        "id": "cancel-edit",
+        "label": "Cancel with Escape",
+        "kind": "press",
+        "key": "Escape",
+        "binding": "editor"
+      },
+      {
+        "id": "editor-closed",
+        "label": "Editing closes on cancellation",
+        "kind": "waitFor",
+        "binding": "editor",
+        "state": "hidden"
+      },
+      {
+        "id": "leave-task",
+        "label": "Move focus after cancellation",
+        "kind": "focus",
+        "binding": "newTask"
+      },
+      {
+        "id": "cancelled-value",
+        "label": "Inspect the preserved task",
+        "kind": "checkpoint"
+      },
+      {
+        "id": "reopen-focus",
+        "label": "Return to task",
+        "kind": "focus",
+        "binding": "taskTitle"
+      },
+      {
+        "id": "reopen",
+        "label": "Edit the task again",
+        "kind": "press",
+        "key": "Enter"
+      },
+      {
+        "id": "edit-again",
+        "label": "Wait for editor",
+        "kind": "waitFor",
+        "binding": "editor",
+        "state": "visible"
+      },
+      {
+        "id": "new-title",
+        "label": "Make an intentional edit",
+        "kind": "fill",
+        "binding": "editor",
+        "value": "Pick up the prescription at 5"
+      },
+      {
+        "id": "save-edit",
+        "label": "Save with Enter",
+        "kind": "press",
+        "key": "Enter",
+        "binding": "editor"
+      },
+      {
+        "id": "save-closed",
+        "label": "Editing closes on save",
+        "kind": "waitFor",
+        "binding": "editor",
+        "state": "hidden"
+      },
+      {
+        "id": "saved-value",
+        "label": "Inspect the saved task",
+        "kind": "checkpoint"
+      }
+    ],
+    "assertions": [
+      {
+        "id": "keyboard-entry",
+        "label": "The task can be edited from the keyboard",
+        "after": "tab-edit",
+        "required": true,
+        "kind": "focusWithin",
+        "binding": "taskTitle"
+      },
+      {
+        "id": "cancel-preserves",
+        "label": "Escape and subsequent focus change preserve the prior title",
+        "after": "cancelled-value",
+        "required": true,
+        "kind": "valueEquals",
+        "binding": "taskTitle",
+        "expected": "Pick up a prescription"
+      },
+      {
+        "id": "save-works",
+        "label": "An intentional edit is still saved",
+        "after": "saved-value",
+        "required": true,
+        "kind": "valueEquals",
+        "binding": "taskTitle",
+        "expected": "Pick up the prescription at 5"
+      },
+      {
+        "id": "task-created",
+        "label": "Task is created and visible in the list",
+        "after": "create-task",
+        "required": true,
+        "kind": "valueEquals",
+        "binding": "taskTitle",
+        "expected": "Pick up a prescription"
+      },
+      {
+        "id": "editor-opens-on-enter",
+        "label": "Pressing Enter on focused task opens the editor",
+        "after": "open-edit",
+        "required": true,
+        "kind": "focusWithin",
+        "binding": "editor"
+      },
+      {
+        "id": "editor-visible",
+        "label": "Editor becomes visible after opening",
+        "after": "edit-visible",
+        "required": true,
+        "kind": "focusWithin",
+        "binding": "editor"
+      }
+    ],
+    "allowedEvents": [],
+    "bounds": {
+      "maxActions": 40,
+      "maxDurationMs": 30000,
+      "actionTimeoutMs": 3000
+    },
+    "digest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+    "approval": {
+      "actor": "Codex automated development reviewer",
+      "role": "operator",
+      "evidenceClass": "authored-development",
+      "approvedAt": "2026-10-28T13:04:53.790Z",
+      "digest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9"
+    }
+  },
+  "review": {
+    "maintainer": "Codex development intent reviewer (not maintainer)",
+    "interactionReviewer": "Codex automated development reviewer",
+    "approvedAt": "2026-10-28T13:04:53.790Z",
+    "draftDigest": "b24ea1387eb8c398b87fb204897a28f2e89b489d492a4c103cadb50fbcff94b1",
+    "evidenceClass": "automated-development-review",
+    "reviewProvenance": "automated-development",
+    "independentlyReviewed": false
+  },
+  "patches": [
+    {
+      "path": "examples/react/src/todo/components/item.jsx",
+      "beforeDigest": "49c48717b33728e6c001070e95ee29a290d8da9909f7cdf12000d20adc28a086",
+      "afterDigest": "ab28aa8ac2ba685e7e8aff91a12f2d1e0dbeb8244387eb60444264a821e979f0",
+      "source": "import { memo, useState, useCallback } from \"react\";\nimport classnames from \"classnames\";\n\nimport { Input } from \"./input\";\n\nimport { TOGGLE_ITEM, REMOVE_ITEM, UPDATE_ITEM } from \"../constants\";\n\nexport const Item = memo(function Item({ todo, dispatch }) {\n    const [isWritable, setIsWritable] = useState(false);\n    const { title, completed, id } = todo;\n\n    const toggleItem = useCallback(() => dispatch({ type: TOGGLE_ITEM, payload: { id } }), [dispatch, id]);\n    const removeItem = useCallback(() => dispatch({ type: REMOVE_ITEM, payload: { id } }), [dispatch, id]);\n    const updateItem = useCallback(\n        (newTitle) => dispatch({ type: UPDATE_ITEM, payload: { id, title: newTitle } }),\n        [dispatch, id]\n    );\n\n    const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n\n    const handleKeyDown = useCallback(\n        (e) => {\n            if (e.key === \"Enter\") {\n                handleDoubleClick();\n            }\n        },\n        [handleDoubleClick]\n    );\n\n    const commitEdit = useCallback(\n        (newTitle) => {\n            // Only act once per edit session — Enter then blur would\n            // otherwise dispatch twice.\n            if (!isWritable) return;\n            setIsWritable(false);\n            if (newTitle.length === 0) removeItem();\n            else updateItem(newTitle);\n        },\n        [isWritable, removeItem, updateItem]\n    );\n\n    const cancelEdit = useCallback(() => {\n        setIsWritable(false);\n    }, []);\n\n    return (\n        <li className={classnames({ completed, editing: isWritable })} data-testid=\"todo-item\">\n            <div className=\"view\">\n                <input\n                    className=\"toggle\"\n                    type=\"checkbox\"\n                    data-testid=\"todo-item-toggle\"\n                    checked={completed}\n                    onChange={toggleItem}\n                />\n                <label\n                    data-testid=\"todo-item-label\"\n                    onDoubleClick={handleDoubleClick}\n                    onKeyDown={handleKeyDown}\n                    tabIndex={0}\n                >\n                    {title}\n                </label>\n                <button\n                    className=\"destroy\"\n                    data-testid=\"todo-item-button\"\n                    aria-label=\"Delete todo\"\n                    onClick={removeItem}\n                />\n            </div>\n            {isWritable && (\n                <Input\n                    editing\n                    onSubmit={commitEdit}\n                    onBlur={commitEdit}\n                    onCancel={cancelEdit}\n                    label=\"Edit todo\"\n                    defaultValue={title}\n                />\n            )}\n        </li>\n    );\n});\n",
+      "diff": "===================================================================\n--- a/examples/react/src/todo/components/item.jsx\timmutable original\n+++ b/examples/react/src/todo/components/item.jsx\tcumulative candidate\n@@ -17,8 +17,17 @@\n     );\n \n     const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n \n+    const handleKeyDown = useCallback(\n+        (e) => {\n+            if (e.key === \"Enter\") {\n+                handleDoubleClick();\n+            }\n+        },\n+        [handleDoubleClick]\n+    );\n+\n     const commitEdit = useCallback(\n         (newTitle) => {\n             // Only act once per edit session — Enter then blur would\n             // otherwise dispatch twice.\n@@ -29,8 +38,12 @@\n         },\n         [isWritable, removeItem, updateItem]\n     );\n \n+    const cancelEdit = useCallback(() => {\n+        setIsWritable(false);\n+    }, []);\n+\n     return (\n         <li className={classnames({ completed, editing: isWritable })} data-testid=\"todo-item\">\n             <div className=\"view\">\n                 <input\n@@ -39,9 +52,14 @@\n                     data-testid=\"todo-item-toggle\"\n                     checked={completed}\n                     onChange={toggleItem}\n                 />\n-                <label data-testid=\"todo-item-label\" onDoubleClick={handleDoubleClick}>\n+                <label\n+                    data-testid=\"todo-item-label\"\n+                    onDoubleClick={handleDoubleClick}\n+                    onKeyDown={handleKeyDown}\n+                    tabIndex={0}\n+                >\n                     {title}\n                 </label>\n                 <button\n                     className=\"destroy\"\n@@ -54,8 +72,9 @@\n                 <Input\n                     editing\n                     onSubmit={commitEdit}\n                     onBlur={commitEdit}\n+                    onCancel={cancelEdit}\n                     label=\"Edit todo\"\n                     defaultValue={title}\n                 />\n             )}\n"
+    },
+    {
+      "path": "examples/react/src/todo/components/input.jsx",
+      "beforeDigest": "ccd8d46861920a85e27fcd903bfd6dfb5687cfb3e309c038a9939708e1647f06",
+      "afterDigest": "d2129658b1e445fa9b2d50d22c80f5be8563285636d26b9936f7ac54ce5a34f0",
+      "source": "import { useCallback } from \"react\";\n\nexport function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false, onCancel }) {\n    const handleBlur = useCallback(\n        (e) => {\n            if (!onBlur) return;\n            const value = e.target.value.trim();\n            onBlur(value);\n        },\n        [onBlur]\n    );\n\n    const handleKeyDown = useCallback(\n        (e) => {\n            if (e.key === \"Escape\") {\n                if (onCancel) onCancel();\n                return;\n            }\n            if (e.key !== \"Enter\") return;\n            const value = e.target.value.trim();\n            // For new-todo, ignore empty submits. For edit, an empty\n            // submit means \"delete this todo\" — let the parent decide.\n            if (!editing && value.length === 0) return;\n            onSubmit(value);\n            // Only clear the new-todo input on submit; the edit input is\n            // about to unmount so leave it alone.\n            if (!editing) e.target.value = \"\";\n        },\n        [onSubmit, editing, onCancel]\n    );\n\n    return (\n        <input\n            className={editing ? \"edit\" : \"new-todo\"}\n            type=\"text\"\n            data-testid=\"text-input\"\n            autoFocus\n            aria-label={label}\n            placeholder={placeholder}\n            defaultValue={defaultValue}\n            onBlur={handleBlur}\n            onKeyDown={handleKeyDown}\n        />\n    );\n}\n",
+      "diff": "===================================================================\n--- a/examples/react/src/todo/components/input.jsx\timmutable original\n+++ b/examples/react/src/todo/components/input.jsx\tcumulative candidate\n@@ -1,7 +1,7 @@\n import { useCallback } from \"react\";\n \n-export function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false }) {\n+export function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false, onCancel }) {\n     const handleBlur = useCallback(\n         (e) => {\n             if (!onBlur) return;\n             const value = e.target.value.trim();\n@@ -11,8 +11,12 @@\n     );\n \n     const handleKeyDown = useCallback(\n         (e) => {\n+            if (e.key === \"Escape\") {\n+                if (onCancel) onCancel();\n+                return;\n+            }\n             if (e.key !== \"Enter\") return;\n             const value = e.target.value.trim();\n             // For new-todo, ignore empty submits. For edit, an empty\n             // submit means \"delete this todo\" — let the parent decide.\n@@ -21,9 +25,9 @@\n             // Only clear the new-todo input on submit; the edit input is\n             // about to unmount so leave it alone.\n             if (!editing) e.target.value = \"\";\n         },\n-        [onSubmit, editing]\n+        [onSubmit, editing, onCancel]\n     );\n \n     return (\n         <input\n"
+    }
+  ],
+  "replays": [
+    {
+      "id": "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4",
+      "createdAt": "2026-10-28T12:56:41.064Z",
+      "label": "Observed original revision",
+      "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+      "contractDigest": "7d537f7797ce177e075d1debde24741a8b80e629b0f68acf7fb2bc3e6cf991b2",
+      "build": {
+        "schema": "passage.repository-build.v1",
+        "id": "c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488",
+        "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+        "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+        "bundleDigest": "90590f754a4a4269038a845cc22f0f1388f86e82bec415d1bab4fae684cb1e52",
+        "previewUrl": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/index.html",
+        "files": [
+          {
+            "path": "examples/react/src/index.js",
+            "sha256": "5f7a9a0fa40f0680b927efc306b6a5a2a780e0eae0c2b16be55ffba36ddabd7e"
+          },
+          {
+            "path": "examples/react/src/todo/app.css",
+            "sha256": "3f75fd17df69bdbec69f014ea7f81daec632d8215876ed53f43ab16172ad0c4d"
+          },
+          {
+            "path": "examples/react/src/todo/app.jsx",
+            "sha256": "9062e9b90d3ef5c292e84cc2e765797d1336373271d7c5f39944d704f98d661f"
+          },
+          {
+            "path": "examples/react/src/todo/components/footer.jsx",
+            "sha256": "36cdfa5e44e268eac560551a035cf51335883a761ef94eae4f9c20dcb48d5fdf"
+          },
+          {
+            "path": "examples/react/src/todo/components/header.jsx",
+            "sha256": "0c266389617ea90e8d0a7d25762d8023410ee3ce89ff99b8210efe3180f12b23"
+          },
+          {
+            "path": "examples/react/src/todo/components/input.jsx",
+            "sha256": "ccd8d46861920a85e27fcd903bfd6dfb5687cfb3e309c038a9939708e1647f06"
+          },
+          {
+            "path": "examples/react/src/todo/components/item.jsx",
+            "sha256": "49c48717b33728e6c001070e95ee29a290d8da9909f7cdf12000d20adc28a086"
+          },
+          {
+            "path": "examples/react/src/todo/components/main.jsx",
+            "sha256": "09164b4bb70f4162ca2d32e3961133653fd0f9934244ba21eb85477218008a28"
+          },
+          {
+            "path": "examples/react/src/todo/constants.js",
+            "sha256": "9ed0dc00e202fc727747beea153a68863f72bf399c2974132300303dad6d7325"
+          },
+          {
+            "path": "examples/react/src/todo/reducer.js",
+            "sha256": "57a59689cf665b27f2fd1172857f9bcf249475c5b6fa5b9da78e92c0f9b8cf2b"
+          }
+        ],
+        "createdAt": "2026-10-28T12:56:40.822Z",
+        "outcomeVerification": "not-configured",
+        "isolation": {
+          "runtime": "docker-linux",
+          "context": "colima-passage",
+          "image": "sha256:63ac66a10aa94048d181a77bf05d38674c79cada6aacd5d4563aabf0000ae4a5",
+          "network": "none",
+          "hostMounts": false,
+          "readOnlyRoot": true,
+          "user": "1000:1000",
+          "capabilities": "none",
+          "memoryBytes": 805306368,
+          "pidsLimit": 96
+        }
+      },
+      "execution": {
+        "version": "passage-temporal-execution/v1",
+        "id": "77feca9d-2721-41d8-a1d6-78e15396faa2",
+        "identity": {
+          "executionId": "77feca9d-2721-41d8-a1d6-78e15396faa2",
+          "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+          "buildId": "c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488",
+          "sessionId": "6d4593bd-19bf-403e-b738-29b14c2410fe",
+          "adapter": "external-react-static-v1",
+          "contractDigest": "7d537f7797ce177e075d1debde24741a8b80e629b0f68acf7fb2bc3e6cf991b2"
+        },
+        "contractDigest": "7d537f7797ce177e075d1debde24741a8b80e629b0f68acf7fb2bc3e6cf991b2",
+        "status": "failed",
+        "passed": false,
+        "startedAt": "2026-10-28T12:56:41.004Z",
+        "completedAt": "2026-10-28T12:56:41.064Z",
+        "durationMs": 60,
+        "actionsExecuted": [
+          "write-task",
+          "create-task",
+          "start-tab",
+          "tab-all",
+          "tab-item",
+          "tab-edit"
+        ],
+        "checks": [
+          {
+            "id": "keyboard-entry",
+            "label": "The task can be edited from the keyboard",
+            "actionId": "tab-edit",
+            "status": "failed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus escaped or modal absent.",
+            "traceSequence": 22
+          },
+          {
+            "id": "cancel-preserves",
+            "label": "Escape and subsequent focus change preserve the prior title",
+            "actionId": "cancelled-value",
+            "status": "not-run",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          },
+          {
+            "id": "save-works",
+            "label": "An intentional edit is still saved",
+            "actionId": "saved-value",
+            "status": "not-run",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          }
+        ],
+        "trace": [
+          {
+            "kind": "request",
+            "label": "GET /repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/index.html",
+            "requestId": "request-1",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/index.html",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 1,
+            "at": "2026-10-28T12:56:40.964Z",
+            "elapsedMs": 11
+          },
+          {
+            "kind": "response",
+            "label": "200 /repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/index.html",
+            "requestId": "request-1",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/index.html"
+            },
+            "sequence": 2,
+            "at": "2026-10-28T12:56:40.968Z",
+            "elapsedMs": 15
+          },
+          {
+            "kind": "request",
+            "label": "GET /repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.css",
+            "requestId": "request-2",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.css",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 3,
+            "at": "2026-10-28T12:56:40.970Z",
+            "elapsedMs": 17
+          },
+          {
+            "kind": "request",
+            "label": "GET /repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.js",
+            "requestId": "request-3",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.js",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 4,
+            "at": "2026-10-28T12:56:40.970Z",
+            "elapsedMs": 17
+          },
+          {
+            "kind": "response",
+            "label": "200 /repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.css",
+            "requestId": "request-2",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.css"
+            },
+            "sequence": 5,
+            "at": "2026-10-28T12:56:40.973Z",
+            "elapsedMs": 20
+          },
+          {
+            "kind": "response",
+            "label": "200 /repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.js",
+            "requestId": "request-3",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488/app.js"
+            },
+            "sequence": 6,
+            "at": "2026-10-28T12:56:40.978Z",
+            "elapsedMs": 25
+          },
+          {
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 7,
+            "at": "2026-10-28T12:56:40.999Z",
+            "elapsedMs": 46
+          },
+          {
+            "kind": "action",
+            "label": "Enter a task",
+            "actionId": "write-task",
+            "data": {
+              "kind": "fill"
+            },
+            "sequence": 8,
+            "at": "2026-10-28T12:56:41.004Z",
+            "elapsedMs": 51
+          },
+          {
+            "kind": "input",
+            "label": "input",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 9,
+            "at": "2026-10-28T12:56:41.032Z",
+            "elapsedMs": 79
+          },
+          {
+            "kind": "action",
+            "label": "Create the task",
+            "actionId": "create-task",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 10,
+            "at": "2026-10-28T12:56:41.033Z",
+            "elapsedMs": 80
+          },
+          {
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 11,
+            "at": "2026-10-28T12:56:41.036Z",
+            "elapsedMs": 83
+          },
+          {
+            "kind": "action",
+            "label": "Start keyboard traversal",
+            "actionId": "start-tab",
+            "data": {
+              "kind": "focus"
+            },
+            "sequence": 12,
+            "at": "2026-10-28T12:56:41.054Z",
+            "elapsedMs": 101
+          },
+          {
+            "kind": "action",
+            "label": "Move past complete-all",
+            "actionId": "tab-all",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 13,
+            "at": "2026-10-28T12:56:41.057Z",
+            "elapsedMs": 104
+          },
+          {
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 14,
+            "at": "2026-10-28T12:56:41.057Z",
+            "elapsedMs": 104
+          },
+          {
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"toggle-all\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 15,
+            "at": "2026-10-28T12:56:41.058Z",
+            "elapsedMs": 105
+          },
+          {
+            "kind": "action",
+            "label": "Move to task completion",
+            "actionId": "tab-item",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 16,
+            "at": "2026-10-28T12:56:41.058Z",
+            "elapsedMs": 105
+          },
+          {
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"toggle-all\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 17,
+            "at": "2026-10-28T12:56:41.058Z",
+            "elapsedMs": 105
+          },
+          {
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"todo-item-toggle\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 18,
+            "at": "2026-10-28T12:56:41.059Z",
+            "elapsedMs": 106
+          },
+          {
+            "kind": "action",
+            "label": "Reach the task editing control",
+            "actionId": "tab-edit",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 19,
+            "at": "2026-10-28T12:56:41.059Z",
+            "elapsedMs": 106
+          },
+          {
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"todo-item-toggle\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 20,
+            "at": "2026-10-28T12:56:41.059Z",
+            "elapsedMs": 106
+          },
+          {
+            "kind": "focus",
+            "label": "focusin",
+            "target": "a",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 21,
+            "at": "2026-10-28T12:56:41.060Z",
+            "elapsedMs": 107
+          },
+          {
+            "kind": "assertion",
+            "label": "The task can be edited from the keyboard",
+            "actionId": "tab-edit",
+            "data": {
+              "assertionId": "keyboard-entry",
+              "status": "failed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus escaped or modal absent."
+            },
+            "sequence": 22,
+            "at": "2026-10-28T12:56:41.064Z",
+            "elapsedMs": 111
+          }
+        ],
+        "failureSignature": "keyboard-entry:focus-escaped",
+        "limitations": [
+          "Bounded browser and protected outcome checks; no claim of formal verification.",
+          "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+          "Contract approval: operator; authored-development."
+        ]
+      },
+      "outcomeVerification": "not-configured",
+      "protectedOutcome": null
+    },
+    {
+      "id": "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda",
+      "createdAt": "2026-10-28T13:10:11.406Z",
+      "label": "Model candidate against frozen contract",
+      "sourceDigest": "9c485d7f15ac72c3b3470fb164a4df4c56428f6eb853909d524a5fa2bf4eb81a",
+      "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+      "build": {
+        "schema": "passage.repository-build.v1",
+        "id": "c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d",
+        "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+        "sourceDigest": "9c485d7f15ac72c3b3470fb164a4df4c56428f6eb853909d524a5fa2bf4eb81a",
+        "bundleDigest": "2a085ae14b6e4752c8da9f87a686b372b33c2ccc53a423b9f1dcd910c059337e",
+        "previewUrl": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/index.html",
+        "files": [
+          {
+            "path": "examples/react/src/index.js",
+            "sha256": "5f7a9a0fa40f0680b927efc306b6a5a2a780e0eae0c2b16be55ffba36ddabd7e"
+          },
+          {
+            "path": "examples/react/src/todo/app.css",
+            "sha256": "3f75fd17df69bdbec69f014ea7f81daec632d8215876ed53f43ab16172ad0c4d"
+          },
+          {
+            "path": "examples/react/src/todo/app.jsx",
+            "sha256": "9062e9b90d3ef5c292e84cc2e765797d1336373271d7c5f39944d704f98d661f"
+          },
+          {
+            "path": "examples/react/src/todo/components/footer.jsx",
+            "sha256": "36cdfa5e44e268eac560551a035cf51335883a761ef94eae4f9c20dcb48d5fdf"
+          },
+          {
+            "path": "examples/react/src/todo/components/header.jsx",
+            "sha256": "0c266389617ea90e8d0a7d25762d8023410ee3ce89ff99b8210efe3180f12b23"
+          },
+          {
+            "path": "examples/react/src/todo/components/input.jsx",
+            "sha256": "ccd8d46861920a85e27fcd903bfd6dfb5687cfb3e309c038a9939708e1647f06"
+          },
+          {
+            "path": "examples/react/src/todo/components/item.jsx",
+            "sha256": "e15c9b9a5a28b82104f31922622f731a900228386a60a0ed3fa73835870b24a6"
+          },
+          {
+            "path": "examples/react/src/todo/components/main.jsx",
+            "sha256": "09164b4bb70f4162ca2d32e3961133653fd0f9934244ba21eb85477218008a28"
+          },
+          {
+            "path": "examples/react/src/todo/constants.js",
+            "sha256": "9ed0dc00e202fc727747beea153a68863f72bf399c2974132300303dad6d7325"
+          },
+          {
+            "path": "examples/react/src/todo/reducer.js",
+            "sha256": "57a59689cf665b27f2fd1172857f9bcf249475c5b6fa5b9da78e92c0f9b8cf2b"
+          }
+        ],
+        "createdAt": "2026-10-28T13:10:07.762Z",
+        "outcomeVerification": "not-configured",
+        "isolation": {
+          "runtime": "docker-linux",
+          "context": "colima-passage",
+          "image": "sha256:63ac66a10aa94048d181a77bf05d38674c79cada6aacd5d4563aabf0000ae4a5",
+          "network": "none",
+          "hostMounts": false,
+          "readOnlyRoot": true,
+          "user": "1000:1000",
+          "capabilities": "none",
+          "memoryBytes": 805306368,
+          "pidsLimit": 96
+        }
+      },
+      "execution": {
+        "version": "passage-temporal-execution/v1",
+        "id": "30f7036b-cfa2-4025-bc84-21732df3411d",
+        "identity": {
+          "executionId": "30f7036b-cfa2-4025-bc84-21732df3411d",
+          "sourceDigest": "9c485d7f15ac72c3b3470fb164a4df4c56428f6eb853909d524a5fa2bf4eb81a",
+          "buildId": "c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d",
+          "sessionId": "b56174e9-ac28-4c77-aff0-4dbd74c6f9aa",
+          "adapter": "external-react-static-v1",
+          "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9"
+        },
+        "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+        "status": "failed",
+        "passed": false,
+        "startedAt": "2026-10-28T13:10:08.333Z",
+        "completedAt": "2026-10-28T13:10:11.406Z",
+        "durationMs": 3073,
+        "actionsExecuted": [
+          "write-task",
+          "create-task",
+          "start-tab",
+          "tab-all",
+          "tab-item",
+          "tab-edit",
+          "open-edit",
+          "edit-visible",
+          "change-task",
+          "cancel-edit"
+        ],
+        "checks": [
+          {
+            "id": "task-created",
+            "label": "Task is created and visible in the list",
+            "actionId": "create-task",
+            "status": "passed",
+            "expected": "Pick up a prescription",
+            "actual": "Pick up a prescription",
+            "traceSequence": 12
+          },
+          {
+            "id": "keyboard-entry",
+            "label": "The task can be edited from the keyboard",
+            "actionId": "tab-edit",
+            "status": "passed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus inside.",
+            "traceSequence": 23
+          },
+          {
+            "id": "editor-opens-on-enter",
+            "label": "Pressing Enter on focused task opens the editor",
+            "actionId": "open-edit",
+            "status": "passed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus inside.",
+            "traceSequence": 27
+          },
+          {
+            "id": "editor-visible",
+            "label": "Editor becomes visible after opening",
+            "actionId": "edit-visible",
+            "status": "passed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus inside.",
+            "traceSequence": 29
+          },
+          {
+            "id": "action:editor-closed",
+            "label": "Editing closes on cancellation",
+            "actionId": "editor-closed",
+            "status": "failed",
+            "expected": "The approved action is operable from the observed keyboard state.",
+            "actual": "editor did not become hidden within the allowed wait.",
+            "traceSequence": 35
+          },
+          {
+            "id": "cancel-preserves",
+            "label": "Escape and subsequent focus change preserve the prior title",
+            "actionId": "cancelled-value",
+            "status": "not-run",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          },
+          {
+            "id": "save-works",
+            "label": "An intentional edit is still saved",
+            "actionId": "saved-value",
+            "status": "not-run",
+            "expected": "Executed checkpoint and assertion.",
+            "actual": "Checkpoint was omitted or execution stopped."
+          }
+        ],
+        "trace": [
+          {
+            "provenance": "browser-network",
+            "kind": "request",
+            "label": "GET /repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/index.html",
+            "requestId": "request-1",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/index.html",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 1,
+            "at": "2026-10-28T13:10:08.252Z",
+            "elapsedMs": 26
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "response",
+            "label": "200 /repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/index.html",
+            "requestId": "request-1",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/index.html"
+            },
+            "sequence": 2,
+            "at": "2026-10-28T13:10:08.268Z",
+            "elapsedMs": 42
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "request",
+            "label": "GET /repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.css",
+            "requestId": "request-2",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.css",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 3,
+            "at": "2026-10-28T13:10:08.278Z",
+            "elapsedMs": 52
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "request",
+            "label": "GET /repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.js",
+            "requestId": "request-3",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.js",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 4,
+            "at": "2026-10-28T13:10:08.279Z",
+            "elapsedMs": 53
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "response",
+            "label": "200 /repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.css",
+            "requestId": "request-2",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.css"
+            },
+            "sequence": 5,
+            "at": "2026-10-28T13:10:08.281Z",
+            "elapsedMs": 55
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "response",
+            "label": "200 /repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.js",
+            "requestId": "request-3",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/c3c38970c6c15c998714d60cf9b311c26d48cf02ea885d68aab2d99412b6809d/app.js"
+            },
+            "sequence": 6,
+            "at": "2026-10-28T13:10:08.287Z",
+            "elapsedMs": 61
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 7,
+            "at": "2026-10-28T13:10:08.327Z",
+            "elapsedMs": 101
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Enter a task",
+            "actionId": "write-task",
+            "data": {
+              "kind": "fill"
+            },
+            "sequence": 8,
+            "at": "2026-10-28T13:10:08.334Z",
+            "elapsedMs": 108
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "input",
+            "label": "input",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 9,
+            "at": "2026-10-28T13:10:08.372Z",
+            "elapsedMs": 146
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Create the task",
+            "actionId": "create-task",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 10,
+            "at": "2026-10-28T13:10:08.373Z",
+            "elapsedMs": 147
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 11,
+            "at": "2026-10-28T13:10:08.380Z",
+            "elapsedMs": 154
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Task is created and visible in the list",
+            "actionId": "create-task",
+            "data": {
+              "assertionId": "task-created",
+              "status": "passed",
+              "expected": "Pick up a prescription",
+              "actual": "Pick up a prescription"
+            },
+            "sequence": 12,
+            "at": "2026-10-28T13:10:08.403Z",
+            "elapsedMs": 177
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Start keyboard traversal",
+            "actionId": "start-tab",
+            "data": {
+              "kind": "focus"
+            },
+            "sequence": 13,
+            "at": "2026-10-28T13:10:08.403Z",
+            "elapsedMs": 177
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Move past complete-all",
+            "actionId": "tab-all",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 14,
+            "at": "2026-10-28T13:10:08.405Z",
+            "elapsedMs": 179
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 15,
+            "at": "2026-10-28T13:10:08.406Z",
+            "elapsedMs": 180
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"toggle-all\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 16,
+            "at": "2026-10-28T13:10:08.407Z",
+            "elapsedMs": 181
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Move to task completion",
+            "actionId": "tab-item",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 17,
+            "at": "2026-10-28T13:10:08.407Z",
+            "elapsedMs": 181
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"toggle-all\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 18,
+            "at": "2026-10-28T13:10:08.408Z",
+            "elapsedMs": 182
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"todo-item-toggle\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 19,
+            "at": "2026-10-28T13:10:08.408Z",
+            "elapsedMs": 182
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Reach the task editing control",
+            "actionId": "tab-edit",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 20,
+            "at": "2026-10-28T13:10:08.408Z",
+            "elapsedMs": 182
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"todo-item-toggle\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 21,
+            "at": "2026-10-28T13:10:08.409Z",
+            "elapsedMs": 183
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"todo-item-label\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 22,
+            "at": "2026-10-28T13:10:08.410Z",
+            "elapsedMs": 184
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "The task can be edited from the keyboard",
+            "actionId": "tab-edit",
+            "data": {
+              "assertionId": "keyboard-entry",
+              "status": "passed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus inside."
+            },
+            "sequence": 23,
+            "at": "2026-10-28T13:10:08.413Z",
+            "elapsedMs": 187
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Open editing with Enter",
+            "actionId": "open-edit",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 24,
+            "at": "2026-10-28T13:10:08.413Z",
+            "elapsedMs": 187
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"todo-item-label\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 25,
+            "at": "2026-10-28T13:10:08.413Z",
+            "elapsedMs": 187
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 26,
+            "at": "2026-10-28T13:10:08.414Z",
+            "elapsedMs": 188
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Pressing Enter on focused task opens the editor",
+            "actionId": "open-edit",
+            "data": {
+              "assertionId": "editor-opens-on-enter",
+              "status": "passed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus inside."
+            },
+            "sequence": 27,
+            "at": "2026-10-28T13:10:08.416Z",
+            "elapsedMs": 190
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Wait for editing",
+            "actionId": "edit-visible",
+            "data": {
+              "kind": "waitFor"
+            },
+            "sequence": 28,
+            "at": "2026-10-28T13:10:08.417Z",
+            "elapsedMs": 191
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Editor becomes visible after opening",
+            "actionId": "edit-visible",
+            "data": {
+              "assertionId": "editor-visible",
+              "status": "passed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus inside."
+            },
+            "sequence": 29,
+            "at": "2026-10-28T13:10:08.419Z",
+            "elapsedMs": 193
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Draft a different task",
+            "actionId": "change-task",
+            "data": {
+              "kind": "fill"
+            },
+            "sequence": 30,
+            "at": "2026-10-28T13:10:08.419Z",
+            "elapsedMs": 193
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "input",
+            "label": "input",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 31,
+            "at": "2026-10-28T13:10:08.424Z",
+            "elapsedMs": 198
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Cancel with Escape",
+            "actionId": "cancel-edit",
+            "data": {
+              "kind": "press",
+              "key": "Escape"
+            },
+            "sequence": 32,
+            "at": "2026-10-28T13:10:08.425Z",
+            "elapsedMs": 199
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Escape",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 33,
+            "at": "2026-10-28T13:10:08.428Z",
+            "elapsedMs": 202
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Editing closes on cancellation",
+            "actionId": "editor-closed",
+            "data": {
+              "kind": "waitFor"
+            },
+            "sequence": 34,
+            "at": "2026-10-28T13:10:08.428Z",
+            "elapsedMs": 202
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Blocked: Editing closes on cancellation",
+            "actionId": "editor-closed",
+            "data": {
+              "status": "failed",
+              "code": "expected-state-unreachable",
+              "actual": "editor did not become hidden within the allowed wait."
+            },
+            "sequence": 35,
+            "at": "2026-10-28T13:10:11.405Z",
+            "elapsedMs": 3179
+          }
+        ],
+        "failureSignature": "action:editor-closed:expected-state-unreachable",
+        "limitations": [
+          "Bounded browser and protected outcome checks; no claim of formal verification.",
+          "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+          "Contract approval: operator; authored-development."
+        ]
+      },
+      "outcomeVerification": "not-configured",
+      "protectedOutcome": null
+    },
+    {
+      "id": "repository-replay_1493a9b2-13f5-44c6-bc8e-bab3c44e7001",
+      "createdAt": "2026-10-28T13:11:44.649Z",
+      "label": "Model candidate against frozen contract",
+      "sourceDigest": "9891efa6fe37f8d8c7184711839f612a23d75b63ff95e2d5cdc1287dcc324f1a",
+      "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+      "build": {
+        "schema": "passage.repository-build.v1",
+        "id": "e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d",
+        "revision": "ff43b02e59dfa604386bb382034b2cd07c2bcd8a",
+        "sourceDigest": "9891efa6fe37f8d8c7184711839f612a23d75b63ff95e2d5cdc1287dcc324f1a",
+        "bundleDigest": "8ec3ecdc5e421548a53a253d32222b28ecb30182d0020d577d5ddc810ff68bfc",
+        "previewUrl": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/index.html",
+        "files": [
+          {
+            "path": "examples/react/src/index.js",
+            "sha256": "5f7a9a0fa40f0680b927efc306b6a5a2a780e0eae0c2b16be55ffba36ddabd7e"
+          },
+          {
+            "path": "examples/react/src/todo/app.css",
+            "sha256": "3f75fd17df69bdbec69f014ea7f81daec632d8215876ed53f43ab16172ad0c4d"
+          },
+          {
+            "path": "examples/react/src/todo/app.jsx",
+            "sha256": "9062e9b90d3ef5c292e84cc2e765797d1336373271d7c5f39944d704f98d661f"
+          },
+          {
+            "path": "examples/react/src/todo/components/footer.jsx",
+            "sha256": "36cdfa5e44e268eac560551a035cf51335883a761ef94eae4f9c20dcb48d5fdf"
+          },
+          {
+            "path": "examples/react/src/todo/components/header.jsx",
+            "sha256": "0c266389617ea90e8d0a7d25762d8023410ee3ce89ff99b8210efe3180f12b23"
+          },
+          {
+            "path": "examples/react/src/todo/components/input.jsx",
+            "sha256": "d2129658b1e445fa9b2d50d22c80f5be8563285636d26b9936f7ac54ce5a34f0"
+          },
+          {
+            "path": "examples/react/src/todo/components/item.jsx",
+            "sha256": "ab28aa8ac2ba685e7e8aff91a12f2d1e0dbeb8244387eb60444264a821e979f0"
+          },
+          {
+            "path": "examples/react/src/todo/components/main.jsx",
+            "sha256": "09164b4bb70f4162ca2d32e3961133653fd0f9934244ba21eb85477218008a28"
+          },
+          {
+            "path": "examples/react/src/todo/constants.js",
+            "sha256": "9ed0dc00e202fc727747beea153a68863f72bf399c2974132300303dad6d7325"
+          },
+          {
+            "path": "examples/react/src/todo/reducer.js",
+            "sha256": "57a59689cf665b27f2fd1172857f9bcf249475c5b6fa5b9da78e92c0f9b8cf2b"
+          }
+        ],
+        "createdAt": "2026-10-28T13:11:44.408Z",
+        "outcomeVerification": "not-configured",
+        "isolation": {
+          "runtime": "docker-linux",
+          "context": "colima-passage",
+          "image": "sha256:63ac66a10aa94048d181a77bf05d38674c79cada6aacd5d4563aabf0000ae4a5",
+          "network": "none",
+          "hostMounts": false,
+          "readOnlyRoot": true,
+          "user": "1000:1000",
+          "capabilities": "none",
+          "memoryBytes": 805306368,
+          "pidsLimit": 96
+        }
+      },
+      "execution": {
+        "version": "passage-temporal-execution/v1",
+        "id": "a368135c-8272-4e10-8a4b-5c09b22f47f3",
+        "identity": {
+          "executionId": "a368135c-8272-4e10-8a4b-5c09b22f47f3",
+          "sourceDigest": "9891efa6fe37f8d8c7184711839f612a23d75b63ff95e2d5cdc1287dcc324f1a",
+          "buildId": "e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d",
+          "sessionId": "21774603-7787-4aac-8197-a15f0b0d3ec8",
+          "adapter": "external-react-static-v1",
+          "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9"
+        },
+        "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+        "status": "passed",
+        "passed": true,
+        "startedAt": "2026-10-28T13:11:44.564Z",
+        "completedAt": "2026-10-28T13:11:44.649Z",
+        "durationMs": 85,
+        "actionsExecuted": [
+          "write-task",
+          "create-task",
+          "start-tab",
+          "tab-all",
+          "tab-item",
+          "tab-edit",
+          "open-edit",
+          "edit-visible",
+          "change-task",
+          "cancel-edit",
+          "editor-closed",
+          "leave-task",
+          "cancelled-value",
+          "reopen-focus",
+          "reopen",
+          "edit-again",
+          "new-title",
+          "save-edit",
+          "save-closed",
+          "saved-value"
+        ],
+        "checks": [
+          {
+            "id": "task-created",
+            "label": "Task is created and visible in the list",
+            "actionId": "create-task",
+            "status": "passed",
+            "expected": "Pick up a prescription",
+            "actual": "Pick up a prescription",
+            "traceSequence": 12
+          },
+          {
+            "id": "keyboard-entry",
+            "label": "The task can be edited from the keyboard",
+            "actionId": "tab-edit",
+            "status": "passed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus inside.",
+            "traceSequence": 23
+          },
+          {
+            "id": "editor-opens-on-enter",
+            "label": "Pressing Enter on focused task opens the editor",
+            "actionId": "open-edit",
+            "status": "passed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus inside.",
+            "traceSequence": 27
+          },
+          {
+            "id": "editor-visible",
+            "label": "Editor becomes visible after opening",
+            "actionId": "edit-visible",
+            "status": "passed",
+            "expected": "Actual focus is within the visible bound element.",
+            "actual": "Focus inside.",
+            "traceSequence": 29
+          },
+          {
+            "id": "cancel-preserves",
+            "label": "Escape and subsequent focus change preserve the prior title",
+            "actionId": "cancelled-value",
+            "status": "passed",
+            "expected": "Pick up a prescription",
+            "actual": "Pick up a prescription",
+            "traceSequence": 38
+          },
+          {
+            "id": "save-works",
+            "label": "An intentional edit is still saved",
+            "actionId": "saved-value",
+            "status": "passed",
+            "expected": "Pick up the prescription at 5",
+            "actual": "Pick up the prescription at 5",
+            "traceSequence": 51
+          }
+        ],
+        "trace": [
+          {
+            "provenance": "browser-network",
+            "kind": "request",
+            "label": "GET /repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/index.html",
+            "requestId": "request-1",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/index.html",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 1,
+            "at": "2026-10-28T13:11:44.527Z",
+            "elapsedMs": 10
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "response",
+            "label": "200 /repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/index.html",
+            "requestId": "request-1",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/index.html"
+            },
+            "sequence": 2,
+            "at": "2026-10-28T13:11:44.531Z",
+            "elapsedMs": 14
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "request",
+            "label": "GET /repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.css",
+            "requestId": "request-2",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.css",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 3,
+            "at": "2026-10-28T13:11:44.533Z",
+            "elapsedMs": 16
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "request",
+            "label": "GET /repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.js",
+            "requestId": "request-3",
+            "data": {
+              "url": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.js",
+              "method": "GET",
+              "postData": null
+            },
+            "sequence": 4,
+            "at": "2026-10-28T13:11:44.533Z",
+            "elapsedMs": 16
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "response",
+            "label": "200 /repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.css",
+            "requestId": "request-2",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.css"
+            },
+            "sequence": 5,
+            "at": "2026-10-28T13:11:44.535Z",
+            "elapsedMs": 18
+          },
+          {
+            "provenance": "browser-network",
+            "kind": "response",
+            "label": "200 /repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.js",
+            "requestId": "request-3",
+            "data": {
+              "status": 200,
+              "url": "http://127.0.0.1:4104/repository/e745e1c0fadd8a0a611d7ae520fb24fd8d35b2166fc412c7e2b1c05782cb700d/app.js"
+            },
+            "sequence": 6,
+            "at": "2026-10-28T13:11:44.540Z",
+            "elapsedMs": 23
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 7,
+            "at": "2026-10-28T13:11:44.559Z",
+            "elapsedMs": 42
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Enter a task",
+            "actionId": "write-task",
+            "data": {
+              "kind": "fill"
+            },
+            "sequence": 8,
+            "at": "2026-10-28T13:11:44.564Z",
+            "elapsedMs": 47
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "input",
+            "label": "input",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 9,
+            "at": "2026-10-28T13:11:44.586Z",
+            "elapsedMs": 69
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Create the task",
+            "actionId": "create-task",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 10,
+            "at": "2026-10-28T13:11:44.586Z",
+            "elapsedMs": 69
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 11,
+            "at": "2026-10-28T13:11:44.589Z",
+            "elapsedMs": 72
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Task is created and visible in the list",
+            "actionId": "create-task",
+            "data": {
+              "assertionId": "task-created",
+              "status": "passed",
+              "expected": "Pick up a prescription",
+              "actual": "Pick up a prescription"
+            },
+            "sequence": 12,
+            "at": "2026-10-28T13:11:44.609Z",
+            "elapsedMs": 92
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Start keyboard traversal",
+            "actionId": "start-tab",
+            "data": {
+              "kind": "focus"
+            },
+            "sequence": 13,
+            "at": "2026-10-28T13:11:44.609Z",
+            "elapsedMs": 92
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Move past complete-all",
+            "actionId": "tab-all",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 14,
+            "at": "2026-10-28T13:11:44.610Z",
+            "elapsedMs": 93
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 15,
+            "at": "2026-10-28T13:11:44.611Z",
+            "elapsedMs": 94
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"toggle-all\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 16,
+            "at": "2026-10-28T13:11:44.611Z",
+            "elapsedMs": 94
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Move to task completion",
+            "actionId": "tab-item",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 17,
+            "at": "2026-10-28T13:11:44.612Z",
+            "elapsedMs": 95
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"toggle-all\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 18,
+            "at": "2026-10-28T13:11:44.612Z",
+            "elapsedMs": 95
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"todo-item-toggle\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 19,
+            "at": "2026-10-28T13:11:44.612Z",
+            "elapsedMs": 95
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Reach the task editing control",
+            "actionId": "tab-edit",
+            "data": {
+              "kind": "press",
+              "key": "Tab"
+            },
+            "sequence": 20,
+            "at": "2026-10-28T13:11:44.613Z",
+            "elapsedMs": 96
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"todo-item-toggle\"]",
+            "data": {
+              "key": "Tab",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 21,
+            "at": "2026-10-28T13:11:44.613Z",
+            "elapsedMs": 96
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"todo-item-label\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 22,
+            "at": "2026-10-28T13:11:44.614Z",
+            "elapsedMs": 97
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "The task can be edited from the keyboard",
+            "actionId": "tab-edit",
+            "data": {
+              "assertionId": "keyboard-entry",
+              "status": "passed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus inside."
+            },
+            "sequence": 23,
+            "at": "2026-10-28T13:11:44.617Z",
+            "elapsedMs": 100
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Open editing with Enter",
+            "actionId": "open-edit",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 24,
+            "at": "2026-10-28T13:11:44.618Z",
+            "elapsedMs": 101
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"todo-item-label\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 25,
+            "at": "2026-10-28T13:11:44.618Z",
+            "elapsedMs": 101
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 26,
+            "at": "2026-10-28T13:11:44.619Z",
+            "elapsedMs": 102
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Pressing Enter on focused task opens the editor",
+            "actionId": "open-edit",
+            "data": {
+              "assertionId": "editor-opens-on-enter",
+              "status": "passed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus inside."
+            },
+            "sequence": 27,
+            "at": "2026-10-28T13:11:44.622Z",
+            "elapsedMs": 105
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Wait for editing",
+            "actionId": "edit-visible",
+            "data": {
+              "kind": "waitFor"
+            },
+            "sequence": 28,
+            "at": "2026-10-28T13:11:44.622Z",
+            "elapsedMs": 105
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Editor becomes visible after opening",
+            "actionId": "edit-visible",
+            "data": {
+              "assertionId": "editor-visible",
+              "status": "passed",
+              "expected": "Actual focus is within the visible bound element.",
+              "actual": "Focus inside."
+            },
+            "sequence": 29,
+            "at": "2026-10-28T13:11:44.627Z",
+            "elapsedMs": 110
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Draft a different task",
+            "actionId": "change-task",
+            "data": {
+              "kind": "fill"
+            },
+            "sequence": 30,
+            "at": "2026-10-28T13:11:44.627Z",
+            "elapsedMs": 110
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "input",
+            "label": "input",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 31,
+            "at": "2026-10-28T13:11:44.632Z",
+            "elapsedMs": 115
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Cancel with Escape",
+            "actionId": "cancel-edit",
+            "data": {
+              "kind": "press",
+              "key": "Escape"
+            },
+            "sequence": 32,
+            "at": "2026-10-28T13:11:44.632Z",
+            "elapsedMs": 115
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Escape",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 33,
+            "at": "2026-10-28T13:11:44.635Z",
+            "elapsedMs": 118
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Editing closes on cancellation",
+            "actionId": "editor-closed",
+            "data": {
+              "kind": "waitFor"
+            },
+            "sequence": 34,
+            "at": "2026-10-28T13:11:44.637Z",
+            "elapsedMs": 120
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Move focus after cancellation",
+            "actionId": "leave-task",
+            "data": {
+              "kind": "focus"
+            },
+            "sequence": 35,
+            "at": "2026-10-28T13:11:44.637Z",
+            "elapsedMs": 120
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 36,
+            "at": "2026-10-28T13:11:44.638Z",
+            "elapsedMs": 121
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Inspect the preserved task",
+            "actionId": "cancelled-value",
+            "data": {
+              "kind": "checkpoint"
+            },
+            "sequence": 37,
+            "at": "2026-10-28T13:11:44.638Z",
+            "elapsedMs": 121
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "Escape and subsequent focus change preserve the prior title",
+            "actionId": "cancelled-value",
+            "data": {
+              "assertionId": "cancel-preserves",
+              "status": "passed",
+              "expected": "Pick up a prescription",
+              "actual": "Pick up a prescription"
+            },
+            "sequence": 38,
+            "at": "2026-10-28T13:11:44.639Z",
+            "elapsedMs": 122
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Return to task",
+            "actionId": "reopen-focus",
+            "data": {
+              "kind": "focus"
+            },
+            "sequence": 39,
+            "at": "2026-10-28T13:11:44.639Z",
+            "elapsedMs": 122
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"todo-item-label\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 40,
+            "at": "2026-10-28T13:11:44.640Z",
+            "elapsedMs": 123
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Edit the task again",
+            "actionId": "reopen",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 41,
+            "at": "2026-10-28T13:11:44.640Z",
+            "elapsedMs": 123
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"todo-item-label\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 42,
+            "at": "2026-10-28T13:11:44.641Z",
+            "elapsedMs": 124
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "focus",
+            "label": "focusin",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 43,
+            "at": "2026-10-28T13:11:44.641Z",
+            "elapsedMs": 124
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Wait for editor",
+            "actionId": "edit-again",
+            "data": {
+              "kind": "waitFor"
+            },
+            "sequence": 44,
+            "at": "2026-10-28T13:11:44.641Z",
+            "elapsedMs": 124
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Make an intentional edit",
+            "actionId": "new-title",
+            "data": {
+              "kind": "fill"
+            },
+            "sequence": 45,
+            "at": "2026-10-28T13:11:44.642Z",
+            "elapsedMs": 125
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "input",
+            "label": "input",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "trusted": true
+            },
+            "sequence": 46,
+            "at": "2026-10-28T13:11:44.645Z",
+            "elapsedMs": 128
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Save with Enter",
+            "actionId": "save-edit",
+            "data": {
+              "kind": "press",
+              "key": "Enter"
+            },
+            "sequence": 47,
+            "at": "2026-10-28T13:11:44.645Z",
+            "elapsedMs": 128
+          },
+          {
+            "provenance": "page-instrumentation",
+            "kind": "action",
+            "label": "keydown",
+            "target": "[data-testid=\"text-input\"]",
+            "data": {
+              "key": "Enter",
+              "shiftKey": false,
+              "trusted": true
+            },
+            "sequence": 48,
+            "at": "2026-10-28T13:11:44.647Z",
+            "elapsedMs": 130
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Editing closes on save",
+            "actionId": "save-closed",
+            "data": {
+              "kind": "waitFor"
+            },
+            "sequence": 49,
+            "at": "2026-10-28T13:11:44.647Z",
+            "elapsedMs": 130
+          },
+          {
+            "provenance": "controller",
+            "kind": "action",
+            "label": "Inspect the saved task",
+            "actionId": "saved-value",
+            "data": {
+              "kind": "checkpoint"
+            },
+            "sequence": 50,
+            "at": "2026-10-28T13:11:44.648Z",
+            "elapsedMs": 131
+          },
+          {
+            "provenance": "controller",
+            "kind": "assertion",
+            "label": "An intentional edit is still saved",
+            "actionId": "saved-value",
+            "data": {
+              "assertionId": "save-works",
+              "status": "passed",
+              "expected": "Pick up the prescription at 5",
+              "actual": "Pick up the prescription at 5"
+            },
+            "sequence": 51,
+            "at": "2026-10-28T13:11:44.648Z",
+            "elapsedMs": 131
+          }
+        ],
+        "failureSignature": null,
+        "limitations": [
+          "Bounded browser and protected outcome checks; no claim of formal verification.",
+          "DOM and keyboard evidence is not actual assistive-technology speech or a participant session.",
+          "Contract approval: operator; authored-development."
+        ]
+      },
+      "outcomeVerification": "not-configured",
+      "protectedOutcome": null
+    }
+  ],
+  "drafts": [
+    {
+      "id": "repository-contract-draft_7ac7bda0-d6b9-4b5e-b383-3226d442c872",
+      "digest": "97bde0504cb69caceaedb6fb301d498b4834e1203991ae54feb475df3dc29c40",
+      "createdAt": "2026-10-28T12:59:26.967Z",
+      "method": "live",
+      "summary": "Keyboard editing test for TodoMVC failed at initial focus traversal. The test created a task 'Pick up a prescription' and attempted to reach the edit control via Tab navigation, but focus escaped to an anchor element instead of the editor. Subsequent cancellation and save flows were never executed.",
+      "body": {
+        "version": "passage-temporal/v1",
+        "id": "todomvc-keyboard-edit-cancel",
+        "revision": 1,
+        "title": "Edit a task using the keyboard; Escape preserves the original task",
+        "bindings": {
+          "newTask": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "New Todo Input",
+            "read": "value"
+          },
+          "taskTitle": {
+            "kind": "testId",
+            "value": "todo-item-label",
+            "read": "text"
+          },
+          "editor": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Edit todo",
+            "read": "value"
+          }
+        },
+        "actions": [
+          {
+            "id": "write-task",
+            "label": "Enter a task",
+            "kind": "fill",
+            "binding": "newTask",
+            "value": "Pick up a prescription"
+          },
+          {
+            "id": "create-task",
+            "label": "Create the task",
+            "kind": "press",
+            "key": "Enter",
+            "binding": "newTask"
+          },
+          {
+            "id": "start-tab",
+            "label": "Start keyboard traversal",
+            "kind": "focus",
+            "binding": "newTask"
+          },
+          {
+            "id": "tab-all",
+            "label": "Move past complete-all",
+            "kind": "press",
+            "key": "Tab"
+          },
+          {
+            "id": "tab-item",
+            "label": "Move to task completion",
+            "kind": "press",
+            "key": "Tab"
+          },
+          {
+            "id": "tab-edit",
+            "label": "Reach the task editing control",
+            "kind": "press",
+            "key": "Tab"
+          },
+          {
+            "id": "open-edit",
+            "label": "Open editing with Enter",
+            "kind": "press",
+            "key": "Enter"
+          },
+          {
+            "id": "edit-visible",
+            "label": "Wait for editing",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "visible"
+          },
+          {
+            "id": "change-task",
+            "label": "Draft a different task",
+            "kind": "fill",
+            "binding": "editor",
+            "value": "Cancelled edit should not save"
+          },
+          {
+            "id": "cancel-edit",
+            "label": "Cancel with Escape",
+            "kind": "press",
+            "key": "Escape",
+            "binding": "editor"
+          },
+          {
+            "id": "editor-closed",
+            "label": "Editing closes on cancellation",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "hidden"
+          },
+          {
+            "id": "leave-task",
+            "label": "Move focus after cancellation",
+            "kind": "focus",
+            "binding": "newTask"
+          },
+          {
+            "id": "cancelled-value",
+            "label": "Inspect the preserved task",
+            "kind": "checkpoint"
+          },
+          {
+            "id": "reopen-focus",
+            "label": "Return to task",
+            "kind": "focus",
+            "binding": "taskTitle"
+          },
+          {
+            "id": "reopen",
+            "label": "Edit the task again",
+            "kind": "press",
+            "key": "Enter"
+          },
+          {
+            "id": "edit-again",
+            "label": "Wait for editor",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "visible"
+          },
+          {
+            "id": "new-title",
+            "label": "Make an intentional edit",
+            "kind": "fill",
+            "binding": "editor",
+            "value": "Pick up the prescription at 5"
+          },
+          {
+            "id": "save-edit",
+            "label": "Save with Enter",
+            "kind": "press",
+            "key": "Enter",
+            "binding": "editor"
+          },
+          {
+            "id": "save-closed",
+            "label": "Editing closes on save",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "hidden"
+          },
+          {
+            "id": "saved-value",
+            "label": "Inspect the saved task",
+            "kind": "checkpoint"
+          }
+        ],
+        "assertions": [
+          {
+            "id": "keyboard-entry",
+            "label": "The task can be edited from the keyboard",
+            "after": "tab-edit",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "taskTitle"
+          },
+          {
+            "id": "cancel-preserves",
+            "label": "Escape and subsequent focus change preserve the prior title",
+            "after": "cancelled-value",
+            "required": true,
+            "kind": "valueEquals",
+            "binding": "taskTitle",
+            "expected": "Pick up a prescription"
+          },
+          {
+            "id": "save-works",
+            "label": "An intentional edit is still saved",
+            "after": "saved-value",
+            "required": true,
+            "kind": "valueEquals",
+            "binding": "taskTitle",
+            "expected": "Pick up the prescription at 5"
+          },
+          {
+            "id": "task-created",
+            "label": "Task is created and visible in the list",
+            "after": "create-task",
+            "required": true,
+            "kind": "valueEquals",
+            "binding": "taskTitle",
+            "expected": "Pick up a prescription"
+          },
+          {
+            "id": "focus-reaches-toggle",
+            "label": "Focus reaches the task completion toggle via Tab",
+            "after": "tab-item",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "taskTitle"
+          },
+          {
+            "id": "editor-opens-on-enter",
+            "label": "Pressing Enter on focused task opens the editor",
+            "after": "open-edit",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "editor"
+          },
+          {
+            "id": "editor-visible",
+            "label": "Editor becomes visible after opening",
+            "after": "edit-visible",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "editor"
+          },
+          {
+            "id": "editor-closes-on-cancel",
+            "label": "Editor closes when Escape is pressed",
+            "after": "editor-closed",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "editor"
+          },
+          {
+            "id": "editor-closes-on-save",
+            "label": "Editor closes when Enter saves the edit",
+            "after": "save-closed",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "editor"
+          }
+        ],
+        "allowedEvents": [],
+        "bounds": {
+          "maxActions": 40,
+          "maxDurationMs": 30000,
+          "actionTimeoutMs": 3000
+        }
+      },
+      "obligations": [
+        {
+          "id": "keyboard-entry-failed",
+          "text": "Focus must remain within the task title element after tab-edit action so that Enter can open the editor. Observed: focus escaped to an anchor element (trace sequence 21-22).",
+          "origin": "observed",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:21",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:22"
+          ],
+          "assertionIds": [
+            "keyboard-entry"
+          ]
+        },
+        {
+          "id": "task-creation-observed",
+          "text": "Task 'Pick up a prescription' was created successfully via Enter key on the new task input.",
+          "origin": "observed",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:8",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:10",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:11"
+          ],
+          "assertionIds": [
+            "task-created"
+          ]
+        },
+        {
+          "id": "focus-traversal-to-toggle",
+          "text": "Tab navigation from new task input reached the task completion toggle (todo-item-toggle).",
+          "origin": "observed",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:13",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:14",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:15",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:16",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:17",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:18",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:19",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:20"
+          ],
+          "assertionIds": [
+            "focus-reaches-toggle"
+          ]
+        },
+        {
+          "id": "cancel-preserves-inferred",
+          "text": "Escape key during editing must preserve the original task title. This transition was never reached because the editor never opened (keyboard-entry failed).",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "cancel-preserves"
+          ]
+        },
+        {
+          "id": "save-works-inferred",
+          "text": "Intentional edit saved via Enter must update the task title. This transition was never reached because the editor never opened (keyboard-entry failed).",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "save-works"
+          ]
+        },
+        {
+          "id": "editor-open-inferred",
+          "text": "Pressing Enter on focused task title should open the editor. Not observed because focus escaped before this action.",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "editor-opens-on-enter",
+            "editor-visible"
+          ]
+        },
+        {
+          "id": "editor-close-cancel-inferred",
+          "text": "Pressing Escape in the editor should close it without saving. Not observed because editor never opened.",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "editor-closes-on-cancel"
+          ]
+        },
+        {
+          "id": "editor-close-save-inferred",
+          "text": "Pressing Enter in the editor should save and close it. Not observed because editor never opened.",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "editor-closes-on-save"
+          ]
+        }
+      ],
+      "ambiguities": [
+        "Why did focus escape to an anchor element ('a') instead of the editor after tab-edit? The binding for 'editor' uses role='textbox' name='Edit todo' but the trace shows focus on 'a'.",
+        "Is the 'taskTitle' binding (data-testid='todo-item-label') the correct element to receive focus for editing, or should focus go directly to the editor?",
+        "Does the application require a double-click or specific key (Enter/F2) on the task label to enter edit mode, rather than Tab focus alone?",
+        "The 'tab-edit' action presses Tab from the toggle; perhaps an additional Tab is needed to reach the task label, then Enter to edit.",
+        "No screen-reader or accessibility tree data captured; cannot verify ARIA roles or focus management expectations.",
+        "The test stopped at the first failed assertion; no checkpoint data exists for cancelled-value or saved-value."
+      ],
+      "receipt": {
+        "provider": "fireworks",
+        "purpose": "development",
+        "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+        "generation": {
+          "responseFormat": "prompt_schema",
+          "maxOutputTokens": 32000,
+          "timeoutMs": 480000,
+          "reasoningEffort": "high"
+        },
+        "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+        "requestId": "chatcmpl-15942fbf4d374bb591adb85997a9dab5",
+        "promptVersion": "passage-journey-compiler-v2-typed-assertions",
+        "temperature": 0.2,
+        "inputTokens": 5262,
+        "outputTokens": 2873,
+        "durationMs": 24288,
+        "startedAt": "2026-10-28T12:59:02.671Z",
+        "completedAt": "2026-10-28T12:59:26.958Z",
+        "live": true,
+        "finalOutputDigest": "2f6014b9baa484addfc8487992d3f4e7a09325bf745aac0a1ad58f604f76d6ae"
+      }
+    },
+    {
+      "id": "repository-contract-draft_4fb7423c-d470-4c71-943c-aaa0b6cce920",
+      "digest": "b24ea1387eb8c398b87fb204897a28f2e89b489d492a4c103cadb50fbcff94b1",
+      "createdAt": "2026-10-28T13:04:53.788Z",
+      "method": "operator-revision",
+      "parentDigest": "97bde0504cb69caceaedb6fb301d498b4834e1203991ae54feb475df3dc29c40",
+      "revisionNotes": "Automated development review: the toggle assertion uses the task-title binding at the checkbox checkpoint; the close assertions require focus in an editor already required to be hidden. Remove these contradictory model additions. Preserve all three original task obligations plus supported added checks. This is not independent human contract review.",
+      "summary": "An explicit reviewer correction removed unsupported proposed assertions. Original protected requirements are unchanged.",
+      "body": {
+        "version": "passage-temporal/v1",
+        "id": "todomvc-keyboard-edit-cancel",
+        "revision": 2,
+        "title": "Edit a task using the keyboard; Escape preserves the original task",
+        "bindings": {
+          "newTask": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "New Todo Input",
+            "read": "value"
+          },
+          "taskTitle": {
+            "kind": "testId",
+            "value": "todo-item-label",
+            "read": "text"
+          },
+          "editor": {
+            "kind": "role",
+            "role": "textbox",
+            "name": "Edit todo",
+            "read": "value"
+          }
+        },
+        "actions": [
+          {
+            "id": "write-task",
+            "label": "Enter a task",
+            "kind": "fill",
+            "binding": "newTask",
+            "value": "Pick up a prescription"
+          },
+          {
+            "id": "create-task",
+            "label": "Create the task",
+            "kind": "press",
+            "key": "Enter",
+            "binding": "newTask"
+          },
+          {
+            "id": "start-tab",
+            "label": "Start keyboard traversal",
+            "kind": "focus",
+            "binding": "newTask"
+          },
+          {
+            "id": "tab-all",
+            "label": "Move past complete-all",
+            "kind": "press",
+            "key": "Tab"
+          },
+          {
+            "id": "tab-item",
+            "label": "Move to task completion",
+            "kind": "press",
+            "key": "Tab"
+          },
+          {
+            "id": "tab-edit",
+            "label": "Reach the task editing control",
+            "kind": "press",
+            "key": "Tab"
+          },
+          {
+            "id": "open-edit",
+            "label": "Open editing with Enter",
+            "kind": "press",
+            "key": "Enter"
+          },
+          {
+            "id": "edit-visible",
+            "label": "Wait for editing",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "visible"
+          },
+          {
+            "id": "change-task",
+            "label": "Draft a different task",
+            "kind": "fill",
+            "binding": "editor",
+            "value": "Cancelled edit should not save"
+          },
+          {
+            "id": "cancel-edit",
+            "label": "Cancel with Escape",
+            "kind": "press",
+            "key": "Escape",
+            "binding": "editor"
+          },
+          {
+            "id": "editor-closed",
+            "label": "Editing closes on cancellation",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "hidden"
+          },
+          {
+            "id": "leave-task",
+            "label": "Move focus after cancellation",
+            "kind": "focus",
+            "binding": "newTask"
+          },
+          {
+            "id": "cancelled-value",
+            "label": "Inspect the preserved task",
+            "kind": "checkpoint"
+          },
+          {
+            "id": "reopen-focus",
+            "label": "Return to task",
+            "kind": "focus",
+            "binding": "taskTitle"
+          },
+          {
+            "id": "reopen",
+            "label": "Edit the task again",
+            "kind": "press",
+            "key": "Enter"
+          },
+          {
+            "id": "edit-again",
+            "label": "Wait for editor",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "visible"
+          },
+          {
+            "id": "new-title",
+            "label": "Make an intentional edit",
+            "kind": "fill",
+            "binding": "editor",
+            "value": "Pick up the prescription at 5"
+          },
+          {
+            "id": "save-edit",
+            "label": "Save with Enter",
+            "kind": "press",
+            "key": "Enter",
+            "binding": "editor"
+          },
+          {
+            "id": "save-closed",
+            "label": "Editing closes on save",
+            "kind": "waitFor",
+            "binding": "editor",
+            "state": "hidden"
+          },
+          {
+            "id": "saved-value",
+            "label": "Inspect the saved task",
+            "kind": "checkpoint"
+          }
+        ],
+        "assertions": [
+          {
+            "id": "keyboard-entry",
+            "label": "The task can be edited from the keyboard",
+            "after": "tab-edit",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "taskTitle"
+          },
+          {
+            "id": "cancel-preserves",
+            "label": "Escape and subsequent focus change preserve the prior title",
+            "after": "cancelled-value",
+            "required": true,
+            "kind": "valueEquals",
+            "binding": "taskTitle",
+            "expected": "Pick up a prescription"
+          },
+          {
+            "id": "save-works",
+            "label": "An intentional edit is still saved",
+            "after": "saved-value",
+            "required": true,
+            "kind": "valueEquals",
+            "binding": "taskTitle",
+            "expected": "Pick up the prescription at 5"
+          },
+          {
+            "id": "task-created",
+            "label": "Task is created and visible in the list",
+            "after": "create-task",
+            "required": true,
+            "kind": "valueEquals",
+            "binding": "taskTitle",
+            "expected": "Pick up a prescription"
+          },
+          {
+            "id": "editor-opens-on-enter",
+            "label": "Pressing Enter on focused task opens the editor",
+            "after": "open-edit",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "editor"
+          },
+          {
+            "id": "editor-visible",
+            "label": "Editor becomes visible after opening",
+            "after": "edit-visible",
+            "required": true,
+            "kind": "focusWithin",
+            "binding": "editor"
+          }
+        ],
+        "allowedEvents": [],
+        "bounds": {
+          "maxActions": 40,
+          "maxDurationMs": 30000,
+          "actionTimeoutMs": 3000
+        }
+      },
+      "obligations": [
+        {
+          "id": "keyboard-entry-failed",
+          "text": "Focus must remain within the task title element after tab-edit action so that Enter can open the editor. Observed: focus escaped to an anchor element (trace sequence 21-22).",
+          "origin": "observed",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:21",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:22"
+          ],
+          "assertionIds": [
+            "keyboard-entry"
+          ]
+        },
+        {
+          "id": "task-creation-observed",
+          "text": "Task 'Pick up a prescription' was created successfully via Enter key on the new task input.",
+          "origin": "observed",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:8",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:10",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:11"
+          ],
+          "assertionIds": [
+            "task-created"
+          ]
+        },
+        {
+          "id": "cancel-preserves-inferred",
+          "text": "Escape key during editing must preserve the original task title. This transition was never reached because the editor never opened (keyboard-entry failed).",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "cancel-preserves"
+          ]
+        },
+        {
+          "id": "save-works-inferred",
+          "text": "Intentional edit saved via Enter must update the task title. This transition was never reached because the editor never opened (keyboard-entry failed).",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "save-works"
+          ]
+        },
+        {
+          "id": "editor-open-inferred",
+          "text": "Pressing Enter on focused task title should open the editor. Not observed because focus escaped before this action.",
+          "origin": "inferred",
+          "evidenceRefs": [],
+          "assertionIds": [
+            "editor-opens-on-enter",
+            "editor-visible"
+          ]
+        }
+      ],
+      "ambiguities": [
+        "Why did focus escape to an anchor element ('a') instead of the editor after tab-edit? The binding for 'editor' uses role='textbox' name='Edit todo' but the trace shows focus on 'a'.",
+        "Is the 'taskTitle' binding (data-testid='todo-item-label') the correct element to receive focus for editing, or should focus go directly to the editor?",
+        "Does the application require a double-click or specific key (Enter/F2) on the task label to enter edit mode, rather than Tab focus alone?",
+        "The 'tab-edit' action presses Tab from the toggle; perhaps an additional Tab is needed to reach the task label, then Enter to edit.",
+        "No screen-reader or accessibility tree data captured; cannot verify ARIA roles or focus management expectations.",
+        "The test stopped at the first failed assertion; no checkpoint data exists for cancelled-value or saved-value."
+      ]
+    }
+  ],
+  "repairs": [
+    {
+      "id": "repository-repair_c1d56103-680b-403f-b876-992d481830ed",
+      "createdAt": "2026-10-28T13:04:53.796Z",
+      "status": "error",
+      "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+      "summary": "Inspecting the permitted source for the observed transition.",
+      "locations": [],
+      "patches": [],
+      "receipts": [
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-b0ecd3bb324c4c948eb293f49d83e431",
+          "promptVersion": "passage-source-inspection-v1",
+          "temperature": 0.2,
+          "inputTokens": 4109,
+          "outputTokens": 436,
+          "durationMs": 3346,
+          "startedAt": "2026-10-28T13:04:53.799Z",
+          "completedAt": "2026-10-28T13:04:57.144Z",
+          "live": true,
+          "finalOutputDigest": "3bc801be6cf9602dc333e58a8b64b6984272c99d06276796bdacc0aca29e36e7"
+        },
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-8db1cc35335d48ecb2110ceae62aa271",
+          "promptVersion": "passage-source-localization-v1",
+          "temperature": 0.2,
+          "inputTokens": 8520,
+          "outputTokens": 1404,
+          "durationMs": 9525,
+          "startedAt": "2026-10-28T13:04:57.150Z",
+          "completedAt": "2026-10-28T13:05:06.674Z",
+          "live": true,
+          "finalOutputDigest": "ddd15b0c318130d20fa4e4f46362a4dd3c97017189b090259822542a027ac23b"
+        }
+      ],
+      "error": "The model source quotation did not match the cited lines. No patch was applied."
+    },
+    {
+      "id": "repository-repair_0dbfceb0-5a8e-424c-861d-b96486ab5919",
+      "createdAt": "2026-10-28T13:09:39.435Z",
+      "status": "rejected",
+      "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+      "summary": "The keyboard navigation fails because the task label (todo-item-label) is not focusable via Tab and doesn't handle Enter key to open the editor. The fix adds tabIndex={0} and an onKeyDown handler to the label element in item.jsx to make it keyboard-accessible, allowing Enter to trigger handleDoubleClick which opens the editor.",
+      "locations": [
+        {
+          "path": "examples/react/src/todo/components/item.jsx",
+          "startLine": 43,
+          "endLine": 45,
+          "symbol": "label (todo-item-label)",
+          "reason": "The label is the task title element that should receive keyboard focus and open the editor on Enter. It currently only has onDoubleClick, no tabIndex or onKeyDown for Enter, so Tab navigation skips it and focus escapes to footer links.",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:18",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:20",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:21",
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:22"
+          ],
+          "verified": true
+        },
+        {
+          "path": "examples/react/src/todo/components/item.jsx",
+          "startLine": 19,
+          "endLine": 19,
+          "symbol": "handleDoubleClick",
+          "reason": "This callback opens the editor by setting isWritable=true. It should also be callable from a keyboard handler on the label for Enter key.",
+          "evidenceRefs": [
+            "repository-replay_6fa7f386-c2ab-4ead-b25c-5ec699e083f4:22"
+          ],
+          "verified": true
+        }
+      ],
+      "patches": [
+        {
+          "path": "examples/react/src/todo/components/item.jsx",
+          "beforeDigest": "49c48717b33728e6c001070e95ee29a290d8da9909f7cdf12000d20adc28a086",
+          "afterDigest": "e15c9b9a5a28b82104f31922622f731a900228386a60a0ed3fa73835870b24a6",
+          "source": "import { memo, useState, useCallback } from \"react\";\nimport classnames from \"classnames\";\n\nimport { Input } from \"./input\";\n\nimport { TOGGLE_ITEM, REMOVE_ITEM, UPDATE_ITEM } from \"../constants\";\n\nexport const Item = memo(function Item({ todo, dispatch }) {\n    const [isWritable, setIsWritable] = useState(false);\n    const { title, completed, id } = todo;\n\n    const toggleItem = useCallback(() => dispatch({ type: TOGGLE_ITEM, payload: { id } }), [dispatch, id]);\n    const removeItem = useCallback(() => dispatch({ type: REMOVE_ITEM, payload: { id } }), [dispatch, id]);\n    const updateItem = useCallback(\n        (newTitle) => dispatch({ type: UPDATE_ITEM, payload: { id, title: newTitle } }),\n        [dispatch, id]\n    );\n\n    const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n\n    const handleKeyDown = useCallback(\n        (e) => {\n            if (e.key === \"Enter\") {\n                handleDoubleClick();\n            }\n        },\n        [handleDoubleClick]\n    );\n\n    const commitEdit = useCallback(\n        (newTitle) => {\n            // Only act once per edit session — Enter then blur would\n            // otherwise dispatch twice.\n            if (!isWritable) return;\n            setIsWritable(false);\n            if (newTitle.length === 0) removeItem();\n            else updateItem(newTitle);\n        },\n        [isWritable, removeItem, updateItem]\n    );\n\n    return (\n        <li className={classnames({ completed, editing: isWritable })} data-testid=\"todo-item\">\n            <div className=\"view\">\n                <input\n                    className=\"toggle\"\n                    type=\"checkbox\"\n                    data-testid=\"todo-item-toggle\"\n                    checked={completed}\n                    onChange={toggleItem}\n                />\n                <label\n                    data-testid=\"todo-item-label\"\n                    onDoubleClick={handleDoubleClick}\n                    onKeyDown={handleKeyDown}\n                    tabIndex={0}\n                >\n                    {title}\n                </label>\n                <button\n                    className=\"destroy\"\n                    data-testid=\"todo-item-button\"\n                    aria-label=\"Delete todo\"\n                    onClick={removeItem}\n                />\n            </div>\n            {isWritable && (\n                <Input\n                    editing\n                    onSubmit={commitEdit}\n                    onBlur={commitEdit}\n                    label=\"Edit todo\"\n                    defaultValue={title}\n                />\n            )}\n        </li>\n    );\n});",
+          "diff": "===================================================================\n--- a/examples/react/src/todo/components/item.jsx\timmutable original\n+++ b/examples/react/src/todo/components/item.jsx\tcumulative candidate\n@@ -17,8 +17,17 @@\n     );\n \n     const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n \n+    const handleKeyDown = useCallback(\n+        (e) => {\n+            if (e.key === \"Enter\") {\n+                handleDoubleClick();\n+            }\n+        },\n+        [handleDoubleClick]\n+    );\n+\n     const commitEdit = useCallback(\n         (newTitle) => {\n             // Only act once per edit session — Enter then blur would\n             // otherwise dispatch twice.\n@@ -39,9 +48,14 @@\n                     data-testid=\"todo-item-toggle\"\n                     checked={completed}\n                     onChange={toggleItem}\n                 />\n-                <label data-testid=\"todo-item-label\" onDoubleClick={handleDoubleClick}>\n+                <label\n+                    data-testid=\"todo-item-label\"\n+                    onDoubleClick={handleDoubleClick}\n+                    onKeyDown={handleKeyDown}\n+                    tabIndex={0}\n+                >\n                     {title}\n                 </label>\n                 <button\n                     className=\"destroy\"\n@@ -60,5 +74,5 @@\n                 />\n             )}\n         </li>\n     );\n-});\n+});\n\\ No newline at end of file\n"
+        }
+      ],
+      "receipts": [
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-b7092f0a2fb641e499149bd5078821d0",
+          "promptVersion": "passage-source-inspection-v1",
+          "temperature": 0.2,
+          "inputTokens": 4109,
+          "outputTokens": 505,
+          "durationMs": 4852,
+          "startedAt": "2026-10-28T13:09:39.438Z",
+          "completedAt": "2026-10-28T13:09:44.289Z",
+          "live": true,
+          "finalOutputDigest": "e7efab1fb9f8c5b9833b30389308ba352ea2adbf9e8f1fb9181a13a563cabb83"
+        },
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-4e8a423ba6df40d8ba413a3431429d29",
+          "promptVersion": "passage-source-localization-v2-exact-quotes",
+          "temperature": 0.2,
+          "inputTokens": 11685,
+          "outputTokens": 1118,
+          "durationMs": 11317,
+          "startedAt": "2026-10-28T13:09:44.296Z",
+          "completedAt": "2026-10-28T13:09:55.612Z",
+          "live": true,
+          "finalOutputDigest": "1b96af297ff590e3b535733a2cdc94a82f28bb554914db8a6e723262bbc807a7"
+        },
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-3262ace3b29d49e3815718fd48de7cb2",
+          "promptVersion": "passage-journey-patch-v1",
+          "temperature": 0.2,
+          "inputTokens": 8995,
+          "outputTokens": 1228,
+          "durationMs": 11424,
+          "startedAt": "2026-10-28T13:09:55.627Z",
+          "completedAt": "2026-10-28T13:10:07.049Z",
+          "live": true,
+          "finalOutputDigest": "94ed3e180fbe5ffe8d6e81432769b316a71dd39a248ef6088cc7912c38cfbd09"
+        }
+      ],
+      "replayId": "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda"
+    },
+    {
+      "id": "repository-repair_07365375-781f-4c88-85fb-137a3cfdd990",
+      "createdAt": "2026-10-28T13:11:10.934Z",
+      "status": "accepted",
+      "contractDigest": "bc927fd8e008232891c9ad47566ff677ba08323affd1b2addf7e8acae489cba9",
+      "summary": "The Escape key during task editing does not close the editor because the Input component lacks Escape key handling and the Item component lacks a cancellation path. Two changes are required: (1) Add Escape key handling in Input.jsx that invokes an onCancel prop, and (2) Add an onCancel handler in Item.jsx that sets isWritable to false without dispatching UPDATE_ITEM, then pass it to the Input component.",
+      "locations": [
+        {
+          "path": "examples/react/src/todo/components/input.jsx",
+          "startLine": 13,
+          "endLine": 26,
+          "symbol": "handleKeyDown",
+          "reason": "The handleKeyDown callback only responds to Enter. Escape key presses fall through with no action, leaving the editor open. Adding an Escape branch that invokes a new onCancel prop (or calls onBlur with the original value) will allow the editor to close and preserve the prior title.",
+          "evidenceRefs": [
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:32",
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:33",
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:34",
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:35"
+          ],
+          "verified": true
+        },
+        {
+          "path": "examples/react/src/todo/components/item.jsx",
+          "startLine": 67,
+          "endLine": 75,
+          "symbol": "Item return",
+          "reason": "The Input receives only onSubmit and onBlur, both wired to commitEdit. A cancellation path is missing; the component must pass an onCancel handler that sets isWritable to false without dispatching UPDATE_ITEM.",
+          "evidenceRefs": [
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:32",
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:35"
+          ],
+          "verified": true
+        },
+        {
+          "path": "examples/react/src/todo/components/item.jsx",
+          "startLine": 21,
+          "endLine": 28,
+          "symbol": "handleKeyDown",
+          "reason": "The label's keydown handler opens the editor on Enter. This works correctly in the second replay (event 24-26). No change needed here, but the citation confirms the editor-open transition functions when focus reaches the label.",
+          "evidenceRefs": [
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:24",
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:25",
+            "repository-replay_8cc91889-76ce-4e84-bbdf-254fd7240eda:26"
+          ],
+          "verified": true
+        }
+      ],
+      "patches": [
+        {
+          "path": "examples/react/src/todo/components/item.jsx",
+          "beforeDigest": "49c48717b33728e6c001070e95ee29a290d8da9909f7cdf12000d20adc28a086",
+          "afterDigest": "ab28aa8ac2ba685e7e8aff91a12f2d1e0dbeb8244387eb60444264a821e979f0",
+          "source": "import { memo, useState, useCallback } from \"react\";\nimport classnames from \"classnames\";\n\nimport { Input } from \"./input\";\n\nimport { TOGGLE_ITEM, REMOVE_ITEM, UPDATE_ITEM } from \"../constants\";\n\nexport const Item = memo(function Item({ todo, dispatch }) {\n    const [isWritable, setIsWritable] = useState(false);\n    const { title, completed, id } = todo;\n\n    const toggleItem = useCallback(() => dispatch({ type: TOGGLE_ITEM, payload: { id } }), [dispatch, id]);\n    const removeItem = useCallback(() => dispatch({ type: REMOVE_ITEM, payload: { id } }), [dispatch, id]);\n    const updateItem = useCallback(\n        (newTitle) => dispatch({ type: UPDATE_ITEM, payload: { id, title: newTitle } }),\n        [dispatch, id]\n    );\n\n    const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n\n    const handleKeyDown = useCallback(\n        (e) => {\n            if (e.key === \"Enter\") {\n                handleDoubleClick();\n            }\n        },\n        [handleDoubleClick]\n    );\n\n    const commitEdit = useCallback(\n        (newTitle) => {\n            // Only act once per edit session — Enter then blur would\n            // otherwise dispatch twice.\n            if (!isWritable) return;\n            setIsWritable(false);\n            if (newTitle.length === 0) removeItem();\n            else updateItem(newTitle);\n        },\n        [isWritable, removeItem, updateItem]\n    );\n\n    const cancelEdit = useCallback(() => {\n        setIsWritable(false);\n    }, []);\n\n    return (\n        <li className={classnames({ completed, editing: isWritable })} data-testid=\"todo-item\">\n            <div className=\"view\">\n                <input\n                    className=\"toggle\"\n                    type=\"checkbox\"\n                    data-testid=\"todo-item-toggle\"\n                    checked={completed}\n                    onChange={toggleItem}\n                />\n                <label\n                    data-testid=\"todo-item-label\"\n                    onDoubleClick={handleDoubleClick}\n                    onKeyDown={handleKeyDown}\n                    tabIndex={0}\n                >\n                    {title}\n                </label>\n                <button\n                    className=\"destroy\"\n                    data-testid=\"todo-item-button\"\n                    aria-label=\"Delete todo\"\n                    onClick={removeItem}\n                />\n            </div>\n            {isWritable && (\n                <Input\n                    editing\n                    onSubmit={commitEdit}\n                    onBlur={commitEdit}\n                    onCancel={cancelEdit}\n                    label=\"Edit todo\"\n                    defaultValue={title}\n                />\n            )}\n        </li>\n    );\n});\n",
+          "diff": "===================================================================\n--- a/examples/react/src/todo/components/item.jsx\timmutable original\n+++ b/examples/react/src/todo/components/item.jsx\tcumulative candidate\n@@ -17,8 +17,17 @@\n     );\n \n     const handleDoubleClick = useCallback(() => setIsWritable(true), []);\n \n+    const handleKeyDown = useCallback(\n+        (e) => {\n+            if (e.key === \"Enter\") {\n+                handleDoubleClick();\n+            }\n+        },\n+        [handleDoubleClick]\n+    );\n+\n     const commitEdit = useCallback(\n         (newTitle) => {\n             // Only act once per edit session — Enter then blur would\n             // otherwise dispatch twice.\n@@ -29,8 +38,12 @@\n         },\n         [isWritable, removeItem, updateItem]\n     );\n \n+    const cancelEdit = useCallback(() => {\n+        setIsWritable(false);\n+    }, []);\n+\n     return (\n         <li className={classnames({ completed, editing: isWritable })} data-testid=\"todo-item\">\n             <div className=\"view\">\n                 <input\n@@ -39,9 +52,14 @@\n                     data-testid=\"todo-item-toggle\"\n                     checked={completed}\n                     onChange={toggleItem}\n                 />\n-                <label data-testid=\"todo-item-label\" onDoubleClick={handleDoubleClick}>\n+                <label\n+                    data-testid=\"todo-item-label\"\n+                    onDoubleClick={handleDoubleClick}\n+                    onKeyDown={handleKeyDown}\n+                    tabIndex={0}\n+                >\n                     {title}\n                 </label>\n                 <button\n                     className=\"destroy\"\n@@ -54,8 +72,9 @@\n                 <Input\n                     editing\n                     onSubmit={commitEdit}\n                     onBlur={commitEdit}\n+                    onCancel={cancelEdit}\n                     label=\"Edit todo\"\n                     defaultValue={title}\n                 />\n             )}\n"
+        },
+        {
+          "path": "examples/react/src/todo/components/input.jsx",
+          "beforeDigest": "ccd8d46861920a85e27fcd903bfd6dfb5687cfb3e309c038a9939708e1647f06",
+          "afterDigest": "d2129658b1e445fa9b2d50d22c80f5be8563285636d26b9936f7ac54ce5a34f0",
+          "source": "import { useCallback } from \"react\";\n\nexport function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false, onCancel }) {\n    const handleBlur = useCallback(\n        (e) => {\n            if (!onBlur) return;\n            const value = e.target.value.trim();\n            onBlur(value);\n        },\n        [onBlur]\n    );\n\n    const handleKeyDown = useCallback(\n        (e) => {\n            if (e.key === \"Escape\") {\n                if (onCancel) onCancel();\n                return;\n            }\n            if (e.key !== \"Enter\") return;\n            const value = e.target.value.trim();\n            // For new-todo, ignore empty submits. For edit, an empty\n            // submit means \"delete this todo\" — let the parent decide.\n            if (!editing && value.length === 0) return;\n            onSubmit(value);\n            // Only clear the new-todo input on submit; the edit input is\n            // about to unmount so leave it alone.\n            if (!editing) e.target.value = \"\";\n        },\n        [onSubmit, editing, onCancel]\n    );\n\n    return (\n        <input\n            className={editing ? \"edit\" : \"new-todo\"}\n            type=\"text\"\n            data-testid=\"text-input\"\n            autoFocus\n            aria-label={label}\n            placeholder={placeholder}\n            defaultValue={defaultValue}\n            onBlur={handleBlur}\n            onKeyDown={handleKeyDown}\n        />\n    );\n}\n",
+          "diff": "===================================================================\n--- a/examples/react/src/todo/components/input.jsx\timmutable original\n+++ b/examples/react/src/todo/components/input.jsx\tcumulative candidate\n@@ -1,7 +1,7 @@\n import { useCallback } from \"react\";\n \n-export function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false }) {\n+export function Input({ onSubmit, placeholder, label, defaultValue, onBlur, editing = false, onCancel }) {\n     const handleBlur = useCallback(\n         (e) => {\n             if (!onBlur) return;\n             const value = e.target.value.trim();\n@@ -11,8 +11,12 @@\n     );\n \n     const handleKeyDown = useCallback(\n         (e) => {\n+            if (e.key === \"Escape\") {\n+                if (onCancel) onCancel();\n+                return;\n+            }\n             if (e.key !== \"Enter\") return;\n             const value = e.target.value.trim();\n             // For new-todo, ignore empty submits. For edit, an empty\n             // submit means \"delete this todo\" — let the parent decide.\n@@ -21,9 +25,9 @@\n             // Only clear the new-todo input on submit; the edit input is\n             // about to unmount so leave it alone.\n             if (!editing) e.target.value = \"\";\n         },\n-        [onSubmit, editing]\n+        [onSubmit, editing, onCancel]\n     );\n \n     return (\n         <input\n"
+        }
+      ],
+      "receipts": [
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-b146cc06d7ba4914986e67852178a4ce",
+          "promptVersion": "passage-source-inspection-v1",
+          "temperature": 0.2,
+          "inputTokens": 8708,
+          "outputTokens": 594,
+          "durationMs": 4595,
+          "startedAt": "2026-10-28T13:11:10.936Z",
+          "completedAt": "2026-10-28T13:11:15.530Z",
+          "live": true,
+          "finalOutputDigest": "455dde18d48becfffe6df00a71b3ebd075eaf3b5a8d4419fb487b8118cc40c6a"
+        },
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-a7f72d410de7489998e7d23ccf10abaf",
+          "promptVersion": "passage-source-localization-v2-exact-quotes",
+          "temperature": 0.2,
+          "inputTokens": 21087,
+          "outputTokens": 2642,
+          "durationMs": 17974,
+          "startedAt": "2026-10-28T13:11:15.534Z",
+          "completedAt": "2026-10-28T13:11:33.508Z",
+          "live": true,
+          "finalOutputDigest": "5617e0325e9ab3ee95d6e4a80028776f760f3efbfea9016cbb5077e924d9d773"
+        },
+        {
+          "provider": "fireworks",
+          "purpose": "development",
+          "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "generation": {
+            "responseFormat": "prompt_schema",
+            "maxOutputTokens": 32000,
+            "timeoutMs": 480000,
+            "reasoningEffort": "high"
+          },
+          "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+          "requestId": "chatcmpl-fb16705bcedc46908fc350f9d566c105",
+          "promptVersion": "passage-journey-patch-v1",
+          "temperature": 0.2,
+          "inputTokens": 18539,
+          "outputTokens": 1743,
+          "durationMs": 10589,
+          "startedAt": "2026-10-28T13:11:33.512Z",
+          "completedAt": "2026-10-28T13:11:44.100Z",
+          "live": true,
+          "finalOutputDigest": "44c4c394cd16cc17d98627bb9fa61afd629c691ee94037c138ff0f47a96b1d34"
+        }
+      ],
+      "replayId": "repository-replay_1493a9b2-13f5-44c6-bc8e-bab3c44e7001"
+    }
+  ],
+  "assistiveCaptures": [
+    {
+      "id": "actual-at_452f8007-0d3c-4386-a39a-8ab8f361227d",
+      "createdAt": "2026-10-28T13:09:27.979Z",
+      "digest": "c5a38f9d3cc8114ea71686e2939d8210658dc4084f1dcf55b806bf225d125fe6",
+      "receipt": {
+        "schema": "passage.actual-at.v1",
+        "buildId": "c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488",
+        "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+        "sessionId": "f9c57488-053c-43ad-b54d-38133529ec57",
+        "startedAt": "2026-10-28T13:02:49.259Z",
+        "completedAt": "2026-10-28T13:03:10.622Z",
+        "provenance": "automated-actual-screen-reader",
+        "screenReader": "Orca",
+        "guidepupVersion": "0.36.2",
+        "browser": "Firefox",
+        "browserVersion": "157.0",
+        "platform": "linux/arm64 6.8.0-117-generic, isolated Colima VM",
+        "compatibility": "local-linux6-userspace-asset-qualification",
+        "humanParticipant": false,
+        "independentlyReviewed": false,
+        "backendOutcomeVerified": false,
+        "steps": [
+          {
+            "action": "Create fictional task",
+            "at": "2026-10-28T13:02:56.780Z",
+            "spoken": ""
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:02:58.053Z",
+            "spoken": "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+            "focus": {
+              "tag": "INPUT",
+              "label": null,
+              "text": ""
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:02:59.331Z",
+            "spoken": "List with 1 item. check box not checked",
+            "focus": {
+              "tag": "INPUT",
+              "label": null,
+              "text": ""
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:03:00.613Z",
+            "spoken": "leaving list.. leaving main content.. information. List with 3 items. All. link",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "All"
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:03:01.887Z",
+            "spoken": "Active. link",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "Active"
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:03:03.161Z",
+            "spoken": "Completed. link",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "Completed"
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:03:04.450Z",
+            "spoken": "Passage · external source preview page tab. JUGGLER 60e033c1-5252-472a-96e6-ef16dab44d36",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "Completed"
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:03:05.717Z",
+            "spoken": "Browser tabs tool bar",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "Completed"
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:03:06.979Z",
+            "spoken": "",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "Completed"
+            }
+          },
+          {
+            "action": "Enter edit via upstream double-click gesture",
+            "at": "2026-10-28T13:03:08.543Z",
+            "spoken": "main content. List with 1 item. Edit todo. entry. Pick up a prescription. Focus mode"
+          },
+          {
+            "action": "Escape then move focus",
+            "at": "2026-10-28T13:03:10.077Z",
+            "spoken": "leaving list.. leaving main content.. information. List with 3 items. All. link. Browse mode",
+            "actualTitle": "Cancelled edit should not save"
+          }
+        ],
+        "spokenPhraseLog": [
+          "Passage · external source preview — Nightly. Search or enter address editable combo box. opens popup. document web. Browse mode. banner. New Todo Input. entry. What needs to be done?. Focus mode",
+          "",
+          "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+          "List with 1 item. check box not checked",
+          "leaving list.. leaving main content.. information. List with 3 items. All. link",
+          "Active. link",
+          "Completed. link",
+          "Passage · external source preview page tab. JUGGLER 60e033c1-5252-472a-96e6-ef16dab44d36",
+          "Browser tabs tool bar",
+          "",
+          "main content. List with 1 item. Edit todo. entry. Pick up a prescription. Focus mode",
+          "leaving list.. leaving main content.. information. List with 3 items. All. link. Browse mode"
+        ],
+        "status": "captured",
+        "limitations": [
+          "Automated Orca observation is not a human participant study.",
+          "Speech is actual Orca output, not a synthesized DOM description."
+        ]
+      },
+      "artifactUrl": "/v1/artifacts/c5a38f9d3cc8114ea71686e2939d8210658dc4084f1dcf55b806bf225d125fe6",
+      "evidenceClass": "actual-at-automation",
+      "importAttested": true,
+      "executionAuthenticated": false,
+      "participantCount": 0
+    },
+    {
+      "id": "actual-at_fd2b7b5f-a6b2-4af1-b9ac-f09c0feeb007",
+      "createdAt": "2026-10-28T13:15:54.693Z",
+      "digest": "096092b0f6e125f8da02dc6b4793e056bedac4f13e863cd7416bc2d8121b032e",
+      "receipt": {
+        "schema": "passage.actual-at.v1",
+        "buildId": "c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488",
+        "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+        "sessionId": "59fc70e5-2c57-455a-acb2-094cf706e332",
+        "startedAt": "2026-10-28T13:06:43.079Z",
+        "completedAt": "2026-10-28T13:06:56.454Z",
+        "provenance": "automated-actual-screen-reader",
+        "screenReader": "Orca",
+        "guidepupVersion": "0.36.2",
+        "browser": "Firefox",
+        "browserVersion": "157.0",
+        "platform": "linux/arm64 6.8.0-117-generic, isolated Colima VM",
+        "compatibility": "local-linux6-userspace-asset-qualification",
+        "humanParticipant": false,
+        "independentlyReviewed": false,
+        "backendOutcomeVerified": false,
+        "protocol": "todomvc-keyboard",
+        "taskOutcome": "keyboard-edit-blocked",
+        "steps": [
+          {
+            "action": "Create fictional task",
+            "at": "2026-10-28T13:06:50.488Z",
+            "spoken": ""
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:06:51.755Z",
+            "spoken": "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+            "focus": {
+              "tag": "INPUT",
+              "label": null,
+              "text": ""
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:06:53.023Z",
+            "spoken": "List with 1 item. check box not checked",
+            "focus": {
+              "tag": "INPUT",
+              "label": null,
+              "text": ""
+            }
+          },
+          {
+            "action": "Tab",
+            "at": "2026-10-28T13:06:54.291Z",
+            "spoken": "leaving list.. leaving main content.. information. List with 3 items. All. link",
+            "focus": {
+              "tag": "A",
+              "label": null,
+              "text": "All"
+            }
+          },
+          {
+            "action": "Activate reached control with Enter",
+            "at": "2026-10-28T13:06:55.823Z",
+            "spoken": ""
+          }
+        ],
+        "spokenPhraseLog": [
+          "Passage · external source preview — Nightly. Search or enter address editable combo box. opens popup. document web. Browse mode. banner. New Todo Input. entry. What needs to be done?. Focus mode",
+          "",
+          "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+          "List with 1 item. check box not checked",
+          "leaving list.. leaving main content.. information. List with 3 items. All. link",
+          ""
+        ],
+        "status": "captured",
+        "limitations": [
+          "Automated Orca observation is not a human participant study.",
+          "Speech is actual Orca output, not a synthesized DOM description."
+        ]
+      },
+      "artifactUrl": "/v1/artifacts/096092b0f6e125f8da02dc6b4793e056bedac4f13e863cd7416bc2d8121b032e",
+      "evidenceClass": "actual-at-automation",
+      "importAttested": true,
+      "executionAuthenticated": false,
+      "participantCount": 0
+    }
+  ],
+  "outcomeVerification": "not-configured",
+  "generationFailures": [
+    {
+      "id": "generation-failure_21fe673b-3e36-4108-bca6-625180ad1483",
+      "runId": "repository-journey_6f4dfd65-068e-436f-9fc7-9af055076194",
+      "usageEntryId": "usage_933d3d79-6f14-48e6-ba77-f18cc726b662",
+      "createdAt": "2026-10-28T12:57:27.108Z",
+      "code": "MALFORMED_MODEL_OUTPUT",
+      "message": "The final JSON did not match the repair schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "receipt": {
+        "provider": "fireworks",
+        "purpose": "development",
+        "servedModel": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+        "generation": {
+          "responseFormat": "prompt_schema",
+          "maxOutputTokens": 32000,
+          "timeoutMs": 480000,
+          "reasoningEffort": "high"
+        },
+        "model": "accounts/fireworks/models/nemotron-3-ultra-nvfp4",
+        "requestId": "chatcmpl-c40ae2dd39724b46a0123927b2b1e600",
+        "promptVersion": "passage-journey-draft-v1",
+        "temperature": 0.2,
+        "inputTokens": 3701,
+        "outputTokens": 2511,
+        "durationMs": 20515,
+        "startedAt": "2026-10-28T12:57:06.589Z",
+        "completedAt": "2026-10-28T12:57:27.103Z",
+        "live": true,
+        "finalOutputDigest": "d0990361a8e26ed47f70b398b09329fa6fcc75e7c1de1af2f449c44588a7c9e1"
+      },
+      "diagnostics": [
+        {
+          "path": "obligations.2.evidenceRefs",
+          "code": "too_small",
+          "message": "Too small: expected array to have >=1 items"
+        },
+        {
+          "path": "obligations.3.evidenceRefs",
+          "code": "too_small",
+          "message": "Too small: expected array to have >=1 items"
+        },
+        {
+          "path": "obligations.4.assertionIds",
+          "code": "too_small",
+          "message": "Too small: expected array to have >=1 items"
+        }
+      ],
+      "topLevelKeys": [
+        "summary",
+        "obligations",
+        "ambiguities"
+      ],
+      "outputArtifact": {
+        "name": "final-message-content.txt",
+        "digest": "d0990361a8e26ed47f70b398b09329fa6fcc75e7c1de1af2f449c44588a7c9e1",
+        "url": "/v1/artifacts/d0990361a8e26ed47f70b398b09329fa6fcc75e7c1de1af2f449c44588a7c9e1",
+        "mediaType": "text/plain",
+        "byteLength": 3695,
+        "capturedBytes": 3695,
+        "captureTruncated": false
+      }
+    }
+  ],
+  "runner": "npm run verify:repository-guard -- --guard /absolute/path/guard.json --snapshot /absolute/path/next-snapshot.json",
+  "limitations": [
+    "Requires the same qualified disposable worker and reviewed protected outcome adapter.",
+    "Recorded UI success is not protected business completion when no observer is configured.",
+    "Operator-attested developer evidence, not independent maintainer or participant validation."
+  ]
+}

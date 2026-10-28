@@ -1,0 +1,96 @@
+{
+  "summary": "The keyboard booking flow fails at two points: (1) pressing Enter on a date cell does not produce the expected availability.pending event because the handler sets pendingDate but the test harness never emits availability.release, so the pending checkpoint times out; (2) Shift+Tab focus containment inside the modal fails because handleModalKeyDown forces focus to the first/last focusable element on every Tab press, allowing focus to escape after two Shift+Tab cycles. The focusFirst effect also contains a variable-name bug (firstAvailable vs focusFirst) that may leave the first available cell unfocused on open.",
+  "locations": [
+    {
+      "lineIds": [
+        "file-1:line-10",
+        "file-1:line-11",
+        "file-1:line-12",
+        "file-1:line-13",
+        "file-1:line-14",
+        "file-1:line-15",
+        "file-1:line-16",
+        "file-1:line-17",
+        "file-1:line-18",
+        "file-1:line-19",
+        "file-1:line-20",
+        "file-1:line-21",
+        "file-1:line-22"
+      ],
+      "symbol": "focusFirst",
+      "reason": "Effect intends to focus the first available cell when the modal opens but references an undefined variable 'firstAvailable' (line 14) instead of the queried 'focusFirst' (line 13), causing the focus to not land on a selectable date and leaving the subsequent Enter press without a focused target.",
+      "evidenceRefs": [
+        "capture_960ebf8f-5e38-4bf7-8294-4c842ced22ef:11",
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:15",
+        "capture_b8805fe8-4d88-4343-aaf4-6474a27ec412:15",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:15"
+      ],
+      "assertionIds": [
+        "opening-preserves-value"
+      ]
+    },
+    {
+      "lineIds": [
+        "file-1:line-38",
+        "file-1:line-39",
+        "file-1:line-40",
+        "file-1:line-41",
+        "file-1:line-42",
+        "file-1:line-43",
+        "file-1:line-44",
+        "file-1:line-45"
+      ],
+      "symbol": "handleKeyDown",
+      "reason": "Enter/Space handler sets pendingDate and dispatches availability.pending but never commits the choice; the test expects a subsequent availability.release event to finalize the booking, which the harness does not emit, so the pending checkpoint fails with expected-event-unreachable.",
+      "evidenceRefs": [
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:18",
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:19",
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:20",
+        "capture_4b572060-6749-4b78-94d9-44e77cb499f1:21",
+        "capture_b8805fe8-4d88-4343-aaf4-6474a27ec412:24",
+        "capture_b8805fe8-4d88-4343-aaf4-6474a27ec412:25",
+        "capture_b8805fe8-4d88-4343-aaf4-6474a27ec412:26",
+        "capture_b8805fe8-4d88-4343-aaf4-6474a27ec412:27"
+      ],
+      "assertionIds": [
+        "action:pending",
+        "explicit-choice-committed"
+      ]
+    },
+    {
+      "lineIds": [
+        "file-1:line-69",
+        "file-1:line-70",
+        "file-1:line-71",
+        "file-1:line-72",
+        "file-1:line-73",
+        "file-1:line-74",
+        "file-1:line-75",
+        "file-1:line-76",
+        "file-1:line-77",
+        "file-1:line-78",
+        "file-1:line-79",
+        "file-1:line-80",
+        "file-1:line-81",
+        "file-1:line-82",
+        "file-1:line-83"
+      ],
+      "symbol": "handleModalKeyDown",
+      "reason": "Modal Tab/Shift+Tab handler unconditionally moves focus to the first or last focusable element on every press, which breaks containment: after two Shift+Tab presses focus escapes the modal, failing the modal-focus-contained assertion.",
+      "evidenceRefs": [
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:18",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:19",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:20",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:21",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:22",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:23",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:24",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:25",
+        "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:26"
+      ],
+      "assertionIds": [
+        "modal-focus-contained"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+{"name":"passage-orca-runner","version":"1.0.0","private":true,"type":"module","dependencies":{"@guidepup/guidepup":"0.36.2","playwright":"1.64.1"}}

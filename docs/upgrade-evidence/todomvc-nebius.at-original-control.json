@@ -1,0 +1,75 @@
+{
+  "schema": "passage.actual-at.v1",
+  "buildId": "c1c9aac38e2bdf9385f31f814d37ea0afe160a6697a63ece1e738ca9ecf95488",
+  "sourceDigest": "2d1ee075787eae25413c97f37ce3fe2586ae109045607c2a42f18a8771168b7d",
+  "sessionId": "6923ed3f-8eb2-4b2d-b3af-248dd561c8e2",
+  "startedAt": "2026-10-28T13:23:17.332Z",
+  "provenance": "automated-actual-screen-reader",
+  "screenReader": "Orca",
+  "guidepupVersion": "0.36.2",
+  "browser": "Firefox",
+  "platform": "linux/arm64 6.8.0-117-generic, isolated Colima VM",
+  "compatibility": "local-linux6-userspace-asset-qualification+system-speechd-fallback-links-v3",
+  "humanParticipant": false,
+  "independentlyReviewed": false,
+  "backendOutcomeVerified": false,
+  "steps": [
+    {
+      "action": "Create fictional task",
+      "at": "2026-10-28T13:23:24.799Z",
+      "spoken": ""
+    },
+    {
+      "action": "Tab",
+      "at": "2026-10-28T13:23:26.067Z",
+      "spoken": "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+      "focus": {
+        "tag": "INPUT",
+        "label": null,
+        "text": ""
+      }
+    },
+    {
+      "action": "Tab",
+      "at": "2026-10-28T13:23:27.330Z",
+      "spoken": "List with 1 item. check box not checked",
+      "focus": {
+        "tag": "INPUT",
+        "label": null,
+        "text": ""
+      }
+    },
+    {
+      "action": "Tab",
+      "at": "2026-10-28T13:23:28.598Z",
+      "spoken": "leaving list.. leaving main content.. information. List with 3 items. All. link",
+      "focus": {
+        "tag": "A",
+        "label": null,
+        "text": "All"
+      }
+    },
+    {
+      "action": "Activate reached control with Enter",
+      "at": "2026-10-28T13:23:30.135Z",
+      "spoken": ""
+    }
+  ],
+  "status": "captured",
+  "limitations": [
+    "Automated Orca observation is not a human participant study.",
+    "Speech is actual Orca output, not a synthesized DOM description."
+  ],
+  "browserVersion": "157.0",
+  "protocol": "todomvc-keyboard",
+  "taskOutcome": "keyboard-edit-blocked",
+  "spokenPhraseLog": [
+    "Nightly. Passage · external source preview — Nightly frame. Passage · external source preview — Nightly. Search with Google or enter address editable combo box. opens popup. banner. New Todo Input. entry. What needs to be done?. Focus mode",
+    "",
+    "leaving banner.. main content. ❯Toggle All Input. check box not checked. Browse mode",
+    "List with 1 item. check box not checked",
+    "leaving list.. leaving main content.. information. List with 3 items. All. link",
+    ""
+  ],
+  "completedAt": "2026-10-28T13:23:30.690Z"
+}

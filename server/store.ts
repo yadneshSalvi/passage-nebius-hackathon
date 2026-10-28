@@ -9,6 +9,7 @@ import type {
   RepairRun,
   RunEvent,
   RunStatus,
+  GenerationProfile,
 } from "../shared/types.js";
 import type {
   LiveProvider,
@@ -47,14 +48,12 @@ export interface UsageEntry {
   servedModel?: string | null;
   reasoningTokens?: number;
   finalOutputDigest?: string;
+  outputProtocol?: "structured-json" | "single-source";
   completionQualified?: boolean;
-  generation?: {
-    maxOutputTokens: number;
-    timeoutMs: number;
-    reasoningEffort?: string;
-    thinkingEnabled?: boolean;
-    responseFormat?: "json_object" | "prompt_schema";
-  };
+  generation?: GenerationProfile;
+  generationProfileFingerprint?: string;
+  baseUrl?: string;
+  admissionBudgetUsd?: number | null;
 }
 const defaults: AppSettings = {
   highContrast: false,

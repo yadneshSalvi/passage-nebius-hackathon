@@ -1,6 +1,7 @@
 import { z } from "zod";
+import { parse as parseModule } from "@babel/parser";
 import type { GenerationFailure, ModelReceipt } from "../shared/types.js";
-import { AppError, Store, id, now, type UsageEntry } from "./store.js";
+import { AppError, Store, id, now, sha256, type UsageEntry } from "./store.js";
 
 export const REPAIR_RESPONSE_SCHEMA = {
   type: "object",
@@ -24,14 +25,20 @@ export class GenerationOutputError extends AppError {
 }
 
 /** Store only message.content, which stays untrusted and may contain explanatory/non-JSON text. Never pass reasoning_content. */
-export function parseFinalComponent(input: {
+export interface FinalOutputInput {
   content: unknown;
   finishReason?: string;
   refusal?: string;
   store: Store;
   entry: UsageEntry;
   receipt: ModelReceipt;
-}): { summary: string; source: string } {
+}
+export function parseFinalComponent(input: FinalOutputInput): { summary: string; source: string } {
+  return parseFinalStructured(input, schema);
+}
+
+/** Both protocols capture only bounded final content, never reasoning_content. */
+function readFinalContent(input: FinalOutputInput) {
   const { store, entry, receipt } = input;
   let outputArtifact: GenerationFailure["outputArtifact"];
   if (typeof input.content === "string") {
@@ -84,7 +91,7 @@ export function parseFinalComponent(input: {
   if (input.refusal || typeof input.content !== "string" || !input.content)
     fail(
       "MODEL_REFUSAL",
-      "The provider did not return a final repair component. Nothing was executed.",
+      "The provider did not return final structured content. Nothing was executed.",
       [
         {
           path: "$",
@@ -93,9 +100,18 @@ export function parseFinalComponent(input: {
         },
       ],
     );
+  return { content: input.content as string, fail, recordKeys(value: unknown) {
+    if (value && typeof value === "object" && !Array.isArray(value))
+      topLevelKeys = Object.keys(value).slice(0, 20).map(key => key.slice(0, 80));
+  } };
+}
+
+/** The same bounded final-content receipt and strict validation serve compiler and patch decisions. */
+export function parseFinalStructured<T>(input: FinalOutputInput, outputSchema: z.ZodType<T>): T {
+  const { content, fail, recordKeys } = readFinalContent(input);
   let value: unknown;
   try {
-    value = JSON.parse(input.content as string);
+    value = JSON.parse(content);
   } catch {
     fail(
       "MALFORMED_MODEL_OUTPUT",
@@ -105,20 +121,17 @@ export function parseFinalComponent(input: {
           path: "$",
           code: "invalid_json",
           message:
-            "Expected one JSON object containing string fields summary and source.",
+            "Expected one JSON object matching the requested structured schema.",
         },
       ],
     );
   }
-  if (value && typeof value === "object" && !Array.isArray(value))
-    topLevelKeys = Object.keys(value)
-      .slice(0, 20)
-      .map((key) => key.slice(0, 80));
-  const parsed = schema.safeParse(value);
+  recordKeys(value);
+  const parsed = outputSchema.safeParse(value);
   if (!parsed.success)
     return fail(
       "MALFORMED_MODEL_OUTPUT",
-      "The final JSON did not match the repair schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
       parsed.error.issues.slice(0, 20).map((issue) => ({
         path: issue.path.length
           ? issue.path.map(String).join(".").slice(0, 160)
@@ -128,4 +141,56 @@ export function parseFinalComponent(input: {
       })),
     );
   return parsed.data;
+}
+
+/** One complete module, optionally wrapped in exactly one code fence. No prose extraction or source repair. */
+export function parseFinalSingleSource(input: FinalOutputInput): { source: string } {
+  const { content, fail } = readFinalContent(input);
+  const trimmed = content.trim();
+  let source = content;
+  if (trimmed.startsWith("```")) {
+    const fence = /^```(?:jsx|javascript|js)?[ \t]*\r?\n([\s\S]*?)\r?\n```$/.exec(trimmed);
+    if (!fence) return fail("MALFORMED_MODEL_OUTPUT", "The final source must be one complete JSX module or one exact code fence. Nothing was executed.",
+      [{ path: "$", code: "invalid_source_envelope", message: "Only raw JavaScript JSX or a single jsx/javascript/js code fence is supported; surrounding prose is not extracted." }]);
+    source = fence[1];
+  }
+  if (source.length < 40 || source.length > 60000)
+    return fail("MALFORMED_MODEL_OUTPUT", "The final source exceeds the bounded single-file output format. Nothing was executed.",
+      [{ path: "source", code: "source_size", message: "A complete source module must contain 40–60000 characters; the adapter's stricter admission bounds also apply." }]);
+  try { parseModule(source, { sourceType: "module", plugins: ["jsx"] }); }
+  catch (error) {
+    const location = (error as { loc?: { line?: number; column?: number } }).loc;
+    return fail("MALFORMED_MODEL_OUTPUT", "The final content was not a complete JavaScript JSX module. Nothing was executed.",
+      [{ path: location ? `source:${location.line}:${location.column}` : "source", code: "invalid_jsx",
+        message: `Expected a complete syntactically valid JavaScript JSX module. Parser: ${error instanceof Error ? error.message.slice(0, 500) : "Invalid source syntax."}` }]);
+  }
+  return { source };
+}
+
+/** Bounded diagnostics for rejected bytes, never a patch or an execution input. */
+export function retainedFailureFeedback(store: Store, failure: GenerationFailure, inspectedSourceDigest: string) {
+  const base = { id: failure.id, code: failure.code, message: failure.message, promptVersion: failure.receipt.promptVersion,
+    diagnostics: failure.diagnostics, topLevelKeys: failure.topLevelKeys,
+    rejectedOutputDigest: failure.outputArtifact?.digest ?? null, inspectedSourceDigest };
+  const position = failure.diagnostics?.find(item => item.code === "invalid_jsx")?.path.match(/^source:(\d+):(\d+)$/);
+  if (failure.receipt.outputProtocol !== "single-source" || !failure.outputArtifact || !position) return base;
+  try {
+    const bytes = store.readArtifact(failure.outputArtifact.digest);
+    if (bytes.byteLength > 128000 || sha256(bytes) !== failure.outputArtifact.digest) return { ...base, rejectedExcerptUnavailable: "Stored final-output identity could not be verified within the capture bound." };
+    const raw = bytes.toString("utf8"), fence = /^```(?:jsx|javascript|js)?[ \t]*\r?\n([\s\S]*?)\r?\n```$/.exec(raw.trim());
+    const moduleText = fence ? fence[1] : raw, lines = moduleText.split("\n"), line = Number(position[1]);
+    if (line < 1 || line > lines.length) return { ...base, rejectedExcerptUnavailable: "The reported location is outside the retained output." };
+    let parserDiagnostic = "The retained module now parses; its historical rejection remains unchanged.";
+    try { parseModule(moduleText, { sourceType: "module", plugins: ["jsx"] }); }
+    catch (error) { parserDiagnostic = error instanceof Error ? error.message.slice(0, 500) : "Invalid source syntax."; }
+    const startLine = Math.max(1, line - 8), endLine = Math.min(lines.length, line + 3);
+    return { ...base, rejectedSourceExcerpt: {
+      interpretation: "These line numbers refer only to the retained rejected module, which was never executed or admitted as the inspected source. Do not confuse its bytes with inspectedSourceDigest.",
+      moduleDigest: sha256(moduleText), moduleWasFenced: Boolean(fence), startLine, endLine,
+      lines: lines.slice(startLine - 1, endLine).map((text, index) => ({ line: startLine + index, text: text.slice(0, 180), truncated: text.length > 180 })),
+      readOnlyReparseDiagnostic: parserDiagnostic, historicalDiagnosticUnchanged: true,
+    } };
+  } catch {
+    return { ...base, rejectedExcerptUnavailable: "The retained artifact is unavailable; no source or diagnostic was reconstructed." };
+  }
 }

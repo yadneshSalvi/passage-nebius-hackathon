@@ -1,0 +1,3508 @@
+{
+  "schema": "passage.authored-qualification/v1",
+  "recordedAt": "2026-10-28T14:57:12.440807+00:00",
+  "evidenceClass": "automated-development",
+  "sessionId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+  "humanParticipantCount": 0,
+  "independentlyReviewedByHuman": false,
+  "draftMethod": "observed",
+  "draftDigest": "75ac9d8fa01fa9001295fdafe90a6952890eff189b4f2272fe1dc021a1f190f6",
+  "contractDigest": "41388238e8e14fe09c10b885a4ffeb5739dab0beba2a22896577fc6c44fd0c3c",
+  "finalSourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+  "finalRepairId": "journey-repair_27b9ac48-9fe5-466f-b1db-3d2285b80dd4",
+  "frozenAssertions": 15,
+  "separatePreservationRuns": 4,
+  "finalLaterPreservation": {
+    "id": "preservation-check_67636ed6-ef23-4040-bc67-22da8fb1c7f1",
+    "sessionId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+    "repairId": "journey-repair_27b9ac48-9fe5-466f-b1db-3d2285b80dd4",
+    "reason": "later-check",
+    "createdAt": "2026-10-28T14:55:33.789Z",
+    "completedAt": "2026-10-28T14:55:37.883Z",
+    "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+    "contractDigest": "41388238e8e14fe09c10b885a4ffeb5739dab0beba2a22896577fc6c44fd0c3c",
+    "verifierVersion": "passage-authored-preservation-v2-cancellation",
+    "reportDigest": "64c843b9e9c11f863b0f3cf04cb907fe877539d307983967d2b4c191282de700",
+    "status": "passed",
+    "passed": true,
+    "runs": [
+      {
+        "id": "9a70745f-521a-4d90-8ba9-fab3b1325a69",
+        "kind": "pointer-booking",
+        "scenarioId": "baseline",
+        "status": "passed",
+        "passed": true,
+        "checks": [
+          {
+            "id": "pointer-opens-dialog",
+            "label": "Pointer opens the calendar",
+            "expected": "The original date trigger opens the actual calendar.",
+            "status": "passed",
+            "actual": "Calendar visibility after pointer activation."
+          },
+          {
+            "id": "enabled-intended-choice",
+            "label": "Intended date is enabled",
+            "expected": "The protected scenario supplies an enabled intended date.",
+            "status": "passed",
+            "actual": "Protected intended date 2026-11-16; unavailable=false."
+          },
+          {
+            "id": "availability-request-response",
+            "label": "Pointer activation checks real availability",
+            "expected": "A real successful availability request and available response match the explicit date.",
+            "status": "passed",
+            "actual": "HTTP 200; availabilityChecks=1; selectedValue=2026-11-16; response={\"available\":true}."
+          },
+          {
+            "id": "pointer-selection-committed",
+            "label": "Pointer commits the intended choice",
+            "expected": "The selected-date value matches the explicit available date.",
+            "status": "passed",
+            "actual": "Expected 2026-11-16; observed 2026-11-16."
+          },
+          {
+            "id": "pointer-confirmation",
+            "label": "Pointer confirmation stores an appointment",
+            "expected": "The fictional attendee and date reach the protected appointment endpoint.",
+            "status": "passed",
+            "actual": "Appointment HTTP 201; response={\"status\":201,\"appointment\":{\"id\":\"f4000ef9-1175-44c5-b1ad-f9c5aa4a1218\",\"sessionId\":\"949032a6-b507-4e52-a044-2178ab2f8aa8\",\"date\":\"2026-11-16\",\"attendee\":\"Preservation Pointer\",\"service\":\"northstar-appointments\",\"sourceDigest\":\"90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638\",\"createdAt\":\"2026-10-28T14:55:34.342Z\"}}."
+          },
+          {
+            "id": "exact-single-outcome",
+            "label": "Exactly one correct protected outcome",
+            "expected": "One stored result matches session, source, service, explicit date and fictional attendee.",
+            "status": "passed",
+            "actual": "{\"availabilityChecks\":1,\"validatedDates\":[\"2026-11-16\"],\"outcomeCount\":1,\"outcomes\":[{\"id\":\"f4000ef9-1175-44c5-b1ad-f9c5aa4a1218\",\"sessionId\":\"949032a6-b507-4e52-a044-2178ab2f8aa8\",\"date\":\"2026-11-16\",\"attendee\":\"Preservation Pointer\",\"service\":\"northstar-appointments\",\"sourceDigest\":\"90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638\",\"createdAt\":\"2026-10-28T14:55:34.342Z\"}]}"
+          }
+        ]
+      },
+      {
+        "id": "d3de0982-1802-4269-b066-74a9f4021a78",
+        "kind": "close-control-keyboard",
+        "scenarioId": "baseline",
+        "status": "passed",
+        "passed": true,
+        "checks": [
+          {
+            "id": "keyboard-opens-dialog",
+            "label": "Keyboard opens the calendar",
+            "expected": "Native Tab reaches the trigger; Enter opens the actual calendar.",
+            "status": "passed",
+            "actual": "Native Tab reached the trigger; Enter must open the actual calendar."
+          },
+          {
+            "id": "close-reachable-by-tab",
+            "label": "Native Tab reaches the Close control",
+            "expected": "The actual Close calendar button receives native focus within the declared Tab bound.",
+            "status": "passed",
+            "actual": "Close native focus=true; Tab presses=8; last native focus={\"step\":8,\"closeFocused\":true,\"triggerFocused\":false,\"testId\":null,\"date\":null,\"label\":\"Close calendar\",\"text\":\"×\"}."
+          },
+          {
+            "id": "close-activated-with-enter",
+            "label": "Enter activates the Close control",
+            "expected": "Pressing Enter with actual Close focus closes the calendar.",
+            "status": "passed",
+            "actual": "Calendar must become hidden after Enter on its Close control."
+          },
+          {
+            "id": "close-restores-trigger",
+            "label": "Close restores native trigger focus",
+            "expected": "The surviving original trigger has browser-native focus.",
+            "status": "passed",
+            "actual": "Original trigger native :focus state."
+          },
+          {
+            "id": "close-preserves-value",
+            "label": "Closing preserves the prior selection",
+            "expected": "Opening, tabbing and closing do not commit or change a selection.",
+            "status": "passed",
+            "actual": "Before=; after=."
+          },
+          {
+            "id": "close-does-not-book",
+            "label": "Closing stores no booking",
+            "expected": "The protected service has no appointment outcome.",
+            "status": "passed",
+            "actual": "{\"availabilityChecks\":0,\"validatedDates\":[],\"outcomeCount\":0,\"outcomes\":[]}"
+          }
+        ]
+      },
+      {
+        "id": "dbde084f-0477-47a7-afb9-8eba21e466bc",
+        "kind": "pointer-booking",
+        "scenarioId": "combined",
+        "status": "passed",
+        "passed": true,
+        "checks": [
+          {
+            "id": "pointer-opens-dialog",
+            "label": "Pointer opens the calendar",
+            "expected": "The original date trigger opens the actual calendar.",
+            "status": "passed",
+            "actual": "Calendar visibility after pointer activation."
+          },
+          {
+            "id": "enabled-intended-choice",
+            "label": "Intended date is enabled",
+            "expected": "The protected scenario supplies an enabled intended date.",
+            "status": "passed",
+            "actual": "Protected intended date 2026-11-17; unavailable=false."
+          },
+          {
+            "id": "availability-request-response",
+            "label": "Pointer activation checks real availability",
+            "expected": "A real successful availability request and available response match the explicit date.",
+            "status": "passed",
+            "actual": "HTTP 200; availabilityChecks=1; selectedValue=2026-11-17; response={\"available\":true}."
+          },
+          {
+            "id": "pointer-selection-committed",
+            "label": "Pointer commits the intended choice",
+            "expected": "The selected-date value matches the explicit available date.",
+            "status": "passed",
+            "actual": "Expected 2026-11-17; observed 2026-11-17."
+          },
+          {
+            "id": "pointer-confirmation",
+            "label": "Pointer confirmation stores an appointment",
+            "expected": "The fictional attendee and date reach the protected appointment endpoint.",
+            "status": "passed",
+            "actual": "Appointment HTTP 201; response={\"status\":201,\"appointment\":{\"id\":\"c65c95ac-045c-4c84-bf30-c96a2a63e204\",\"sessionId\":\"ba57fec8-e9df-4aeb-bbcc-5420231533e6\",\"date\":\"2026-11-17\",\"attendee\":\"Preservation Pointer\",\"service\":\"northstar-appointments\",\"sourceDigest\":\"90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638\",\"createdAt\":\"2026-10-28T14:55:37.146Z\"}}."
+          },
+          {
+            "id": "exact-single-outcome",
+            "label": "Exactly one correct protected outcome",
+            "expected": "One stored result matches session, source, service, explicit date and fictional attendee.",
+            "status": "passed",
+            "actual": "{\"availabilityChecks\":1,\"validatedDates\":[\"2026-11-17\"],\"outcomeCount\":1,\"outcomes\":[{\"id\":\"c65c95ac-045c-4c84-bf30-c96a2a63e204\",\"sessionId\":\"ba57fec8-e9df-4aeb-bbcc-5420231533e6\",\"date\":\"2026-11-17\",\"attendee\":\"Preservation Pointer\",\"service\":\"northstar-appointments\",\"sourceDigest\":\"90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638\",\"createdAt\":\"2026-10-28T14:55:37.146Z\"}]}"
+          }
+        ]
+      },
+      {
+        "id": "8000675a-e82a-484d-b383-7cbe48c5f0cd",
+        "kind": "close-control-keyboard",
+        "scenarioId": "combined",
+        "status": "passed",
+        "passed": true,
+        "checks": [
+          {
+            "id": "keyboard-opens-dialog",
+            "label": "Keyboard opens the calendar",
+            "expected": "Native Tab reaches the trigger; Enter opens the actual calendar.",
+            "status": "passed",
+            "actual": "Native Tab reached the trigger; Enter must open the actual calendar."
+          },
+          {
+            "id": "close-reachable-by-tab",
+            "label": "Native Tab reaches the Close control",
+            "expected": "The actual Close calendar button receives native focus within the declared Tab bound.",
+            "status": "passed",
+            "actual": "Close native focus=true; Tab presses=7; last native focus={\"step\":7,\"closeFocused\":true,\"triggerFocused\":false,\"testId\":null,\"date\":null,\"label\":\"Close calendar\",\"text\":\"×\"}."
+          },
+          {
+            "id": "close-activated-with-enter",
+            "label": "Enter activates the Close control",
+            "expected": "Pressing Enter with actual Close focus closes the calendar.",
+            "status": "passed",
+            "actual": "Calendar must become hidden after Enter on its Close control."
+          },
+          {
+            "id": "close-restores-trigger",
+            "label": "Close restores native trigger focus",
+            "expected": "The surviving original trigger has browser-native focus.",
+            "status": "passed",
+            "actual": "Original trigger native :focus state."
+          },
+          {
+            "id": "close-preserves-value",
+            "label": "Closing preserves the prior selection",
+            "expected": "Opening, tabbing and closing do not commit or change a selection.",
+            "status": "passed",
+            "actual": "Before=; after=."
+          },
+          {
+            "id": "close-does-not-book",
+            "label": "Closing stores no booking",
+            "expected": "The protected service has no appointment outcome.",
+            "status": "passed",
+            "actual": "{\"availabilityChecks\":0,\"validatedDates\":[],\"outcomeCount\":0,\"outcomes\":[]}"
+          }
+        ]
+      }
+    ]
+  },
+  "attemptCounts": {
+    "error": 19,
+    "rejected": 6,
+    "accepted": 4
+  },
+  "repairAttempts": 29,
+  "repairs": [
+    {
+      "attempt": 1,
+      "id": "journey-repair_df391244-1edd-46bb-b585-4943b81ac9fa",
+      "createdAt": "2026-10-28T13:22:41.321Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.028365,
+      "requestIds": [
+        "4e6f1a53baca2fde46ddb0507a1252b3",
+        "bad4a2528b6ffb1998ccf3a68cbdd36c",
+        "c4410650582fee41de73942b49741d96"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 2,
+      "id": "journey-repair_df6210ce-4de1-4589-b922-45e1fe0b880a",
+      "createdAt": "2026-10-28T13:25:30.035Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": "The quotation at DatePicker.jsx:14-14 is not a contiguous exact substring of those source lines. Preserve intervening comments or quote a single line.",
+      "sourceDigests": [],
+      "actualRequestCount": 4,
+      "estimatedUsd": 0.041395,
+      "requestIds": [
+        "7e1a84728497d9dc9df8b5e7d360f1c9",
+        "7f57d4611db5f91ec417eedac21d9b14",
+        "bca987e5dea0533be72fbabfb5149c3b",
+        "e8b9d1ea415fb45e3d60ec2497152be0"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 3,
+      "id": "journey-repair_7a62ee35-7011-4f4c-97d5-a7556a1e198c",
+      "createdAt": "2026-10-28T13:26:41.649Z",
+      "recordedStatus": "rejected",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "cca925e85edae1b1d427e63bdb4f88576f046f523a142bc339995c08cd6905e3"
+      ],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.025841,
+      "requestIds": [
+        "4569234dc91f060a320c3def6a941626",
+        "8164a4b0e756b4b87a22da680c38c2c8",
+        "de520488c3bb457106512893d6a12647"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_4b572060-6749-4b78-94d9-44e77cb499f1",
+          "schedule": "baseline",
+          "status": "failed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "cca925e85edae1b1d427e63bdb4f88576f046f523a142bc339995c08cd6905e3",
+          "verifierVersion": null,
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_b8805fe8-4d88-4343-aaf4-6474a27ec412",
+          "schedule": "cancel-pending",
+          "status": "failed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "cca925e85edae1b1d427e63bdb4f88576f046f523a142bc339995c08cd6905e3",
+          "verifierVersion": null,
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 7
+        },
+        {
+          "id": "capture_171ce017-9c4d-4942-8da5-c5ac9073df00",
+          "schedule": "modal-boundary",
+          "status": "failed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "cca925e85edae1b1d427e63bdb4f88576f046f523a142bc339995c08cd6905e3",
+          "verifierVersion": null,
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 4,
+      "id": "journey-repair_1bcf0b14-efe7-4025-b0b3-6daadcda53c1",
+      "createdAt": "2026-10-28T13:27:30.337Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.042751,
+      "requestIds": [
+        "9a533bc80c8da7582c2dd62fde07a53e",
+        "9ca71457a5803ffbffe8cc5506f4630d"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 5,
+      "id": "journey-repair_7786f656-dc7e-4403-ba23-da9fbe395f3f",
+      "createdAt": "2026-10-28T13:29:02.162Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": "The component may not access window. Unsupported source operation: NewExpression at line 44, column 30 (\"new CustomEvent('availability.pending', { detail: { date: choice.date } })\"). Constructor calls are forbidden; use plain arrays, objects, and direct React refs. Unsupported computed index BinaryExpression at line 76, column 9 (\"focusableArray[focusableArray.length - 1]\"). Only a numeric literal or a local index identifier is permitted inside brackets. Assign arithmetic or nested index expressions to a local numeric variable first, then use that variable as the index; do not use string-keyed ref maps. Unsupported source operation: NewExpression at line 124, column 127 (\"new CustomEvent('availability.pending', { detail: { date: choice.date } })\"). Constructor calls are forbidden; use plain arrays, objects, and direct React refs.",
+      "sourceDigests": [
+        "140a8eed90d9beb9028027c92c23a8884bd12af82175c4847182411e5fd399c6"
+      ],
+      "actualRequestCount": 5,
+      "estimatedUsd": 0.158334,
+      "requestIds": [
+        "06998f1b3e90230836273b40e95dd5e3",
+        "24dd5cc7408b423db02545ec1cfbefa1",
+        "392b817098e96993998c1d2fbe243513",
+        "9705219ced9c76653f639d59f11f8ece",
+        "ac605a6b778eec35951fd24640f5e9a1"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 6,
+      "id": "journey-repair_d3d61b2d-c0e3-41bd-8093-2974ac52c322",
+      "createdAt": "2026-10-28T13:31:40.154Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "UNGROUNDED_SOURCE_REFERENCE",
+      "error": "The quotation at DatePicker.jsx:38-45 is not a contiguous exact substring of those source lines. Preserve intervening comments or quote a single line.",
+      "sourceDigests": [],
+      "actualRequestCount": 4,
+      "estimatedUsd": 0.129761,
+      "requestIds": [
+        "5839428197c143bef5652a589c6bbe49",
+        "73f57ede6ef082ac7f499f8f6b872fd8",
+        "ce49e51da565f4fa017806970c272142",
+        "e9eb5c214e237f769db7115dca5165c8"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 7,
+      "id": "journey-repair_5e26838f-6235-4929-9478-77d80d077e9d",
+      "createdAt": "2026-10-28T13:37:33.888Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.14743,
+      "requestIds": [
+        "169acf9f9498ffaebcc487724eeae538",
+        "5131087cd222a161707e0df504b3ecb2",
+        "75b241b9cdee9fb418bd3d2e3c74a217"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 8,
+      "id": "journey-repair_4f7be92d-4d64-4bb4-8b89-e1bdab1af86f",
+      "createdAt": "2026-10-28T13:39:49.516Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.04387,
+      "requestIds": [
+        "0fa80c88351a2cdbb777b414db9fe349",
+        "728ae627e5fb858c88e4e825e933a749"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 9,
+      "id": "journey-repair_9d8244ad-fc7a-4995-8b56-9f7a2797f4eb",
+      "createdAt": "2026-10-28T13:41:08.461Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "SOURCE_REJECTED",
+      "error": "Unsupported computed index BinaryExpression at line 81, column 9 (\"focusableArray[focusableArray.length - 1]\"). Only a numeric literal or a local index identifier is permitted inside brackets. Assign arithmetic or nested index expressions to a local numeric variable first, then use that variable as the index; do not use string-keyed ref maps.",
+      "sourceDigests": [
+        "410790575619e62fd1dc593aa755e909e291dac4a0b4804b4d6edee4a9ce89a0"
+      ],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.077639,
+      "requestIds": [
+        "1d2ac974ed9fbebc92511d089dade5ef",
+        "d7f6a87ef1b089591c0433c2d3cf2715",
+        "e39682d4b215edcc4a2a688bb78a9079"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 10,
+      "id": "journey-repair_48e06706-ed5d-445d-93fb-7ffb068e2b7b",
+      "createdAt": "2026-10-28T13:41:50.337Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "SOURCE_REJECTED",
+      "error": "The component may not access querySelector.",
+      "sourceDigests": [
+        "e1135fc95a32960f1e8c23334cdd940f80fec39469cf50f856297edaf7729f2b"
+      ],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.089424,
+      "requestIds": [
+        "20be33b778209b7b7de2a42d298bc045",
+        "b4231aab9c8ca7d41e7294187207f96b",
+        "e0bc7cc410161cabf591290de9ecfac7"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 11,
+      "id": "journey-repair_8367f732-c5af-454e-8af1-6ecbe84c245f",
+      "createdAt": "2026-10-28T13:43:14.694Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "SOURCE_REJECTED",
+      "error": "The component may not access querySelector.",
+      "sourceDigests": [
+        "43d77e3647698ce4d81a4a2f6020915316f4977475c923fab3a4a34b4d349114"
+      ],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.073684,
+      "requestIds": [
+        "6066bb0bcfd0240af1f3071393aefa89",
+        "ac6dc283b70e436a31195d474f45ed43",
+        "bb36558299bd217a4da932d03f99b8eb"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 12,
+      "id": "journey-repair_83f360f8-b8a6-4513-9f37-df58f592c798",
+      "createdAt": "2026-10-28T13:44:26.185Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "SOURCE_REJECTED",
+      "error": "Unsupported querySelector access at line 18, column 30 (\"grid.querySelector('[data-date]:not(.unavailable)')\"). Only a direct call on an imported useRef-origin ref's .current is permitted: ref.current.querySelector('static selector') or ref.current.querySelectorAll('static selector'). Aliases, dynamic selectors, computed method names, and ancestor/global queries remain forbidden. The component may not access document.",
+      "sourceDigests": [
+        "fccf5ff6237e07c059572c0d146fcf7e6089cd306da43ae858f03537a2e700a0"
+      ],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.109713,
+      "requestIds": [
+        "4038f39cc45458d959eaeef8ddc8f9f1",
+        "8906aa69343d85ae63794f22fe88de09",
+        "da978ac3480f2cf009383c0a349d251e"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 13,
+      "id": "journey-repair_9448f2ec-5b43-4ad2-9375-6c83a739ae4c",
+      "createdAt": "2026-10-28T13:46:42.346Z",
+      "recordedStatus": "rejected",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "0ad55f3cc5ebabd6ef7170cfe37fd5708ce7c5be91a2f3909026758dd094d201"
+      ],
+      "actualRequestCount": 3,
+      "estimatedUsd": 0.087025,
+      "requestIds": [
+        "7a31c0445facbf01d23217bdbbfc487b",
+        "bfafffff4e80c6596113f2cc36cf015c",
+        "d335dac0bcfd5d948502069cfd14d671"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_7e6c1f87-5d8c-471e-be01-4bfb7343c630",
+          "schedule": "baseline",
+          "status": "failed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "0ad55f3cc5ebabd6ef7170cfe37fd5708ce7c5be91a2f3909026758dd094d201",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_9c831c5b-051c-40d0-b87b-133925dc4f33",
+          "schedule": "cancel-pending",
+          "status": "failed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "0ad55f3cc5ebabd6ef7170cfe37fd5708ce7c5be91a2f3909026758dd094d201",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 7
+        },
+        {
+          "id": "capture_45e83eea-e788-4a6e-80e5-2fb0c3b1fe99",
+          "schedule": "modal-boundary",
+          "status": "failed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "0ad55f3cc5ebabd6ef7170cfe37fd5708ce7c5be91a2f3909026758dd094d201",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 2,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 14,
+      "id": "journey-repair_507d8147-5056-4443-a1d1-299c0260ea80",
+      "createdAt": "2026-10-28T13:47:52.511Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 1,
+      "estimatedUsd": 0.033787,
+      "requestIds": [
+        "9cb3a3a7d98a8c8ed12e69cf9f860de7"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 15,
+      "id": "journey-repair_cd0c41d4-e871-4c79-9281-089971950f26",
+      "createdAt": "2026-10-28T13:49:13.354Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 1,
+      "estimatedUsd": 0.035977,
+      "requestIds": [
+        "1db6e25adb20d3ea825911a79e66fe39"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 16,
+      "id": "journey-repair_3bafdf7b-804f-4b10-93cc-0a41a7eaf88c",
+      "createdAt": "2026-10-28T13:51:34.253Z",
+      "recordedStatus": "rejected",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "915736c52af89e2466248a606248ec467342ae2b0d4e2b16ef3fb9fa3312ae81"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.079768,
+      "requestIds": [
+        "0aafe8f973ceea8df5cc10dc35b43483",
+        "86692ba6b2455425c5d2d7ef37d3a682"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_61674d04-86f2-425b-b17c-6c454472e479",
+          "schedule": "baseline",
+          "status": "failed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "915736c52af89e2466248a606248ec467342ae2b0d4e2b16ef3fb9fa3312ae81",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_4e22278c-f8e3-4df1-a39b-87ad38654ccb",
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "915736c52af89e2466248a606248ec467342ae2b0d4e2b16ef3fb9fa3312ae81",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 6,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_20f763c8-585f-4f51-86c1-810e3e56788c",
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "915736c52af89e2466248a606248ec467342ae2b0d4e2b16ef3fb9fa3312ae81",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 4,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 17,
+      "id": "journey-repair_e8550b1a-be74-450f-9117-8e11ddd93aab",
+      "createdAt": "2026-10-28T13:52:35.304Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "SOURCE_REJECTED",
+      "error": "Unsupported querySelectorAll access at line 30, column 31 (\"gridRef.current?.querySelectorAll(focusableSelector)\"). Only a direct call on an imported useRef-origin ref's .current is permitted: ref.current.querySelector('static selector') or ref.current.querySelectorAll('static selector'). Aliases, dynamic selectors, computed method names, and ancestor/global queries remain forbidden.",
+      "sourceDigests": [
+        "7e0c8e89c4aa646558b4d6cbcbcfe58f064f1785ef9b745999387bea450f1207"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.09474,
+      "requestIds": [
+        "a1c991a3574c0e568441a212130d8b17",
+        "f75ea375cd7cc2cbf6e9201801aa6b04"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 18,
+      "id": "journey-repair_5d637152-cb00-4cdd-9083-76d561e164d1",
+      "createdAt": "2026-10-28T13:53:44.013Z",
+      "recordedStatus": "rejected",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "ba8e9eb83de147ab136a51ad2c2ac40360db82017a4521cfc0b5799089b7ea5a"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.085861,
+      "requestIds": [
+        "647614f167dde128b98056cc871165e0",
+        "72f8456d7be6dc49285ba25e43ba37be"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_83bd19e5-9968-4d44-b399-798bf2ac6396",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "ba8e9eb83de147ab136a51ad2c2ac40360db82017a4521cfc0b5799089b7ea5a",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_2a476b58-8508-4051-8292-3b8453ebfacd",
+          "schedule": "cancel-pending",
+          "status": "failed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "ba8e9eb83de147ab136a51ad2c2ac40360db82017a4521cfc0b5799089b7ea5a",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 7
+        },
+        {
+          "id": "capture_39051c22-44c1-44ba-bf5f-efb88e6cfb9d",
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "ba8e9eb83de147ab136a51ad2c2ac40360db82017a4521cfc0b5799089b7ea5a",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 4,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 19,
+      "id": "journey-repair_233cc22d-5625-4a48-8a27-f5679edca58d",
+      "createdAt": "2026-10-28T13:54:57.354Z",
+      "recordedStatus": "rejected",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "0f91810ed431ebfbed19149607656d742516b188d7b5bb7ae3b9f1d67d46e40a"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.106273,
+      "requestIds": [
+        "1350d0bf09afc7869ce643de3d171e0d",
+        "db494b4efa81512a63d61398d7b4fe77"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_0d045648-8e73-4b77-a650-9d60f21a7660",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "0f91810ed431ebfbed19149607656d742516b188d7b5bb7ae3b9f1d67d46e40a",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_375368b7-62e8-44c4-86d0-8bb141ae698b",
+          "schedule": "cancel-pending",
+          "status": "failed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "0f91810ed431ebfbed19149607656d742516b188d7b5bb7ae3b9f1d67d46e40a",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 3,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_79e76f76-941e-4f98-aa36-9d4b57d2c787",
+          "schedule": "modal-boundary",
+          "status": "failed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "0f91810ed431ebfbed19149607656d742516b188d7b5bb7ae3b9f1d67d46e40a",
+          "verifierVersion": "passage-temporal-native-focus-v2",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 20,
+      "id": "journey-repair_fee30f6b-eb8e-4c39-9ae3-3e2e1721c980",
+      "createdAt": "2026-10-28T14:03:44.995Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final content was not valid JSON. Inspect the retained output artifact; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.073206,
+      "requestIds": [
+        "690fe818db782556692190022fef2856",
+        "de57144f4edc564c0691138f98996a31"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 21,
+      "id": "journey-repair_8272b789-c4ad-47b3-a4c9-0f8664d01b82",
+      "createdAt": "2026-10-28T14:05:53.572Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "SOURCE_REJECTED",
+      "error": "The component may not access document.",
+      "sourceDigests": [
+        "c456d1fae118692e410f962d4d8d1b4334ba653b7150be3ddd849f5ab7033e0f"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.067314,
+      "requestIds": [
+        "a0e6fe93c14e4942c1069e13f8cba5d7",
+        "f3660f94fdcfe0557596a6cf14d799ef"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 22,
+      "id": "journey-repair_e3267a87-944b-409d-924c-f70d12bafa18",
+      "createdAt": "2026-10-28T14:11:12.459Z",
+      "recordedStatus": "rejected",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "5c4161cb48fe19f8599488d014ce54eccae991613bf4ead1350ee4cb259309b7"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.066035,
+      "requestIds": [
+        "993ce5deb1558e2107f4855320844a67",
+        "c4ab0e595219485a9bfc679677abfad1"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_1c7a5de9-fee4-4b1f-92cd-cd085aa93d36",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "5c4161cb48fe19f8599488d014ce54eccae991613bf4ead1350ee4cb259309b7",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_243cde10-e28a-4797-97fb-8a4795aeacb2",
+          "schedule": "cancel-pending",
+          "status": "failed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "5c4161cb48fe19f8599488d014ce54eccae991613bf4ead1350ee4cb259309b7",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 3,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_60587990-3090-4e78-acbb-e4167eb3281d",
+          "schedule": "modal-boundary",
+          "status": "failed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "5c4161cb48fe19f8599488d014ce54eccae991613bf4ead1350ee4cb259309b7",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 1,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 23,
+      "id": "journey-repair_455ed55a-5c44-4096-9f12-a6c5ffdc6b7a",
+      "createdAt": "2026-10-28T14:11:59.698Z",
+      "recordedStatus": "accepted",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.064029,
+      "requestIds": [
+        "341bb8ef26bbf216967b8984f616f823",
+        "e6188881a1a9d0c7dc1c1133e76fc800"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_4d3bd05f-f98a-435a-80a9-1d1554a14462",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_9cfb2a4a-ae1e-4236-a90c-236a7f2c23ab",
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 6,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_c3334319-91c7-4860-90e8-8726c8cab631",
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 4,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 24,
+      "id": "journey-repair_de159164-95fa-4bb0-ba08-553d4d02e659",
+      "createdAt": "2026-10-28T14:21:58.570Z",
+      "recordedStatus": "accepted",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "a2e6781d6d64e57d24664d9ae4a30b9f836d5c6e74b1f5a933c2553af0be7b37"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.084019,
+      "requestIds": [
+        "6c3440deaa48c4fc768b4fc422195642",
+        "df06487c6ed69f200cfbb95a77a12ff2"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_f08f25ec-4d0e-4c8a-8d12-1e19d4bdebab",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "a2e6781d6d64e57d24664d9ae4a30b9f836d5c6e74b1f5a933c2553af0be7b37",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_ed4014a1-625a-4049-9fce-95f57fd403b8",
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "a2e6781d6d64e57d24664d9ae4a30b9f836d5c6e74b1f5a933c2553af0be7b37",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 6,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_2ff2a53d-ddf1-450f-ad7a-e1ca31393d37",
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "a2e6781d6d64e57d24664d9ae4a30b9f836d5c6e74b1f5a933c2553af0be7b37",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v1",
+          "passedAssertions": 4,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 25,
+      "id": "journey-repair_f02f0c8b-8244-453c-9920-6142ed69f967",
+      "createdAt": "2026-10-28T14:28:35.684Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final JSON did not match the requested schema. Inspect the public field diagnostics and retained content; nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 1,
+      "estimatedUsd": 0.035741,
+      "requestIds": [
+        "458b4262d915ac7fe5224c542918f689"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 26,
+      "id": "journey-repair_1ed8f735-194f-48c8-8069-2747ec637e43",
+      "createdAt": "2026-10-28T14:32:53.597Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "UNGROUNDED_MODEL_REFERENCE",
+      "error": "A model decision cited an event that was not captured. It was retained but was not approved or executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 1,
+      "estimatedUsd": 0.026338,
+      "requestIds": [
+        "9ad2baa838052ce8e086f2e6a14acc4a"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 27,
+      "id": "journey-repair_79bdaebf-e84d-4b37-9b93-fc0f3fd53891",
+      "createdAt": "2026-10-28T14:37:09.097Z",
+      "recordedStatus": "accepted",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "1707e224b7ad5d132eba1423e54d08e95a541070c779613a707a03613533f449"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.066599,
+      "requestIds": [
+        "2f515a34c5a806a68fc1330e9eb9525f",
+        "45d097b7c071182cb35f6173840fe0f0"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_a9831a38-0651-4d22-a9a8-9757ce91f407",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "1707e224b7ad5d132eba1423e54d08e95a541070c779613a707a03613533f449",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v3",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_01536259-e3b0-42d3-9a3d-32291be2fe28",
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "1707e224b7ad5d132eba1423e54d08e95a541070c779613a707a03613533f449",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v3",
+          "passedAssertions": 6,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_ca0c9777-fcf5-40bd-bb98-00f7d9797613",
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "1707e224b7ad5d132eba1423e54d08e95a541070c779613a707a03613533f449",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v3",
+          "passedAssertions": 4,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 28,
+      "id": "journey-repair_c3d02594-73b0-46c3-b615-7eb3b8142c7a",
+      "createdAt": "2026-10-28T14:38:55.208Z",
+      "recordedStatus": "error",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": "MALFORMED_MODEL_OUTPUT",
+      "error": "The final content was not a complete JavaScript JSX module. Nothing was executed.",
+      "sourceDigests": [],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.066176,
+      "requestIds": [
+        "4573c1eb88cb669acf1a68cc36fac9e2",
+        "a2a7987606eaf43449d93a03740fb9b5"
+      ],
+      "frozenExecutions": [],
+      "laterPreservationCheckIds": []
+    },
+    {
+      "attempt": 29,
+      "id": "journey-repair_27b9ac48-9fe5-466f-b1db-3d2285b80dd4",
+      "createdAt": "2026-10-28T14:41:23.647Z",
+      "recordedStatus": "accepted",
+      "originalAcceptanceScope": "frozen-suite-only",
+      "errorCode": null,
+      "error": null,
+      "sourceDigests": [
+        "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638"
+      ],
+      "actualRequestCount": 2,
+      "estimatedUsd": 0.06158,
+      "requestIds": [
+        "337d570375898e728e47096cad22272d",
+        "57d04b5f7c3b3970f1945e4ad1be4202"
+      ],
+      "frozenExecutions": [
+        {
+          "id": "capture_de6b7d39-31a0-45de-9f32-bcdd8e03d453",
+          "schedule": "baseline",
+          "status": "passed",
+          "contractDigest": "f66336c6775d33f581e79117d35630164a91234afc138a6bc6d6a1f4ae71697b",
+          "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v3",
+          "passedAssertions": 5,
+          "totalAssertions": 5
+        },
+        {
+          "id": "capture_4d2221b8-23e4-4f72-9a2f-49af61089b03",
+          "schedule": "cancel-pending",
+          "status": "passed",
+          "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+          "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v3",
+          "passedAssertions": 6,
+          "totalAssertions": 6
+        },
+        {
+          "id": "capture_6cf5c9b0-9ffc-46b7-a475-596a02c3988d",
+          "schedule": "modal-boundary",
+          "status": "passed",
+          "contractDigest": "cd86b6e738b26b9a5954690428a7b0c3a63d77b8b5ea560355206d6e28687fcb",
+          "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+          "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+          "wrapperVersion": "authored-fixture-temporal-v3",
+          "passedAssertions": 4,
+          "totalAssertions": 4
+        }
+      ],
+      "laterPreservationCheckIds": [
+        "preservation-check_67636ed6-ef23-4040-bc67-22da8fb1c7f1"
+      ]
+    }
+  ],
+  "liveExplorations": [
+    {
+      "id": "public-probe_b88bfb5c-8a8c-4e8e-8aec-8fac3f12bca5",
+      "sessionId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "createdAt": "2026-10-28T14:38:04.488Z",
+      "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+      "variant": "candidate",
+      "scheduleId": "cancel-pending",
+      "status": "completed",
+      "classification": "public-development-probe",
+      "sourceDigest": "1707e224b7ad5d132eba1423e54d08e95a541070c779613a707a03613533f449",
+      "observationIds": [
+        "capture_01536259-e3b0-42d3-9a3d-32291be2fe28"
+      ],
+      "proposal": {
+        "label": "Cancel pending appointment selection",
+        "steps": [
+          "reach-trigger",
+          "open",
+          "opened",
+          "activate-choice",
+          "pending",
+          "cancel",
+          "closed",
+          "release"
+        ]
+      },
+      "receipt": {
+        "provider": "nebius",
+        "purpose": "submission",
+        "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+        "generation": {
+          "maxOutputTokens": 32000,
+          "timeoutMs": 480000,
+          "temperature": 1,
+          "responseFormat": "prompt_schema",
+          "topP": 0.95,
+          "thinkingEnabled": true,
+          "forceNonemptyContent": true
+        },
+        "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+        "outputProtocol": "structured-json",
+        "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+        "reasoningTokens": 610,
+        "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+        "requestId": "a3b79c813e5d1bf9f93568cf5ae93361",
+        "promptVersion": "passage-bounded-schedule-v2-scoped-context",
+        "temperature": 1,
+        "inputTokens": 4603,
+        "outputTokens": 652,
+        "durationMs": 3919,
+        "startedAt": "2026-10-28T14:38:04.492Z",
+        "completedAt": "2026-10-28T14:38:08.412Z",
+        "live": true,
+        "finalOutputDigest": "0242baca836ebce1fde42c9dd7a07a0d5c8ee908586b58599e33dcdbe834eefc"
+      },
+      "resultId": "capture_d95e16b8-b385-4622-87e4-6d912e6b2a4d",
+      "executionStatus": "passed",
+      "completedAt": "2026-10-28T14:38:09.283Z"
+    },
+    {
+      "id": "public-probe_02b305ac-5201-40f1-a349-79c0ba03a2b1",
+      "sessionId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "createdAt": "2026-10-28T14:14:06.524Z",
+      "contractDigest": "ab0406cbb2efd66bc8ace3f358e1e3b8decde01db10bd214602a689c9138414e",
+      "variant": "candidate",
+      "scheduleId": "cancel-pending",
+      "status": "error",
+      "classification": "public-development-probe",
+      "error": "The scoped repair prompt exceeds the local input budget.",
+      "completedAt": "2026-10-28T14:14:06.528Z"
+    }
+  ],
+  "spend": {
+    "currency": "USD",
+    "basis": "Application token-price estimates, not invoices or a dashboard balance reconciliation. Failed model outputs are included.",
+    "authoredRepairRequests": 69,
+    "authoredRepairEstimatedUsd": 2.102675,
+    "authoredProbeRequests": 1,
+    "authoredProbeEstimatedUsd": 0.006559,
+    "authoredAllRequests": 70,
+    "authoredAllEstimatedUsd": 2.109234,
+    "currentCodingProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+    "currentCodingProfileRequests": 19,
+    "currentCodingProfileEstimatedUsd": 0.617596,
+    "providerTotals": {
+      "nebius": {
+        "provider": "nebius",
+        "purpose": "submission",
+        "budgetUsd": 4,
+        "committedUsd": 2.27345494,
+        "knownEstimatedUsd": 2.27345494,
+        "calls": 97,
+        "inputTokens": 1590681,
+        "outputTokens": 280958,
+        "unknownCostCalls": 0,
+        "unknownUsageCalls": 0
+      },
+      "fireworks": {
+        "provider": "fireworks",
+        "purpose": "development",
+        "budgetUsd": null,
+        "committedUsd": 0.40027139999999994,
+        "knownEstimatedUsd": 0.40027139999999994,
+        "calls": 26,
+        "inputTokens": 206643,
+        "outputTokens": 115119,
+        "unknownCostCalls": 0,
+        "unknownUsageCalls": 0
+      },
+      "together": {
+        "provider": "together",
+        "purpose": "development",
+        "budgetUsd": null,
+        "committedUsd": 0,
+        "knownEstimatedUsd": 0,
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCostCalls": 0,
+        "unknownUsageCalls": 0
+      }
+    },
+    "entryStateCounts": {
+      "complete": 123
+    }
+  },
+  "usageEntries": [
+    {
+      "id": "usage_a4317bf1-36b3-4910-ad6a-339992c78bf9",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:22:41.328Z",
+      "completedAt": "2026-10-28T13:22:43.747Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.106469,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.004123,
+      "inputTokens": 3031,
+      "outputTokens": 364,
+      "state": "complete",
+      "requestId": "bad4a2528b6ffb1998ccf3a68cbdd36c",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 267,
+      "finalOutputDigest": "bb0dc83af25783ce5832baff28f2436ee2812364a13622bb1770724901dc0ad6",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_41f4f1fe-996d-41ee-87d9-18f258b3b227",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:22:43.754Z",
+      "completedAt": "2026-10-28T13:22:49.099Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.114745,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.009975,
+      "inputTokens": 5238,
+      "outputTokens": 1579,
+      "state": "complete",
+      "requestId": "c4410650582fee41de73942b49741d96",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 847,
+      "finalOutputDigest": "00f32f4c440c6553682abd580582a79397178da10ee9239215df532b01acef27",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_4e7b27a1-aecf-4af5-94f4-eb4a8ef1dd01",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:22:49.114Z",
+      "completedAt": "2026-10-28T13:22:55.765Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.125465,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014267,
+      "inputTokens": 7880,
+      "outputTokens": 2129,
+      "state": "complete",
+      "requestId": "4e6f1a53baca2fde46ddb0507a1252b3",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 359,
+      "finalOutputDigest": "9bb8a64023799553cef7b8a1194566c68966f16b1d072722831d48b2eaf800b7"
+    },
+    {
+      "id": "usage_4e5aac5e-0ccf-4615-8271-5642c1b49697",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:25:30.039Z",
+      "completedAt": "2026-10-28T13:25:32.007Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.106469,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.00409,
+      "inputTokens": 3031,
+      "outputTokens": 353,
+      "state": "complete",
+      "requestId": "7f57d4611db5f91ec417eedac21d9b14",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 313,
+      "finalOutputDigest": "380d3baaa9d02faa7c3e519ee04e90d45e4f71f5fbda2aee1fecbe19a2aad757",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_dffc1b35-cb4a-4703-a42e-60b1d9953fd1",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:25:32.012Z",
+      "completedAt": "2026-10-28T13:25:36.395Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.114745,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.009015,
+      "inputTokens": 5238,
+      "outputTokens": 1259,
+      "state": "complete",
+      "requestId": "e8b9d1ea415fb45e3d60ec2497152be0",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 431,
+      "finalOutputDigest": "b4f2d23f200e87de80ee613e28e6bcd721e30cde84cd08eb193b2c52537d6b2d",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_dbb662e3-0f23-4354-a698-f3c9dbc8303d",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:25:36.400Z",
+      "completedAt": "2026-10-28T13:25:42.494Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.117797,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.011657,
+      "inputTokens": 6065,
+      "outputTokens": 1864,
+      "state": "complete",
+      "requestId": "bca987e5dea0533be72fbabfb5149c3b",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1521,
+      "finalOutputDigest": "859dde8f1bab4d5a9a0cc360908067010481bdbeae6626110099fabbbc72d9ab",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_2b7c72df-5e7a-4e6f-8d30-2e52960b45cd",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:25:42.498Z",
+      "completedAt": "2026-10-28T13:25:52.935Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.116237,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.016633,
+      "inputTokens": 5629,
+      "outputTokens": 3668,
+      "state": "complete",
+      "requestId": "7e1a84728497d9dc9df8b5e7d360f1c9",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 3291,
+      "finalOutputDigest": "83c7b8792cdbeade86c1bf48617b1d5c3d3e64ab2c619d98b441b5a4b3379e6b",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_5a969e16-5500-4a70-b137-1a7a78bf4f20",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:26:41.654Z",
+      "completedAt": "2026-10-28T13:26:43.604Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.106469,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.004048,
+      "inputTokens": 3031,
+      "outputTokens": 339,
+      "state": "complete",
+      "requestId": "de520488c3bb457106512893d6a12647",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 248,
+      "finalOutputDigest": "ac35172f3f7ea7eb554273128e30ac73b010dfece3a426659bb13c71656b686d",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_28bd41fe-eaca-493a-a7d8-512bcd41af02",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:26:43.609Z",
+      "completedAt": "2026-10-28T13:26:48.428Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.115246,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.009722,
+      "inputTokens": 5345,
+      "outputTokens": 1459,
+      "state": "complete",
+      "requestId": "8164a4b0e756b4b87a22da680c38c2c8",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 703,
+      "finalOutputDigest": "7d43f729471844d6bc07b39fbbe42ed4c48ca7c4b026cfb407559a844753f4d7",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_6fedb82e-f212-4ee2-9266-6fd1306578fb",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:26:48.441Z",
+      "completedAt": "2026-10-28T13:26:52.029Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.125636,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.012071,
+      "inputTokens": 7880,
+      "outputTokens": 1397,
+      "state": "complete",
+      "requestId": "4569234dc91f060a320c3def6a941626",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 289,
+      "finalOutputDigest": "8c11ab527c27b0bf0dd24a90b41174aef933b343522c39efa48d8510e950e0be",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_a0771a0f-4dee-4971-8572-f2f261ce5be4",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:27:30.341Z",
+      "completedAt": "2026-10-28T13:27:33.418Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014489,
+      "inputTokens": 13571,
+      "outputTokens": 306,
+      "state": "complete",
+      "requestId": "9a533bc80c8da7582c2dd62fde07a53e",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 267,
+      "finalOutputDigest": "5eaea81e1fe929c9e66e5f8c76cd7ac0790f01784456d140e39ddbb8de301b79",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_92dfcf1b-ff9e-4f9f-93f4-e3cc54e9d494",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:27:33.427Z",
+      "completedAt": "2026-10-28T13:27:45.234Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.155148,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.028262,
+      "inputTokens": 18815,
+      "outputTokens": 3149,
+      "state": "complete",
+      "requestId": "9ca71457a5803ffbffe8cc5506f4630d",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1589,
+      "finalOutputDigest": "d2cf39fdd370c55c0e102614e4c3112f113a86705800e4db4d82735bc45e0d03"
+    },
+    {
+      "id": "usage_b6b33aea-a9fb-4944-b32e-432f001ee33a",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:29:02.166Z",
+      "completedAt": "2026-10-28T13:29:04.978Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014453,
+      "inputTokens": 13571,
+      "outputTokens": 294,
+      "state": "complete",
+      "requestId": "9705219ced9c76653f639d59f11f8ece",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 230,
+      "finalOutputDigest": "210b40497ede62cff0fdcf4d7a5fd198b796457ed28f279c9ea7053dec804af9",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_07f2f013-112a-46de-a2e8-021e65380f04",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:29:04.987Z",
+      "completedAt": "2026-10-28T13:29:10.356Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.157435,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.02417,
+      "inputTokens": 19304,
+      "outputTokens": 1622,
+      "state": "complete",
+      "requestId": "24dd5cc7408b423db02545ec1cfbefa1",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 535,
+      "finalOutputDigest": "6f175b6ef3b676b552537486ae082972c9039e98f2ecc618b354f8c437acc32a",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_221a7d46-4909-4c77-be7c-ca805311a3ae",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:29:10.368Z",
+      "completedAt": "2026-10-28T13:29:27.617Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.162526,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.039818,
+      "inputTokens": 20792,
+      "outputTokens": 6342,
+      "state": "complete",
+      "requestId": "06998f1b3e90230836273b40e95dd5e3",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 5405,
+      "finalOutputDigest": "1ab0b905411a74f0a4dd7a27ccf258e3f292eb6f8ddabc5c3be2e15cd0f787bc",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_7e67b6ae-f186-4f17-9c05-c0de1340275d",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:29:27.623Z",
+      "completedAt": "2026-10-28T13:29:42.060Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.162921,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.037195,
+      "inputTokens": 20764,
+      "outputTokens": 5477,
+      "state": "complete",
+      "requestId": "ac605a6b778eec35951fd24640f5e9a1",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 4867,
+      "finalOutputDigest": "8bc4c8ded2eccfe6825b41ad9a96ca5972f3e979294ddf805b8d67160b2d444e",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_2e46bdd0-244d-49f1-9661-0922e2556888",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:29:42.079Z",
+      "completedAt": "2026-10-28T13:30:04.559Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.164927,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.042698,
+      "inputTokens": 21002,
+      "outputTokens": 7232,
+      "state": "complete",
+      "requestId": "392b817098e96993998c1d2fbe243513",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 5425,
+      "finalOutputDigest": "8c7ea599a1b343f6415fc583204fd9fa73904abfb1b24f9c3ecb8fbd0b9cebc9",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_7bfb9bb0-c11a-4731-a49d-e642c5a68a70",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:31:40.162Z",
+      "completedAt": "2026-10-28T13:31:43.064Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014397,
+      "inputTokens": 13572,
+      "outputTokens": 275,
+      "state": "complete",
+      "requestId": "ce49e51da565f4fa017806970c272142",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 226,
+      "finalOutputDigest": "63224a88760e06040d3a27f0ba97716d626c771a64d56d6219378f97083c2b5c",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_17b92533-0105-4c91-98e7-ba0b0c268bfa",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:31:43.074Z",
+      "completedAt": "2026-10-28T13:32:21.657Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.166157,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.056479,
+      "inputTokens": 21691,
+      "outputTokens": 11596,
+      "state": "complete",
+      "requestId": "e9eb5c214e237f769db7115dca5165c8",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 10742,
+      "finalOutputDigest": "40989eabd7ff2be5b94659201c8b410996f0ea45560f6aba0976324fa7ceaa9f",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_cb5317e4-1fdd-420d-b6c0-c69de5e8471b",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:32:21.664Z",
+      "completedAt": "2026-10-28T13:32:28.660Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.170988,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.028586,
+      "inputTokens": 22955,
+      "outputTokens": 1877,
+      "state": "complete",
+      "requestId": "73f57ede6ef082ac7f499f8f6b872fd8",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 924,
+      "finalOutputDigest": "46fe6d2d94e9cc0d0d244a3b8d33130f2ea3787156aaff6713ced9b74297584c",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_a59ced6b-ffd9-4f5a-b31f-93c950ef6196",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:32:28.668Z",
+      "completedAt": "2026-10-28T13:32:34.826Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.171352,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.030299,
+      "inputTokens": 23054,
+      "outputTokens": 2415,
+      "state": "complete",
+      "requestId": "5839428197c143bef5652a589c6bbe49",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1462,
+      "finalOutputDigest": "46fe6d2d94e9cc0d0d244a3b8d33130f2ea3787156aaff6713ced9b74297584c",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_9ba7fc32-3f66-422f-8996-61b518118953",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:37:33.893Z",
+      "completedAt": "2026-10-28T13:37:35.938Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014277,
+      "inputTokens": 13572,
+      "outputTokens": 235,
+      "state": "complete",
+      "requestId": "169acf9f9498ffaebcc487724eeae538",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 182,
+      "finalOutputDigest": "99611f4d5e97f915333de1532711db8b904df56a89eff699c6805f5f98dfb9c0",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_6877c01b-d0a0-4755-84ce-964ef5aa5949",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:37:35.950Z",
+      "completedAt": "2026-10-28T13:38:18.272Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.165503,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.0801,
+      "inputTokens": 23610,
+      "outputTokens": 18830,
+      "state": "complete",
+      "requestId": "5131087cd222a161707e0df504b3ecb2",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 18020,
+      "finalOutputDigest": "5bfdc8ef98607631985a1bc5ce46995a036817a8c7f4e84353bc0dd3920a1491",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_2e251725-6762-4073-890b-5110185a68b3",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:38:18.287Z",
+      "completedAt": "2026-10-28T13:38:39.669Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.170458,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.053053,
+      "inputTokens": 25846,
+      "outputTokens": 9069,
+      "state": "complete",
+      "requestId": "75b241b9cdee9fb418bd3d2e3c74a217",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 8200,
+      "finalOutputDigest": "a0691e5204b7c9bc8e05b90cd8e113e743039c50d9d10cf5dc99dbd4e09dfc1d"
+    },
+    {
+      "id": "usage_01cfd0ae-702a-460a-96d8-8aaf872b1185",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:39:49.522Z",
+      "completedAt": "2026-10-28T13:39:52.015Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014475,
+      "inputTokens": 13572,
+      "outputTokens": 301,
+      "state": "complete",
+      "requestId": "728ae627e5fb858c88e4e825e933a749",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 236,
+      "finalOutputDigest": "e16b2e260b3f0d4f4bcea904bbb53183927af26c3dab91b4d6dc2e404e4803c7",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_e66ff732-626d-4af2-bdc2-792639bc1af9",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:39:52.025Z",
+      "completedAt": "2026-10-28T13:39:59.607Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.16414,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.029395,
+      "inputTokens": 21712,
+      "outputTokens": 2561,
+      "state": "complete",
+      "requestId": "0fa80c88351a2cdbb777b414db9fe349",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 841,
+      "finalOutputDigest": "224ad678124841bef9c3a26fe8270f26563878ada69b6925f371b5f550e55254"
+    },
+    {
+      "id": "usage_1122e0ff-d6c6-422e-b6fb-040640822b9a",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:41:08.466Z",
+      "completedAt": "2026-10-28T13:41:10.757Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014481,
+      "inputTokens": 13572,
+      "outputTokens": 303,
+      "state": "complete",
+      "requestId": "d7f6a87ef1b089591c0433c2d3cf2715",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 238,
+      "finalOutputDigest": "67f6399fd9a4daf4343f2c88a545ffdbabff0d9108d1a52a0fce14ccb7b23dfe",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_5746a712-e0f6-4881-9b56-b9c376e5b229",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:41:10.768Z",
+      "completedAt": "2026-10-28T13:41:23.056Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.164136,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.032782,
+      "inputTokens": 21718,
+      "outputTokens": 3688,
+      "state": "complete",
+      "requestId": "1d2ac974ed9fbebc92511d089dade5ef",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1701,
+      "finalOutputDigest": "f39bff5b9965bcb6c5176270f392291c55f7824b72c0683e5cb7a43a0015fa81",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_680ae379-90cb-4d25-bf79-6a6355e0b3ff",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:41:23.065Z",
+      "completedAt": "2026-10-28T13:41:29.523Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.173075,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.030376,
+      "inputTokens": 24037,
+      "outputTokens": 2113,
+      "state": "complete",
+      "requestId": "e39682d4b215edcc4a2a688bb78a9079",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 483,
+      "finalOutputDigest": "bb4fbc313a9072ef7f6a042d7080cab0013f78487c1c12ffff259b6525910cf8",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_764a6c2c-9005-41b8-8e6c-8f07a08a30ef",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:41:50.347Z",
+      "completedAt": "2026-10-28T13:41:53.159Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014531,
+      "inputTokens": 13571,
+      "outputTokens": 320,
+      "state": "complete",
+      "requestId": "20be33b778209b7b7de2a42d298bc045",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 266,
+      "finalOutputDigest": "88d5598646588c87a03a2723fd5cb1b89c2adef6e5e81e958351400481853e45",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_e8c6bff0-98d0-4d19-bd96-be747410ab6f",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:41:53.172Z",
+      "completedAt": "2026-10-28T13:42:16.175Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.163306,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.044134,
+      "inputTokens": 21547,
+      "outputTokens": 7529,
+      "state": "complete",
+      "requestId": "e0bc7cc410161cabf591290de9ecfac7",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 6127,
+      "finalOutputDigest": "554e52237042fe9af9e4c1261f025cc6b85e2e950eca0cb740364f32ba026656",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_3dc41d06-bad8-4b67-919c-31b47b01f94f",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:42:16.197Z",
+      "completedAt": "2026-10-28T13:42:23.958Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.171354,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.030759,
+      "inputTokens": 23229,
+      "outputTokens": 2510,
+      "state": "complete",
+      "requestId": "b4231aab9c8ca7d41e7294187207f96b",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 826,
+      "finalOutputDigest": "1963d9391edffeb3fbf7e1eefff8ccbe7afa8d7b3655ea3134e8f47603d2e37b",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_d08d96c6-b95e-44b7-910c-097d4edda7e2",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:43:14.705Z",
+      "completedAt": "2026-10-28T13:43:17.013Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014685,
+      "inputTokens": 13572,
+      "outputTokens": 371,
+      "state": "complete",
+      "requestId": "6066bb0bcfd0240af1f3071393aefa89",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 289,
+      "finalOutputDigest": "f5db983f88652d075d465c422bd5ffbb922483a2ddcddc11a5a1cc5241186b84",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_bedccc35-c457-4914-8c3d-25e6c6534866",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:43:17.032Z",
+      "completedAt": "2026-10-28T13:43:24.440Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.163199,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.028915,
+      "inputTokens": 21553,
+      "outputTokens": 2454,
+      "state": "complete",
+      "requestId": "bb36558299bd217a4da932d03f99b8eb",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 658,
+      "finalOutputDigest": "a0c0c582245e71857229053fd27eac541d3cc3763603472e7adbf212c46811a3",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_5b4868d9-d5c9-4ee9-9ad5-a2058138af35",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:43:24.464Z",
+      "completedAt": "2026-10-28T13:43:30.117Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.171621,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.030084,
+      "inputTokens": 23544,
+      "outputTokens": 2180,
+      "state": "complete",
+      "requestId": "ac6dc283b70e436a31195d474f45ed43",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 505,
+      "finalOutputDigest": "29324d1a020988515d662bb6c96039f3369404dd0b01246cd447ff3965dbef00",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_23fc81cc-206c-4c79-9157-b08660172598",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:44:26.190Z",
+      "completedAt": "2026-10-28T13:44:29.531Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014661,
+      "inputTokens": 13575,
+      "outputTokens": 362,
+      "state": "complete",
+      "requestId": "da978ac3480f2cf009383c0a349d251e",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 253,
+      "finalOutputDigest": "f799b68bc6ad9de9c131773738b45e86886e95ef97f25307e9c8d45ff6a323c5",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_35716efe-214f-41d8-a5ef-466d6334e0c9",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:44:29.542Z",
+      "completedAt": "2026-10-28T13:44:39.982Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.163768,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.031907,
+      "inputTokens": 21728,
+      "outputTokens": 3393,
+      "state": "complete",
+      "requestId": "4038f39cc45458d959eaeef8ddc8f9f1",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 2555,
+      "finalOutputDigest": "14020a8e37c9dd87a9a4a7a3ab6646cd683bc0f89d0d2fac07ebaa4d17751f8b",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_e2c61c7c-6f81-4bdd-bc3d-2009f74f6f93",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:44:39.996Z",
+      "completedAt": "2026-10-28T13:45:15.048Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.169346,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.063145,
+      "inputTokens": 22471,
+      "outputTokens": 13558,
+      "state": "complete",
+      "requestId": "8906aa69343d85ae63794f22fe88de09",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 11662,
+      "finalOutputDigest": "5af2bd48d23c606dfc352f3b3d31b8aca9a835355f82ba975b5a74824be65686",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_9563020e-7cf0-4742-9bee-b8084c0a7760",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:46:42.352Z",
+      "completedAt": "2026-10-28T13:46:44.534Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.135029,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.014421,
+      "inputTokens": 13572,
+      "outputTokens": 283,
+      "state": "complete",
+      "requestId": "d335dac0bcfd5d948502069cfd14d671",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 205,
+      "finalOutputDigest": "b22e0c48f06c4948ea45117e842de5a05f09e7988f2b06a2973eb7e7884ff310",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_de44ebec-6c09-4ca7-bed1-c2bc90aba01f",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:46:44.546Z",
+      "completedAt": "2026-10-28T13:46:58.309Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.166202,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.035354,
+      "inputTokens": 22466,
+      "outputTokens": 4296,
+      "state": "complete",
+      "requestId": "7a31c0445facbf01d23217bdbbfc487b",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 3831,
+      "finalOutputDigest": "f5595e93853968bf07eeb0be5acc098afa27bed920966e5c485921614282b15a",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_11579eac-d173-4d45-b8ca-b9604e603a7a",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:46:58.333Z",
+      "completedAt": "2026-10-28T13:47:11.082Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.170925,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.03725,
+      "inputTokens": 22664,
+      "outputTokens": 4862,
+      "state": "complete",
+      "requestId": "bfafffff4e80c6596113f2cc36cf015c",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 3015,
+      "finalOutputDigest": "c468b1243e525bd573f2595b4753dce5f948921d04241a3b41f3f75bbe459b04",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_8684a781-4b37-40a3-be0a-30ab0c792e3c",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:47:52.527Z",
+      "completedAt": "2026-10-28T13:47:56.928Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.185144,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.033787,
+      "inputTokens": 31735,
+      "outputTokens": 684,
+      "state": "complete",
+      "requestId": "9cb3a3a7d98a8c8ed12e69cf9f860de7",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 626,
+      "finalOutputDigest": "cc69a9fec4670a0f22dfff68b19feaae610c58dabfc82c22674063b06fcb1815"
+    },
+    {
+      "id": "usage_262814d5-bc0d-4886-81fc-d41262920d36",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:49:13.369Z",
+      "completedAt": "2026-10-28T13:49:19.623Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.185144,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.035977,
+      "inputTokens": 31735,
+      "outputTokens": 1414,
+      "state": "complete",
+      "requestId": "1db6e25adb20d3ea825911a79e66fe39",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1353,
+      "finalOutputDigest": "7fe2ffcae6050eeae9ff9669b191db4e5bb26198009bc5854154edc91104335f"
+    },
+    {
+      "id": "usage_1837864d-1499-4f6d-8c97-a52417882d25",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:51:34.265Z",
+      "completedAt": "2026-10-28T13:51:46.505Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.184745,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.04066,
+      "inputTokens": 29263,
+      "outputTokens": 3799,
+      "state": "complete",
+      "requestId": "0aafe8f973ceea8df5cc10dc35b43483",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 2805,
+      "finalOutputDigest": "334f6a045e81974b43688bf6921f38bc22dbe18aa5433c1a3d88d9ef3f61cf2c",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_cf4558d8-a936-4c5b-97b1-a7164f71377c",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:51:46.519Z",
+      "completedAt": "2026-10-28T13:51:55.531Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.190573,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.039108,
+      "inputTokens": 30171,
+      "outputTokens": 2979,
+      "state": "complete",
+      "requestId": "86692ba6b2455425c5d2d7ef37d3a682",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1053,
+      "finalOutputDigest": "116ae54de1dc34cc59b3d1478f539740880a1e60cdc279a64c73de5832b6f6bb",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_ca578de8-54b0-48c2-a9b9-b7694ae7ae35",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:52:35.339Z",
+      "completedAt": "2026-10-28T13:52:41.822Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.189416,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.036128,
+      "inputTokens": 31730,
+      "outputTokens": 1466,
+      "state": "complete",
+      "requestId": "f75ea375cd7cc2cbf6e9201801aa6b04",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 1059,
+      "finalOutputDigest": "0fe25e791e97e23c85ebe12314a2058a8a58d8677e33dd937e12c85a273a7b97",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_0c717346-279a-4c79-b41a-352ca18a194c",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:52:41.848Z",
+      "completedAt": "2026-10-28T13:53:06.450Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.193661,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.058612,
+      "inputTokens": 31882,
+      "outputTokens": 8910,
+      "state": "complete",
+      "requestId": "a1c991a3574c0e568441a212130d8b17",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 7073,
+      "finalOutputDigest": "07353b95cd70be74db05698b28d0002fa9d00e5bf9d2ddc2c0a88adbc392ffca",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_d36aa12d-cab6-4056-bc85-18af90a227e1",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:53:44.069Z",
+      "completedAt": "2026-10-28T13:53:49.021Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.190302,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.034871,
+      "inputTokens": 31844,
+      "outputTokens": 1009,
+      "state": "complete",
+      "requestId": "647614f167dde128b98056cc871165e0",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 564,
+      "finalOutputDigest": "bc294e59dcc7c83885cc4e33188e7061583b6701b10073d582244e0fd72260ac",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_9954140d-00dd-4d1a-9276-91999443e60a",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:53:49.047Z",
+      "completedAt": "2026-10-28T13:54:05.892Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.195884,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.05099,
+      "inputTokens": 32423,
+      "outputTokens": 6189,
+      "state": "complete",
+      "requestId": "72f8456d7be6dc49285ba25e43ba37be",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 4415,
+      "finalOutputDigest": "7425ffcc3b52249d652bd89006835df229dc070c53d1f6848ea64faabb795fb9",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_9cf83e4b-d437-490e-9f6e-ccfecdd78bff",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:54:57.368Z",
+      "completedAt": "2026-10-28T13:55:21.332Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.194059,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.052038,
+      "inputTokens": 33228,
+      "outputTokens": 6270,
+      "state": "complete",
+      "requestId": "1350d0bf09afc7869ce643de3d171e0d",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 5925,
+      "finalOutputDigest": "c94ba62c7c6b9de716f2c6257244a9e7a2fac72ee4f5f4674feaca8280a78794",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_2035c676-f748-42bb-bfc1-7ba4d409d74f",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T13:55:21.362Z",
+      "completedAt": "2026-10-28T13:55:46.829Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.198741,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.054235,
+      "inputTokens": 33520,
+      "outputTokens": 6905,
+      "state": "complete",
+      "requestId": "db494b4efa81512a63d61398d7b4fe77",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "responseFormat": "prompt_schema",
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "thinkingEnabled": true
+      },
+      "reasoningTokens": 5364,
+      "finalOutputDigest": "cd0c3d4bdf0efe6f7b09004c0e931a8388b3a41415349a71c4af1a3444af0e5b",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_7606f360-b58d-48d7-ae05-d983bc9d7d51",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:03:45.012Z",
+      "completedAt": "2026-10-28T14:03:53.703Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.174081,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.033535,
+      "inputTokens": 26692,
+      "outputTokens": 2281,
+      "state": "complete",
+      "requestId": "690fe818db782556692190022fef2856",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 1948,
+      "finalOutputDigest": "65e4090d96b37b13b617f711371d432e6fe33406086563e43a118fd83aaf78e0",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_53dbd4b6-7168-4971-9101-ff159793fa81",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:03:53.771Z",
+      "completedAt": "2026-10-28T14:04:05.649Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.179716,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.039671,
+      "inputTokens": 27395,
+      "outputTokens": 4092,
+      "state": "complete",
+      "requestId": "de57144f4edc564c0691138f98996a31",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 2272,
+      "finalOutputDigest": "0c58952f37102d33cbeb762f32fb2db247bae85c68c8418a298c14e125b3781a"
+    },
+    {
+      "id": "usage_7de2800b-8ec1-4c25-8599-e84ef059a4cf",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:05:53.601Z",
+      "completedAt": "2026-10-28T14:06:01.841Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.173836,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.033675,
+      "inputTokens": 26634,
+      "outputTokens": 2347,
+      "state": "complete",
+      "requestId": "a0e6fe93c14e4942c1069e13f8cba5d7",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 1988,
+      "finalOutputDigest": "938aa5d063d5920a07e27740edd6597ed3f054fe3b29db9bd46091e42b83f0e6",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_1b31a72a-fc92-42fd-96d3-90beec23a7ec",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:06:01.904Z",
+      "completedAt": "2026-10-28T14:06:08.265Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.179604,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.033639,
+      "inputTokens": 27369,
+      "outputTokens": 2090,
+      "state": "complete",
+      "requestId": "f3660f94fdcfe0557596a6cf14d799ef",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 524,
+      "finalOutputDigest": "b9bce4123c3c60171d3da12060f90eb9eb44368c46f1b36777f7354de6089dda",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_3d9c2c99-60f3-42a6-98a6-d9a472f3e219",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:11:12.481Z",
+      "completedAt": "2026-10-28T14:11:25.582Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.168298,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.036621,
+      "inputTokens": 24444,
+      "outputTokens": 4059,
+      "state": "complete",
+      "requestId": "c4ab0e595219485a9bfc679677abfad1",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 3524,
+      "finalOutputDigest": "d8243fee3ab78554591b93bc46e0ce1bae438cea9f3f78d42b627c793ed37538",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_76ee11bd-67af-4109-b6e6-d9a38f2e59d6",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:11:25.629Z",
+      "completedAt": "2026-10-28T14:11:30.648Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.173121,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.029414,
+      "inputTokens": 24926,
+      "outputTokens": 1496,
+      "state": "complete",
+      "requestId": "993ce5deb1558e2107f4855320844a67",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "single-source",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 259,
+      "finalOutputDigest": "5c4161cb48fe19f8599488d014ce54eccae991613bf4ead1350ee4cb259309b7",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_4796b2fd-65c4-402e-8471-e381eb6ded7f",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:11:59.711Z",
+      "completedAt": "2026-10-28T14:12:11.406Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.168021,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.034014,
+      "inputTokens": 23865,
+      "outputTokens": 3383,
+      "state": "complete",
+      "requestId": "e6188881a1a9d0c7dc1c1133e76fc800",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 2544,
+      "finalOutputDigest": "942264251220736c92c1905e3067d739d604f31dfc4a4742a708b4790adca3d3",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_acf633d3-9bb4-4019-a50a-01fe3c2d7507",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:12:11.431Z",
+      "completedAt": "2026-10-28T14:12:16.786Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.173408,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.030015,
+      "inputTokens": 24642,
+      "outputTokens": 1791,
+      "state": "complete",
+      "requestId": "341bb8ef26bbf216967b8984f616f823",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "single-source",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 261,
+      "finalOutputDigest": "7b053fab4a1b0d1ce823f604fdad4cfdb205bbb66fc0fbd92f5a5317c00b7390",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_5fbf0577-141e-46d1-a2bb-dfd4f57f4ac6",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:21:58.632Z",
+      "completedAt": "2026-10-28T14:22:10.139Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.195081,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.04504,
+      "inputTokens": 33733,
+      "outputTokens": 3769,
+      "state": "complete",
+      "requestId": "df06487c6ed69f200cfbb95a77a12ff2",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 2794,
+      "finalOutputDigest": "39e9eb25b8b78b029dc50506951fb77e4a113e0cbb73d7dd502b6c38b96b4d6d",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_b602c564-39d6-4cfa-afc7-ad701123f8c3",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:22:10.206Z",
+      "completedAt": "2026-10-28T14:22:15.069Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.199184,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.038979,
+      "inputTokens": 34062,
+      "outputTokens": 1639,
+      "state": "complete",
+      "requestId": "6c3440deaa48c4fc768b4fc422195642",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "single-source",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 288,
+      "finalOutputDigest": "e2dafd70f083b09a6aceec58cb178e7eb89f1c9dc3d78373df77b1809ac76d94",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_34da43b5-002d-45b5-814b-98bd18e83db3",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:28:35.726Z",
+      "completedAt": "2026-10-28T14:28:51.689Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.158358,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.035741,
+      "inputTokens": 19169,
+      "outputTokens": 5524,
+      "state": "complete",
+      "requestId": "458b4262d915ac7fe5224c542918f689",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 4882,
+      "finalOutputDigest": "09cb4701170b7519509840b5f764764deb708af4a2e18f59f752e5bb4492f664"
+    },
+    {
+      "id": "usage_8e91f3c5-8395-4397-936b-0d267b499589",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:32:53.629Z",
+      "completedAt": "2026-10-28T14:33:02.882Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.158379,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.026338,
+      "inputTokens": 19174,
+      "outputTokens": 2388,
+      "state": "complete",
+      "requestId": "9ad2baa838052ce8e086f2e6a14acc4a",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 1915,
+      "finalOutputDigest": "b91cbec3c744dff71c9ef38c56532b3a2806448bd100dbcba33644784a764509",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_d3e39dde-ffac-4e9e-be55-ebd6a41b1729",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:37:09.131Z",
+      "completedAt": "2026-10-28T14:37:25.678Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.163196,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.040849,
+      "inputTokens": 22447,
+      "outputTokens": 6134,
+      "state": "complete",
+      "requestId": "45d097b7c071182cb35f6173840fe0f0",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 4920,
+      "finalOutputDigest": "96db3136fa58d5c8455ec84f1787f57b0408f3d3b660d2a1d9fd9f68f6115313",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_324f2085-3579-4c54-8169-605ba8345477",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:37:25.727Z",
+      "completedAt": "2026-10-28T14:37:31.013Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.162986,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.02575,
+      "inputTokens": 19894,
+      "outputTokens": 1952,
+      "state": "complete",
+      "requestId": "2f515a34c5a806a68fc1330e9eb9525f",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "single-source",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 364,
+      "finalOutputDigest": "1707e224b7ad5d132eba1423e54d08e95a541070c779613a707a03613533f449",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_1dc29208-fd6d-4c09-aa2f-3685560382f2",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:38:04.492Z",
+      "completedAt": "2026-10-28T14:38:08.412Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.113785,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.006559,
+      "inputTokens": 4603,
+      "outputTokens": 652,
+      "state": "complete",
+      "requestId": "a3b79c813e5d1bf9f93568cf5ae93361",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 610,
+      "finalOutputDigest": "0242baca836ebce1fde42c9dd7a07a0d5c8ee908586b58599e33dcdbe834eefc",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_bbd83691-4ef8-4015-a883-e0473bff92f7",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:38:55.248Z",
+      "completedAt": "2026-10-28T14:39:05.859Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.167752,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.034796,
+      "inputTokens": 24158,
+      "outputTokens": 3546,
+      "state": "complete",
+      "requestId": "4573c1eb88cb669acf1a68cc36fac9e2",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 2849,
+      "finalOutputDigest": "931727c75d7ab045d95caa02dfbba63a494794d4dfddb04b7be664f0ef993bf7",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_6955c5ce-d3be-4beb-b967-747cc0d5f6ef",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:39:05.910Z",
+      "completedAt": "2026-10-28T14:39:16.107Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.165045,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.03138,
+      "inputTokens": 20298,
+      "outputTokens": 3694,
+      "state": "complete",
+      "requestId": "a2a7987606eaf43449d93a03740fb9b5",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "single-source",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 1895,
+      "finalOutputDigest": "c1d2f2de6685822b3b01bfbe855988e80354e95f7c313a6b9b529188acb15c31"
+    },
+    {
+      "id": "usage_26f853a7-6011-42e4-8dc4-3ac6f18d044f",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:41:23.694Z",
+      "completedAt": "2026-10-28T14:41:33.801Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.170548,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.033801,
+      "inputTokens": 25254,
+      "outputTokens": 2849,
+      "state": "complete",
+      "requestId": "57d04b5f7c3b3970f1945e4ad1be4202",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "structured-json",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 2460,
+      "finalOutputDigest": "722aef012dd9c4d7987007414e740df7eb630cac354fae2dbeeb04e65b19124e",
+      "completionQualified": true
+    },
+    {
+      "id": "usage_062f1b7d-bf0f-4a9b-abc4-5937679a7115",
+      "runId": "journey-compiler_edb33992-a6fa-4a78-88a1-91b94aca00a3",
+      "startedAt": "2026-10-28T14:41:33.852Z",
+      "completedAt": "2026-10-28T14:41:40.631Z",
+      "model": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "reservedUsd": 0.16745,
+      "provider": "nebius",
+      "purpose": "submission",
+      "chargedUsd": 0.027779,
+      "inputTokens": 21176,
+      "outputTokens": 2201,
+      "state": "complete",
+      "requestId": "337d570375898e728e47096cad22272d",
+      "pricing": {
+        "inputUsdPerMillion": 1,
+        "outputUsdPerMillion": 3
+      },
+      "servedModel": "nvidia/Nemotron-3-Ultra-550b-a55b",
+      "generation": {
+        "maxOutputTokens": 32000,
+        "timeoutMs": 480000,
+        "temperature": 1,
+        "responseFormat": "prompt_schema",
+        "topP": 0.95,
+        "thinkingEnabled": true,
+        "forceNonemptyContent": true
+      },
+      "generationProfileFingerprint": "c83485e4cecc86a23efad0bc8a9503bff32f351fd2d1b9b445d91890eba158b3",
+      "outputProtocol": "single-source",
+      "baseUrl": "https://api.tokenfactory.us-central1.nebius.com/v1",
+      "admissionBudgetUsd": 4,
+      "reasoningTokens": 587,
+      "finalOutputDigest": "5afec56f5131023fbf1768a226434dfcc9262d4e2cb3d87efcef0f4eed374b36",
+      "completionQualified": true
+    }
+  ],
+  "publicArtifacts": [
+    {
+      "file": "docs/upgrade-evidence/authored-nebius.guard.json",
+      "sha256": "af9eb8a8cb3bd6667da5a0ab199d604534054c052df863f88c6d03ae2c059ca3",
+      "bytes": 4335175
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-candidate-29.preservation.v2.json",
+      "sha256": "22db5005e561e84b0e0d36acb7f62a17d05506f6f6ffd086074229e92f033362",
+      "bytes": 129374
+    }
+  ],
+  "retainedRejectedFinalOutputs": [
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-c1d2f2de6685822b3b01bfbe855988e80354e95f7c313a6b9b529188acb15c31.txt",
+      "sha256": "c1d2f2de6685822b3b01bfbe855988e80354e95f7c313a6b9b529188acb15c31",
+      "bytes": 7479,
+      "failureId": "generation-failure_dd8f73dd-883c-4923-bfd3-2b6b20f6e164"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-09cb4701170b7519509840b5f764764deb708af4a2e18f59f752e5bb4492f664.txt",
+      "sha256": "09cb4701170b7519509840b5f764764deb708af4a2e18f59f752e5bb4492f664",
+      "bytes": 1761,
+      "failureId": "generation-failure_79649196-d027-4eb6-a3cb-3f6e98e97e10"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-0c58952f37102d33cbeb762f32fb2db247bae85c68c8418a298c14e125b3781a.txt",
+      "sha256": "0c58952f37102d33cbeb762f32fb2db247bae85c68c8418a298c14e125b3781a",
+      "bytes": 6709,
+      "failureId": "generation-failure_67b6ce7a-e60f-4e2d-b91d-2b2f2069d683"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-7fe2ffcae6050eeae9ff9669b191db4e5bb26198009bc5854154edc91104335f.txt",
+      "sha256": "7fe2ffcae6050eeae9ff9669b191db4e5bb26198009bc5854154edc91104335f",
+      "bytes": 260,
+      "failureId": "generation-failure_d9049057-b63c-4871-a780-881cbc278fbb"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-cc69a9fec4670a0f22dfff68b19feaae610c58dabfc82c22674063b06fcb1815.txt",
+      "sha256": "cc69a9fec4670a0f22dfff68b19feaae610c58dabfc82c22674063b06fcb1815",
+      "bytes": 258,
+      "failureId": "generation-failure_adb2e95e-c361-4651-9a71-811c6529e2d6"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-224ad678124841bef9c3a26fe8270f26563878ada69b6925f371b5f550e55254.txt",
+      "sha256": "224ad678124841bef9c3a26fe8270f26563878ada69b6925f371b5f550e55254",
+      "bytes": 4244,
+      "failureId": "generation-failure_f1bcb658-9b15-4ff7-a4b5-67bd3f8e27b3"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-a0691e5204b7c9bc8e05b90cd8e113e743039c50d9d10cf5dc99dbd4e09dfc1d.txt",
+      "sha256": "a0691e5204b7c9bc8e05b90cd8e113e743039c50d9d10cf5dc99dbd4e09dfc1d",
+      "bytes": 2165,
+      "failureId": "generation-failure_a41b81c5-fe5a-45f3-867e-a3df457f62be"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-d2cf39fdd370c55c0e102614e4c3112f113a86705800e4db4d82735bc45e0d03.txt",
+      "sha256": "d2cf39fdd370c55c0e102614e4c3112f113a86705800e4db4d82735bc45e0d03",
+      "bytes": 4363,
+      "failureId": "generation-failure_19ecd5e4-25a1-403e-a278-7836fab0d117"
+    },
+    {
+      "file": "docs/upgrade-evidence/authored-rejected-output-9bb8a64023799553cef7b8a1194566c68966f16b1d072722831d48b2eaf800b7.txt",
+      "sha256": "9bb8a64023799553cef7b8a1194566c68966f16b1d072722831d48b2eaf800b7",
+      "bytes": 6239,
+      "failureId": "generation-failure_3638fcc9-562e-4e35-b8de-0857f9c2483c"
+    }
+  ],
+  "limitations": [
+    "This was an iterative development sequence with changing prompts, output protocols and generation profiles, not a controlled success-rate benchmark.",
+    "Attempts23,24,27 passed the original frozen fifteen assertions but failed separately recorded preservation checks. Their statuses and denominators remain unchanged.",
+    "Attempt29 originally passed the frozen suite; the separately recorded later v2 preservation check expands the exported guard policy without rewriting that original acceptance.",
+    "New authored repairs and later revisions require both gates automatically; a synthetic-provider integration test uses real browsers to prove candidate23 is rejected even when all frozen assertions pass.",
+    "The model-generated source is not manually corrected. Rejected content remains unexecuted. Read-only parser feedback is bound to its own output digest.",
+    "No participant study, maintainer acceptance, independent human accessibility review, locked holdout or matched-agent baseline was performed.",
+    "Authored appointments and attendees are fictional. Actual protected outcomes belong to local fresh service sessions."
+  ]
+}

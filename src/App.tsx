@@ -29,6 +29,8 @@ import {
 } from "lucide-react";
 import type { BootstrapData, RepairRun } from "../shared/types";
 import { api } from "./api";
+import { JourneyCompiler } from "./JourneyCompiler";
+import { RepositoryJourneyWorkspace } from "./RepositoryJourney";
 import { Mark, Notice, busyStatuses } from "./ui";
 import {
   Welcome,
@@ -170,8 +172,12 @@ export default function App() {
     return () => window.removeEventListener("keydown", handler);
   }, []);
   const commands = [
-    { label: "Start a new journey", path: "/journeys/new" },
+    { label: "Repair a journey", path: "/compiler/new" },
     { label: "Explore sample journeys", path: "/journeys" },
+    {
+      label: "Inspect the public source adapter",
+      path: "/compiler/repositories",
+    },
     { label: "Open repairs", path: "/repairs" },
     { label: "Browse evidence", path: "/evidence" },
     { label: "Settings and connections", path: "/settings" },
@@ -201,6 +207,17 @@ export default function App() {
           className={mobileOpen ? "primary-nav mobile-open" : "primary-nav"}
           aria-label="Primary navigation"
         >
+          <Link
+            to="/compiler/new"
+            className={
+              location.pathname.startsWith("/compiler") ? "active" : undefined
+            }
+            aria-current={
+              location.pathname.startsWith("/compiler") ? "page" : undefined
+            }
+          >
+            Compiler
+          </Link>
           <NavLink to="/journeys">Journeys</NavLink>
           <NavLink to="/repairs">Repairs</NavLink>
           <NavLink to="/evidence">Evidence</NavLink>
@@ -216,9 +233,9 @@ export default function App() {
             <span>Quick find</span>
             <kbd>⌘ K</kbd>
           </button>
-          <Link className="button button-small" to="/journeys/new">
+          <Link className="button button-small" to="/compiler/new">
             <Plus size={16} />
-            <span>New journey</span>
+            <span>Repair a journey</span>
           </Link>
           <button
             className="icon-button mobile-menu"
@@ -246,6 +263,16 @@ export default function App() {
       <main id="main-content" tabIndex={-1}>
         <Routes>
           <Route path="/" element={<Welcome />} />
+          <Route path="/compiler/new" element={<JourneyCompiler />} />
+          <Route
+            path="/compiler/repositories"
+            element={<RepositoryJourneyWorkspace />}
+          />
+          <Route
+            path="/compiler/repositories/:id"
+            element={<RepositoryJourneyWorkspace />}
+          />
+          <Route path="/compiler/:id" element={<JourneyCompiler />} />
           <Route path="/journeys" element={<JourneyGallery />} />
           <Route path="/journeys/new" element={<NewJourney />} />
           <Route
@@ -301,24 +328,25 @@ export default function App() {
         </div>
         <p className="lead">Start with a scoped, reproducible application.</p>
         <p>
-          This local edition supports the authored React fixtures in the sample
-          library. Each has an immutable source, fictional data, and independent
-          interaction checks.
+          Choose an authored React application with fictional data, or inspect
+          the bounded public-source adapter. Every run retains the source
+          identity and its actual execution evidence.
         </p>
-        <Notice title="Repository import is not connected">
-          Arbitrary repository execution and draft pull requests are unavailable
-          in this local environment. Export a reviewed source patch to apply in
-          your own repository.
+        <Notice title="Execution has an explicit boundary">
+          The public-source adapter checks disposable-worker readiness before
+          building an immutable manifest with fixed React dependencies.
+          Arbitrary package scripts and pull request publication remain
+          unavailable.
         </Notice>
         <div className="dialog-actions">
           <button
             className="button"
             onClick={() => {
               setRepoOpen(false);
-              navigate("/journeys");
+              navigate("/compiler/repositories");
             }}
           >
-            Explore supported samples <ArrowRight size={17} />
+            Inspect the public-source adapter <ArrowRight size={17} />
           </button>
           <button
             className="button button-secondary"

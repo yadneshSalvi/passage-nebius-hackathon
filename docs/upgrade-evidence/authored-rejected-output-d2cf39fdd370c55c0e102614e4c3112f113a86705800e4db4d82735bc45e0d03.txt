@@ -1,0 +1,50 @@
+{
+  "summary": "The SlotControl component fails to initialize focus on the first available appointment when the modal opens, causing Enter activation to fail due to missing keyboard focus on a choice. Arrow key navigation logic exists but the initial focus setup is ineffective. Additionally, the modal focus trap is broken: Shift+Tab from the close button escapes to the trigger instead of staying contained. Enter key handling on a choice calls onChange but no subsequent availability request is observed in traces.",
+  "locations": [
+    {
+      "path": "DatePicker.jsx",
+      "startLine": 8,
+      "endLine": 13,
+      "symbol": "useEffect focus initialization",
+      "quote": "if (open && gridRef.current) {\n      const firstAvailable = gridRef.current.querySelector('[data-date]:not(.unavailable)');\n      if (firstAvailable) firstAvailable.focus();\n    }",
+      "reason": "This effect should focus the first available cell when the modal opens, but traces show focus remains on the trigger (capture_960ebf8f-5e38-4bf7-8294-4c842ced22ef:11) and activation fails with 'Target choice does not have actual keyboard focus' (capture_960ebf8f-5e38-4bf7-8294-4c842ced22ef:18).",
+      "evidenceRefs": ["capture_960ebf8f-5e38-4bf7-8294-4c842ced22ef:11", "capture_960ebf8f-5e38-4bf7-8294-4c842ced22ef:18"]
+    },
+    {
+      "path": "DatePicker.jsx",
+      "startLine": 15,
+      "endLine": 21,
+      "symbol": "handleKeyDown Enter/Space selection",
+      "quote": "if (e.key === 'Enter' || e.key === ' ') {\n      e.preventDefault();\n      if (!choice.unavailable) {\n        onChange(choice.date);\n        setOpen(false);\n      }",
+      "reason": "Enter key on a focused choice commits the selection via onChange and closes the modal. In capture_4b572060-6749-4b78-94d9-44e77cb499f1:19 the keydown reaches the choice, but the expected availability request never occurs (capture_4b572060-6749-4b78-94d9-44e77cb499f1:21).",
+      "evidenceRefs": ["capture_4b572060-6749-4b78-94d9-44e77cb499f1:19", "capture_4b572060-6749-4b78-94d9-44e77cb499f1:21"]
+    },
+    {
+      "path": "DatePicker.jsx",
+      "startLine": 22,
+      "endLine": 32,
+      "symbol": "handleKeyDown arrow navigation",
+      "quote": "else if (e.key === 'ArrowRight' || e.key === 'ArrowLeft' || e.key === 'ArrowDown' || e.key === 'ArrowUp') {\n      e.preventDefault();\n      const cells = Array.from(gridRef.current?.querySelectorAll('[data-date]:not(.unavailable)') || []);\n      const idx = cells.findIndex((c) => c === e.target);\n      if (idx === -1) return;\n      let nextIdx = idx;\n      if (e.key === 'ArrowRight') nextIdx = (idx + 1) % cells.length;\n      else if (e.key === 'ArrowLeft') nextIdx = (idx - 1 + cells.length) % cells.length;\n      else if (e.key === 'ArrowDown') nextIdx = Math.min(idx + 4, cells.length - 1);\n      else if (e.key === 'ArrowUp') nextIdx = Math.max(idx - 4, 0);\n      cells[nextIdx]?.focus();",
+      "reason": "Arrow key navigation moves focus among available cells. This logic is present but depends on initial focus being established by the useEffect above.",
+      "evidenceRefs": []
+    },
+    {
+      "path": "DatePicker.jsx",
+      "startLine": 33,
+      "endLine": 35,
+      "symbol": "handleKeyDown Escape closure",
+      "quote": "} else if (e.key === 'Escape') {\n      setOpen(false);\n    }",
+      "reason": "Escape key closes the modal without committing a choice. Not directly exercised in the provided traces.",
+      "evidenceRefs": []
+    },
+    {
+      "path": "DatePicker.jsx",
+      "startLine": 44,
+      "endLine": 44,
+      "symbol": "modal close button focusable",
+      "quote": "<button type=\"button\" className=\"icon-button\" aria-label=\"Close calendar\" onClick={() => setOpen(false)}>×</button>",
+      "reason": "The close button is focusable and becomes the last tab stop in the modal. Shift+Tab from it escapes to the trigger, breaking modal containment (capture_171ce017-9c4d-4942-8da5-c5ac9073df00:19-26).",
+      "evidenceRefs": ["capture_171ce017-9c4d-4942-8da5-c5ac9073df00:19", "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:20", "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:21", "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:23", "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:24", "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:25", "capture_171ce017-9c4d-4942-8da5-c5ac9073df00:26"]
+    }
+  ]
+}

@@ -1,0 +1,116 @@
+{
+  "schema": "passage.authored-cancellation-cleanup-qa/v1",
+  "recordedAt": "2026-10-28",
+  "evidenceClass": "automated-development-browser-regression",
+  "humanParticipant": false,
+  "participantCount": 0,
+  "scope": "Authored fixture wrapper exception path during an externally signalled operator cancellation after an actual protected availability request. This is separate from prior standalone interpreter and external repository bounded-cleanup v3 coverage.",
+  "scenario": {
+    "fixtureId": "northstar-appointments",
+    "source": "fixtures/reference/DatePicker.jsx",
+    "scheduleId": "cancel-pending",
+    "scenarioId": "late-validation",
+    "intendedDate": "2026-11-16",
+    "cancellationTrigger": "AbortSignal raised 50 ms after the actual browser availability request; the request is held by the authored adapter.",
+    "syntheticTestOnly": true
+  },
+  "versions": {
+    "beforeWrapper": "authored-fixture-temporal-v1",
+    "firstManualAfterWrapper": "authored-fixture-temporal-v2",
+    "finalTestedWrapper": "authored-fixture-temporal-v3",
+    "beforeAndAfterVerifier": "passage-temporal-native-focus-bounded-cleanup-v3",
+    "versionEvidence": "Wrapper identifiers are from inspected source. The before harness returned no execution receipt; manual after harness logged status but not versions. Final targeted tests explicitly assert wrapper v3 identity."
+  },
+  "before": {
+    "recordingMethod": "Transcribed actual pre-fix reproduction observation from this worker session; the original stdout was not saved as a file. The harness closed the leaked browser in its own finally block after observing it connected.",
+    "result": {
+      "returned": false,
+      "error": "Error: Synthetic review cancellation during actual availability",
+      "signalAborted": true,
+      "launchedBrowsers": 1,
+      "browserStillConnected": [
+        true
+      ]
+    }
+  },
+  "after": {
+    "recordingMethod": "Exact fields transcribed from the actual post-fix reproduction stdout, before the final wrapper-only identity bump from v2 to v3; no new reproduction was run for this documentation.",
+    "result": {
+      "returned": true,
+      "status": "cancelled",
+      "signalAborted": true,
+      "launchedBrowsers": 1,
+      "browserStillConnected": [
+        false
+      ]
+    }
+  },
+  "change": "The wrapper starts context/browser close independently of recorder.stop or gate disposal, waits at most 2000 ms for teardown, and retains an already-produced cancelled execution when recorder stop rejects because of the same abort. Shutdown failures never establish success.",
+  "verification": {
+    "command": "npx vitest run tests/temporal-fixture-cancel.test.ts && npx tsc --noEmit",
+    "testFilesPassed": 1,
+    "testsPassed": 2,
+    "typecheck": "passed",
+    "exitCode": 0,
+    "tests": [
+      "Actual pending availability cancellation returns a cancelled execution with request trace and no protected booking; launched browser is disconnected.",
+      "Normal baseline passes all checks, creates the expected protected appointment and closes its browser."
+    ],
+    "newBroadExecutionForDocumentation": false
+  },
+  "sourceSha256": {
+    "engine/temporal-fixture.ts": "ab1a8824cb5696746b7bf347c23d206b8ce2c541b9aacbf0dfae1fd01578def6",
+    "engine/contract-interpreter.ts": "66a9ff12020cf282f63e979f6028c41ed556352bdcfb0dc88e745bae95a4e445",
+    "engine/trace-recorder.ts": "cf17e8343ad17fb996b6aae642c6e9c0b5a3c7753e27648449a83264e88a4cef",
+    "tests/temporal-fixture-cancel.test.ts": "10185941fb10368aa535bc8787b43e33e04ed86c2516ee49e1dca7cc9e698985",
+    "engine/event-scheduler.ts": "2b6f898dd5a05d25c7993d5549c0d429e7c4ef07a31999998b4b78f030789b37",
+    "tests/temporal-reducer.test.ts": "e7a857fb753cf2fabeaeae45aced9f70aae33e51912c350b12ddc7e5cd6e6d1b",
+    "server/journey-service.ts": "8cf5f711df32444dfb89f3a8e2f44d544cb39a14d2d8049ff755668bc49ada0e",
+    "shared/compiler.ts": "f2eda5b77b38d6ebb4ee2f444c4f373c285445cdd0a711336bc35842803de1ab",
+    "src/JourneyCompiler.tsx": "8889b87cef83290c22a41361908cc862efb4030d48d185bddbf89ec50371dd88"
+  },
+  "localEvidence": {
+    "directory": "/tmp/passage-authored-cancellation-cleanup-qa-2026-10-28",
+    "artifacts": [
+      {
+        "path": "/tmp/passage-authored-cancellation-cleanup-qa-2026-10-28/reproduction.mts",
+        "sha256": "0c65c72e413415a3a73dd4c3e838e10cf94002101d064f173540e1fd1de0535b",
+        "classification": "original reproduction script"
+      },
+      {
+        "path": "/tmp/passage-authored-cancellation-cleanup-qa-2026-10-28/before-observation.json",
+        "sha256": "7945b02a7959a86fb46223e2807f6b28cb14bc59b08b819f9ab1c746418b9939",
+        "classification": "explicit transcript of session observation/output"
+      },
+      {
+        "path": "/tmp/passage-authored-cancellation-cleanup-qa-2026-10-28/after-observation.json",
+        "sha256": "5bb6349a3a5e5461a1d7a3dc4a78b78f3aeca41ef5d999e6ed653a006095cd63",
+        "classification": "explicit transcript of session observation/output"
+      },
+      {
+        "path": "/tmp/passage-authored-cancellation-cleanup-qa-2026-10-28/targeted-test-output.txt",
+        "sha256": "0ecd6b3d65385143c5554ba99c49a070fce10ddadf808e4b82e172cd476f666f",
+        "classification": "explicit transcript of session observation/output"
+      }
+    ],
+    "limitation": "Local /tmp evidence is not a durable public artifact. This public record preserves the observations and current source hashes; transcript files are not represented as original raw stdout."
+  },
+  "focusedReductionHistoryReview": {
+    "method": "Read-only inspection of current scheduler, service export/error path, shared metadata and UI; no additional browser or integration run.",
+    "findingsResolved": true,
+    "observations": [
+      "Scheduler retains each completed replay before checking cancellation and throwing; inconclusive error/cancelled trials cannot establish local minimality.",
+      "Service appends completed/error runs and replay IDs; an errored run updates the existing counterexample historyCount transactionally.",
+      "Legacy counts-only records remain distinct, with missing original timestamps/rejected traces disclosed. Export includes starts, runs and replays.",
+      "UI shows bounded or locally reduced counterexamples, actual action/removal/replay counts, retained history and explicit search limitation; no global minimum claim."
+    ],
+    "limitations": "A latest counterexample is a view of its last completed reduction. Errored/partial subsequent runs remain in export history. Identical candidate schedules may reuse observations; cached evidence does not establish nondeterministic behavior."
+  },
+  "limitations": [
+    "Automated synthetic fixture QA, not human participant or independent accessibility acceptance.",
+    "The authored adapter and generic interpreter have separate identities. Prior interpreter/external v3 records do not exercise this authored wrapper cancellation exception path.",
+    "When no completed execution is safely available, the wrapper propagates the original error after requesting closure.",
+    "Browser termination is requested and the cleanup wait is bounded; this API does not guarantee OS-level forced process exit within 2000 ms.",
+    "Historical receipts are unchanged. Final portable authored replay is a separate root-owned validation."
+  ]
+}

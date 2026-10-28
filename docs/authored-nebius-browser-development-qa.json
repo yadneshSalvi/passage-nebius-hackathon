@@ -1,0 +1,83 @@
+{
+  "schema": "passage-authored-browser-development-qa/v1",
+  "recordedAt": "2026-10-28T14:43:52.079237+00:00",
+  "evidenceClass": "automated-development",
+  "reviewer": "Codex orchestrator using in-app browser",
+  "humanParticipantCount": 0,
+  "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+  "buildId": "a4e7230236efe0a7419d97ebea753a0b0d6a4dc91abfd7f3aef916fd5eef4212",
+  "scenario": {
+    "id": "combined",
+    "name": "All at once",
+    "description": "German labels, late validation, long content, and an unavailable first date.",
+    "locale": "de",
+    "delayedValidationMs": 900,
+    "unavailableFirst": true,
+    "longLabels": true,
+    "seed": 6803
+  },
+  "keyboardClose": {
+    "sessionId": "67c71eb3-c216-43cd-aaa4-448c2e3c4a07",
+    "normalForwardTabsFromInitialDate": 7,
+    "closeReached": true,
+    "activation": "Enter",
+    "closedAndRestoredTriggerFocus": true,
+    "dateRemainedEmptyBeforePointerTest": true
+  },
+  "pointerBooking": {
+    "sessionId": "67c71eb3-c216-43cd-aaa4-448c2e3c4a07",
+    "date": "2026-11-18",
+    "fictionalAttendee": "Rowan Vale",
+    "availabilityChecks": 1,
+    "validatedDates": [
+      "2026-11-18"
+    ],
+    "protectedOutcome": {
+      "id": "cb9c6711-35c6-40e7-974d-1e19179f4103",
+      "sessionId": "67c71eb3-c216-43cd-aaa4-448c2e3c4a07",
+      "date": "2026-11-18",
+      "attendee": "Rowan Vale",
+      "service": "northstar-appointments",
+      "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+      "createdAt": "2026-10-28T14:43:04.068Z"
+    },
+    "confirmationHeadingReceivedFocus": true
+  },
+  "closeDuringPendingRequest": {
+    "sessionId": "044bb5cc-3efb-49d3-bdd6-a88f7e57b3c2",
+    "actions": "Pointer-select Wednesday18, then pointer-activate Close calendar",
+    "twoClicksElapsedMs": 553,
+    "configuredResponseDelayMs": 900,
+    "availabilityChecks": 1,
+    "validatedDates": [
+      "2026-11-18"
+    ],
+    "protectedOutcome": null,
+    "afterResponse": {
+      "modalClosed": true,
+      "dateRemainedEmpty": true,
+      "triggerFocused": true
+    }
+  },
+  "screenshots": [
+    {
+      "file": "../artifacts/passage-upgrade-qa/candidate29-close-reachable.png",
+      "sha256": "99ddfe941c04202d0fa7723b5c6e238b295c6a3f121bd629b32c79cb7ff01dd7"
+    },
+    {
+      "file": "../artifacts/passage-upgrade-qa/candidate29-pointer-outcome.png",
+      "sha256": "34d5be55d6d859bae6544a6a8faeee7161ea0897b731e426e47312c5719d102e"
+    },
+    {
+      "file": "../artifacts/passage-upgrade-qa/candidate29-close-cancels-pending.png",
+      "sha256": "ebd323f675ae36f4e85f5f3ddbe71fbabd0c536efa78db41230d3ca212e11707"
+    }
+  ],
+  "rawEvidenceDirectory": ".passage/root-candidate29-manual",
+  "limitations": [
+    "Automated development UI walkthrough, not a participant study or independent specialist review.",
+    "Fictional protected appointment service, not a real booking system.",
+    "Additional preservation checks are distinct from the unchanged fifteen frozen temporal assertions.",
+    "This observed cancellation used an actual delayed request; it is not a statistical reliability claim."
+  ]
+}

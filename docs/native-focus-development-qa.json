@@ -1,0 +1,100 @@
+{
+  "schema": "passage.native-focus-development-qa.v1",
+  "date": "2026-10-28",
+  "evidenceClass": "automated-development",
+  "verifierVersion": "passage-temporal-native-focus-v2",
+  "productReplays": [
+    {
+      "case": "todomvc",
+      "sourceDigest": "690f06b51778ff623d101fd1e04e0baa3f6cc45c443a35e2ca7af130b0c343c0",
+      "executionId": "c4bebc26-5907-44a6-b5a2-48a00a098a80",
+      "status": "passed",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "passed"
+        },
+        {
+          "id": "save-works",
+          "status": "passed"
+        }
+      ],
+      "receiptSha256": "b8e2526784a7fde7590b45e8c94170a9895a8c1b501ecc32118220ec3a747d05"
+    },
+    {
+      "case": "react-modal",
+      "sourceDigest": "058c094fd5b6844e714e31c18378050c91240e9356773a6d1ab743ef2625f338",
+      "executionId": "99f8ffb8-a252-4708-834d-99380650a07b",
+      "status": "passed",
+      "checks": [
+        {
+          "id": "focus-enters",
+          "status": "passed"
+        },
+        {
+          "id": "focus-contained",
+          "status": "passed"
+        },
+        {
+          "id": "focus-restored",
+          "status": "passed"
+        }
+      ],
+      "receiptSha256": "05af6a0d365ef39c3e26d302fe1ffc4cdf8d383bcdb7d86adcfa419199516395"
+    }
+  ],
+  "portableGuardReplays": [
+    {
+      "file": "hardened-candidate-replay.json",
+      "sourceDigest": "690f06b51778ff623d101fd1e04e0baa3f6cc45c443a35e2ca7af130b0c343c0",
+      "status": "passed",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "passed"
+        },
+        {
+          "id": "save-works",
+          "status": "passed"
+        }
+      ],
+      "receiptSha256": "1607b3be02cbb719ed8a59ba2ae6169c31ca7455d7dcbc8d8419190eb2cf1d12"
+    },
+    {
+      "file": "hardened-regression-replay.json",
+      "sourceDigest": "2583c1071bef5eba27fbacf9b45ba1476a21b0c53e804edb5c6584e27c29887c",
+      "status": "failed",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "failed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "not-run"
+        },
+        {
+          "id": "save-works",
+          "status": "not-run"
+        }
+      ],
+      "receiptSha256": "de267100408dad3b7a51ae2ab956d3a75422cdc897cf082812935c6ee218a86a"
+    }
+  ],
+  "humanParticipants": 0,
+  "downloadedGuardSha256": "6679ca8a3d197a0dbbdd21ba15e8798fb0056d900e6fa515eaf6be2e42e419f1",
+  "setup": "Downloaded via in-app browser; all archive SHA256SUMS verified; fresh npm ci --ignore-scripts outside the repository, using only the previously qualified immutable Docker worker configuration. No original database or credentials.",
+  "limitations": [
+    "Native focus is sampled, not continuously observed.",
+    "These are local development cases, not independent human validation or protected business outcomes.",
+    "The regression is a deliberate modified development manifest, not a new upstream revision."
+  ]
+}

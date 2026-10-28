@@ -66,6 +66,17 @@ type Status =
   | "deletion_pending"
   | "deleted"
   | "expired";
+export interface CaptureOutcomeBinding {
+  fixtureSessionId: string; buildId: string; sourceDigest: string; contractDigest: string;
+  createdAt: string; intended: { date: string; attendee: string; service: string };
+  status: "awaiting-attempt" | "verified" | "mismatch" | "incomplete";
+  verifiedAt?: string; outcomeDigest?: string; outcomeId?: string; failureCode?: string;
+}
+export interface CaptureReviewDecision {
+  reviewer: string; reviewedAt: string; independentFromOperatorAttestation: true;
+  classification: "reviewer-attested-independence"; authenticatedIdentityVerified: false;
+  conclusion: "accepted" | "needs-follow-up"; notes?: string;
+}
 export interface AssistiveSession {
   id: string;
   runId: string;
@@ -77,8 +88,10 @@ export interface AssistiveSession {
   importedAt: string | null;
   revokedAt: string | null;
   status: Status;
-  independentlyReviewed: false;
-  backendOutcomeVerified: false;
+  independentlyReviewed: boolean;
+  backendOutcomeVerified: boolean;
+  outcomeBinding?: CaptureOutcomeBinding;
+  review?: CaptureReviewDecision;
   evidenceType: "operator-attested-assistive-session";
   metadata: Omit<
     CaptureCreate,
@@ -224,7 +237,8 @@ export class Captures {
         revokedOrExpired: sessions.filter(
           (value) => !["pending", "imported"].includes(value.status),
         ).length,
-        independentlyReviewed: 0,
+        independentlyReviewed: sessions.filter(value => value.status === "imported" && value.independentlyReviewed).length,
+        backendOutcomeVerified: sessions.filter(value => value.status === "imported" && value.backendOutcomeVerified).length,
       },
       assistiveSessions: sessions.map((value) => ({
         id: value.id,
@@ -237,8 +251,13 @@ export class Captures {
         importedAt: value.importedAt,
         revokedAt: value.revokedAt,
         evidenceType: value.evidenceType,
-        independentlyReviewed: false,
-        backendOutcomeVerified: false,
+        independentlyReviewed: value.independentlyReviewed,
+        backendOutcomeVerified: value.backendOutcomeVerified,
+        reviewEvidenceClass: value.review?.classification ?? "not-reviewed",
+        reviewConclusion: value.review?.conclusion ?? null,
+        authenticatedReviewerIdentityVerified: false,
+        outcomeEvidenceClass: value.backendOutcomeVerified ? "protected-session-outcome" : "unverified",
+        outcomeBindingSummary: value.outcomeBinding ? { status: value.outcomeBinding.status, createdAt: value.outcomeBinding.createdAt, verifiedAt: value.outcomeBinding.verifiedAt ?? null } : null,
         privateContentIncluded: false,
         artifacts: value.artifacts.map((artifact) => ({
           digest: artifact.digest,
@@ -399,6 +418,10 @@ export class Captures {
     session.result = null;
     session.artifacts = [];
     delete session.importTokenHash;
+    delete session.outcomeBinding;
+    delete session.review;
+    session.backendOutcomeVerified = false;
+    session.independentlyReviewed = false;
     this.store.put("capture", session.id, session);
     this.audit(
       session,

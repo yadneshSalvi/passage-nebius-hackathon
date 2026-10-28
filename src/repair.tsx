@@ -48,6 +48,7 @@ import type {
   FixtureDefinition,
   HumanObservation,
   InteractionContract,
+  ModelReceipt,
   Observation,
   RepairRun,
   RunMode,
@@ -278,7 +279,20 @@ export function RepairLayout({
   );
 }
 function Receipt({ candidate }: { candidate: Candidate }) {
-  const receipt = candidate.receipt;
+  return (
+    <ReceiptSummary
+      receipt={candidate.receipt}
+      createdAt={candidate.createdAt}
+    />
+  );
+}
+export function ReceiptSummary({
+  receipt,
+  createdAt,
+}: {
+  receipt: ModelReceipt;
+  createdAt?: string;
+}) {
   return (
     <dl className="simple-facts receipt">
       <div>
@@ -307,6 +321,16 @@ function Receipt({ candidate }: { candidate: Candidate }) {
           </dd>
         </div>
       ) : null}
+      {receipt.outputProtocol ? (
+        <div>
+          <dt>Output protocol</dt>
+          <dd>
+            {receipt.outputProtocol === "single-source"
+              ? "Single source file"
+              : "Structured JSON"}
+          </dd>
+        </div>
+      ) : null}
       <div>
         <dt>Request</dt>
         <dd className="mono">
@@ -323,6 +347,31 @@ function Receipt({ candidate }: { candidate: Candidate }) {
         <dt>Duration</dt>
         <dd>{(receipt.durationMs / 1000).toFixed(1)} seconds</dd>
       </div>
+      {receipt.live && Number.isFinite(receipt.temperature) ? (
+        <div>
+          <dt>Recorded sampling</dt>
+          <dd>
+            Temperature {receipt.temperature}
+            {receipt.generation?.topP !== undefined
+              ? ` · top_p ${receipt.generation.topP}`
+              : ""}
+          </dd>
+        </div>
+      ) : null}
+      {receipt.baseUrl ? (
+        <div>
+          <dt>Recorded endpoint</dt>
+          <dd className="mono break-anywhere">{receipt.baseUrl}</dd>
+        </div>
+      ) : null}
+      {receipt.generationProfileFingerprint ? (
+        <div>
+          <dt>Profile fingerprint</dt>
+          <dd className="mono break-anywhere">
+            {receipt.generationProfileFingerprint}
+          </dd>
+        </div>
+      ) : null}
       {receipt.generation ? (
         <>
           <div>
@@ -340,9 +389,19 @@ function Receipt({ candidate }: { candidate: Candidate }) {
                   ? "Enabled"
                   : receipt.generation.thinkingEnabled === false
                     ? "Disabled"
-                    : "Provider default")}
+                    : "Not recorded")}
             </dd>
           </div>
+          {receipt.generation.forceNonemptyContent !== undefined ? (
+            <div>
+              <dt>Force nonempty request</dt>
+              <dd>
+                {receipt.generation.forceNonemptyContent
+                  ? "Enabled"
+                  : "Disabled"}
+              </dd>
+            </div>
+          ) : null}
           {receipt.generation.responseFormat ? (
             <div>
               <dt>Output framing</dt>
@@ -356,8 +415,8 @@ function Receipt({ candidate }: { candidate: Candidate }) {
         </>
       ) : null}
       <div>
-        <dt>Created</dt>
-        <dd>{time(candidate.createdAt)}</dd>
+        <dt>{createdAt ? "Created" : "Completed"}</dt>
+        <dd>{time(createdAt ?? receipt.completedAt)}</dd>
       </div>
     </dl>
   );
@@ -539,10 +598,10 @@ export function Workbench() {
     observations.at(-1);
   const observationIsFailure = Boolean(
     observation &&
-    ((observation.kind === "assertion" &&
-      observation.label.startsWith("Failed ·")) ||
-      (observation.kind === "action" &&
-        /\bblocked\b/i.test(observation.label))),
+      ((observation.kind === "assertion" &&
+        observation.label.startsWith("Failed ·")) ||
+        (observation.kind === "action" &&
+          /\bblocked\b/i.test(observation.label))),
   );
   return (
     <>

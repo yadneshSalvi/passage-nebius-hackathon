@@ -1,0 +1,23 @@
+{
+  "schema": "passage.repository.v1",
+  "repositoryUrl": "https://github.com/example/legacy-component",
+  "revision": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  "entryPoint": "app.jsx",
+  "rootElementId": "root",
+  "rootElementClass": "",
+  "disclosure": "public-source",
+  "bootstrap": {
+    "description": "A legacy component mount.",
+    "source": "import App from \"./app.jsx\"; export default App;",
+    "sha256": "7f002bb82b6c094a77fff1b931266128d665f7c1bfd5aba9308e4663698be3f7"
+  },
+  "moduleAliases": {},
+  "files": [
+    {
+      "path": "app.jsx",
+      "sha256": "6ff5ab1c7d00a4a06ab2d062c12dbf961def09cc4646cf919b9fdc1a9962f383",
+      "content": "export default function App(){return <button>Continue</button>}"
+    }
+  ],
+  "sourceDigest": "3450c495dfaa2dcaeeebbad43f9d340a365dd90232051c832a710354590ea8bf"
+}

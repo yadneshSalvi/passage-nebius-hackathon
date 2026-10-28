@@ -1,0 +1,88 @@
+{
+  "schema": "passage-authored-portable-guard-development-qa/v1",
+  "recordedAt": "2026-10-28T14:58:47.619175+00:00",
+  "evidenceClass": "automated-development",
+  "humanParticipantCount": 0,
+  "reviewer": "Codex orchestrator",
+  "downloadMethod": "Runnable guard link in in-app browser after Check pointer and Close completed in product UI",
+  "archiveSha256": "8bb704750a583b9ab23498668d1f1c4c0568d302c818629579d1e23987943b0b",
+  "archiveEntries": 21,
+  "verifiedFileHashes": 20,
+  "credentialValueScan": {
+    "configuredCredentialCount": 9,
+    "matches": 0,
+    "credentialFileEntries": 0
+  },
+  "environment": {
+    "installation": "Fresh directory outside repository; npm ci --ignore-scripts",
+    "originalDatabaseSupplied": false,
+    "apiCredentialsSupplied": false,
+    "credentialLikeEnvironmentVariablesRemoved": true,
+    "browser": "Existing compatible local Playwright Chromium installation",
+    "deployment": "None"
+  },
+  "acceptancePolicy": "frozen-suite-and-preservation-v1",
+  "uiQualificationRecordId": "preservation-check_67636ed6-ef23-4040-bc67-22da8fb1c7f1",
+  "verifiers": {
+    "temporal": [
+      "passage-temporal-native-focus-bounded-cleanup-v3"
+    ],
+    "authoredAdapter": [
+      "authored-fixture-temporal-v3"
+    ],
+    "preservation": "passage-authored-preservation-v2-cancellation"
+  },
+  "acceptedCandidate": {
+    "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+    "passed": true,
+    "temporalPassed": true,
+    "preservationPassed": true,
+    "executions": 3,
+    "frozenAssertions": 15,
+    "frozenAssertionsPassed": 15,
+    "preservationRuns": 4,
+    "preservationRunsPassed": 4
+  },
+  "knownRegressionControl": {
+    "sourceDigest": "8f0771b929e44146364b506fbaf26317803e31139553de854835b85f4a76f5fd",
+    "name": "Exact historical candidate23; mouse and Close regressions",
+    "passed": false,
+    "temporalPassed": true,
+    "preservationPassed": false,
+    "executions": 3,
+    "frozenAssertions": 15,
+    "frozenAssertionsPassed": 15,
+    "preservationRuns": 4,
+    "preservationRunsPassed": 0
+  },
+  "standalonePreservation": {
+    "sourceDigest": "90df5d256ad280c7416d795c9a369863255297b241133d80ade862691e710638",
+    "passed": true,
+    "runs": 4,
+    "runsPassed": 4
+  },
+  "commands": [
+    {
+      "case": "accepted-combined",
+      "exitCode": 0,
+      "outputSha256": "6fbaf473e4aed33affc40e8166ca5cebc1354fcfee30934f12b0752eda0ea2df"
+    },
+    {
+      "case": "candidate23-combined-regression",
+      "exitCode": 1,
+      "outputSha256": "63078f370e08696a1b0418ee4901679ee53f4fd46d596cda73b4bf247e7bf1c3"
+    },
+    {
+      "case": "accepted-standalone-preservation",
+      "exitCode": 0,
+      "outputSha256": "23c9b95218b30958ae986f9d61b936ef69dfe39ccddcae962d6a3d5294f25ae1"
+    }
+  ],
+  "rawEvidenceDirectory": ".passage/authored-nebius-final-guard-root-qa",
+  "limitations": [
+    "Automated development checks; no participant or independent specialist validation.",
+    "Known earlier candidate is a regression control, not an unseen holdout.",
+    "Trusted authored-component adapter; this does not establish general hostile-code isolation.",
+    "Exact configured-secret matching is not a comprehensive secret detector."
+  ]
+}

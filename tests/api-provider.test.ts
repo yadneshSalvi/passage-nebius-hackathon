@@ -384,12 +384,14 @@ describe("Nebius budget and safe response handling", () => {
       state: "complete",
       requestId: "not-nebius",
     });
+    let requestBody: Record<string, unknown> = {};
     const nebius = new NebiusProvider(store, {
       apiKey: "fake",
       baseUrl: "https://api.tokenfactory.nebius.com/v1",
       model: NEBIUS_ULTRA_MODEL,
       allowLive: true,
-      fetch: vi.fn(async () => {
+      fetch: vi.fn(async (_url, options) => {
+        requestBody = JSON.parse(String(options?.body));
         const data = JSON.parse(await response().text());
         data.model = NEBIUS_ULTRA_MODEL;
         return new Response(JSON.stringify(data));
@@ -397,10 +399,22 @@ describe("Nebius budget and safe response handling", () => {
     });
     expect(nebius.status().runtimeQualified).toBe(false);
     const result = await nebius.generate(input());
+    expect(requestBody).toMatchObject({
+      temperature: 1,
+      top_p: 0.95,
+      max_tokens: 32000,
+      chat_template_kwargs: {
+        enable_thinking: true,
+        force_nonempty_content: true,
+      },
+    });
+    expect(requestBody).not.toHaveProperty("response_format");
+    expect(result.receipt.temperature).toBe(1);
     expect(result.receipt.generation).toMatchObject({
-      maxOutputTokens: 16000,
-      timeoutMs: 240000,
+      maxOutputTokens: 32000,
+      timeoutMs: 480000,
       thinkingEnabled: true,
+      responseFormat: "prompt_schema",
     });
     expect(nebius.status().runtimeQualified).toBe(true);
     expect(store.usage().at(-1)).toMatchObject({

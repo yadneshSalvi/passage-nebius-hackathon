@@ -1,0 +1,84 @@
+{
+  "schema": "passage.bounded-cleanup-development-qa.v1",
+  "date": "2026-10-28",
+  "evidenceClass": "automated-development",
+  "replays": [
+    {
+      "file": "todomvc-replay.json",
+      "sourceDigest": "690f06b51778ff623d101fd1e04e0baa3f6cc45c443a35e2ca7af130b0c343c0",
+      "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+      "status": "passed",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "passed"
+        },
+        {
+          "id": "save-works",
+          "status": "passed"
+        }
+      ],
+      "sha256": "e1797e8fb5c9aaa013923e0bc209ffccbaa6cb62d48bb5ed5bee9ad82894e08f"
+    },
+    {
+      "file": "react-modal-replay.json",
+      "sourceDigest": "058c094fd5b6844e714e31c18378050c91240e9356773a6d1ab743ef2625f338",
+      "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+      "status": "passed",
+      "checks": [
+        {
+          "id": "focus-enters",
+          "status": "passed"
+        },
+        {
+          "id": "focus-contained",
+          "status": "passed"
+        },
+        {
+          "id": "focus-restored",
+          "status": "passed"
+        }
+      ],
+      "sha256": "4a085173b0fc2dfceee074cbc4fb10bc7ab8c53e6145b145fcd187dff9efba84"
+    },
+    {
+      "file": "portable-candidate-replay.json",
+      "sourceDigest": "690f06b51778ff623d101fd1e04e0baa3f6cc45c443a35e2ca7af130b0c343c0",
+      "verifierVersion": "passage-temporal-native-focus-bounded-cleanup-v3",
+      "status": "passed",
+      "checks": [
+        {
+          "id": "keyboard-entry",
+          "status": "passed"
+        },
+        {
+          "id": "cancel-preserves",
+          "status": "passed"
+        },
+        {
+          "id": "save-works",
+          "status": "passed"
+        }
+      ],
+      "sha256": "0420c9a236f5e4703aaf31d307c728869c410cab1a154fe9e619f39d7b5412a6"
+    }
+  ],
+  "guardSha256": "8f4d5a4825e0c93116978846afc409b40f0fc5fc8b640ca8705da5d237411e8d",
+  "setup": "Product checks triggered in the in-app browser. Portable guard downloaded through the same UI, SHA256SUMS verified, fresh npm ci --ignore-scripts outside the repository. Reused only the qualified immutable Docker configuration; no original database or credentials.",
+  "independentStarvingRendererRepro": {
+    "settledBefore1000msWatchdog": true,
+    "settledAtMs": 303,
+    "interactionBudgetMs": 300,
+    "retainedTraceEvents": 7,
+    "status": "error"
+  },
+  "limitations": [
+    "Local development cases; no human participants.",
+    "Cleanup is bounded and unconfirmed shutdown is reported as error; no OS-enforced process termination guarantee.",
+    "UI checks do not establish protected business completion for the external applications."
+  ]
+}

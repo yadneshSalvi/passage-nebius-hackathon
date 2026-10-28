@@ -1,0 +1,1 @@
+{"files":["src/components/AppointmentModal.tsx","src/components/SlotTrigger.tsx","src/components/AppointmentSlot.tsx","src/hooks/useFocusTrap.ts","src/hooks/useKeyboardNavigation.ts","src/services/bookingApi.ts","src/utils/focusManagement.ts","src/index.tsx"]}

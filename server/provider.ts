@@ -1,14 +1,19 @@
 import { config } from "dotenv";
+import { z } from "zod";
 import { fileURLToPath } from "node:url";
 import type {
   LiveProvider,
   ModelReceipt,
   ProviderStatus,
   ProviderUsageData,
+  GenerationProfile,
 } from "../shared/types.js";
-import { AppError, Store, id, now, type UsageEntry } from "./store.js";
+import { AppError, Store, id, now, sha256, type UsageEntry } from "./store.js";
 import {
   parseFinalComponent,
+  parseFinalStructured,
+  parseFinalSingleSource,
+  type FinalOutputInput,
   REPAIR_RESPONSE_SCHEMA,
 } from "./generation-output.js";
 import {
@@ -41,7 +46,27 @@ export const PROMPT_VERSION =
 export const INPUT_USD_PER_MILLION = 0.06;
 export const OUTPUT_USD_PER_MILLION = 0.24;
 export const MAX_OUTPUT_TOKENS = 6000;
-export const MAX_SPEND_USD = 2;
+export const DEFAULT_NEBIUS_BUDGET_USD = 2;
+function effectiveSettings(route: ModelRoute): Record<string, unknown> {
+  return { temperature: 0.2, max_tokens: route.maxOutputTokens, ...route.requestFields };
+}
+function requestedGeneration(route: ModelRoute): GenerationProfile {
+  const fields = effectiveSettings(route), template = fields.chat_template_kwargs as Record<string, unknown> | undefined;
+  return {
+    maxOutputTokens: fields.max_tokens as number, timeoutMs: route.timeoutMs,
+    temperature: fields.temperature as number,
+    responseFormat: (fields.response_format as { type?: string } | undefined)?.type === "json_object" ? "json_object" : "prompt_schema",
+    ...(typeof fields.top_p === "number" ? { topP: fields.top_p } : {}),
+    ...(typeof fields.reasoning_effort === "string" ? { reasoningEffort: fields.reasoning_effort } : {}),
+    ...(typeof template?.enable_thinking === "boolean" ? { thinkingEnabled: template.enable_thinking } : {}),
+    ...(typeof template?.force_nonempty_content === "boolean" ? { forceNonemptyContent: template.force_nonempty_content } : {}),
+  };
+}
+function canonicalProfile(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(canonicalProfile).join(",")}]`;
+  if (value && typeof value === "object") return `{${Object.entries(value).sort(([a], [b]) => a.localeCompare(b)).map(([key, item]) => `${JSON.stringify(key)}:${canonicalProfile(item)}`).join(",")}}`;
+  return JSON.stringify(value);
+}
 async function boundedResponseText(
   response: Response,
   limit: number,
@@ -84,7 +109,16 @@ export interface ProviderConfig {
   baseUrl?: string;
   model?: string;
   allowLive?: boolean;
+  nebiusBudgetUsd?: number;
   fetch?: typeof fetch;
+}
+export interface StructuredModelInput<T> {
+  runId: string;
+  signal: AbortSignal;
+  promptVersion: string;
+  system: string;
+  payload: unknown;
+  schema: z.ZodType<T>;
 }
 export interface GeneratedRepair {
   source: string;
@@ -98,12 +132,18 @@ export class RepairProvider {
   readonly model: string;
   private readonly enabled: boolean;
   private readonly fetcher: typeof fetch;
+  private readonly nebiusBudgetUsd: number;
   readonly provider: LiveProvider;
   private readonly route: ProviderRoute;
   constructor(
     private store: Store,
     options: ProviderConfig = {},
   ) {
+    const rawBudget = options.nebiusBudgetUsd ?? process.env.PASSAGE_NEBIUS_BUDGET_USD ?? DEFAULT_NEBIUS_BUDGET_USD;
+    const parsedBudget = typeof rawBudget === "string" && !rawBudget.trim() ? NaN : Number(rawBudget);
+    if (!Number.isFinite(parsedBudget) || parsedBudget < 0 || parsedBudget > 100)
+      throw new AppError("INVALID_NEBIUS_BUDGET", "PASSAGE_NEBIUS_BUDGET_USD must be a finite amount from $0 to $100. The default is $2; change it only within an explicitly authorized allowance.", 400);
+    this.nebiusBudgetUsd = parsedBudget;
     const selected =
       options.provider ?? process.env.PASSAGE_PROVIDER ?? "nebius";
     if (!Object.hasOwn(PROVIDER_ROUTES, selected))
@@ -130,14 +170,17 @@ export class RepairProvider {
   }
   status(): ProviderStatus {
     const modelRoute = this.modelRoute();
+    const fingerprint = modelRoute ? this.profileFingerprint(modelRoute) : undefined;
     const runtimeQualified =
       modelRoute?.runtimeQualified === true ||
       this.store
         .usage()
         .some(
           (entry) =>
+            fingerprint !== undefined &&
             (entry.provider ?? "nebius") === this.provider &&
             entry.model === this.model &&
+            entry.generationProfileFingerprint === fingerprint &&
             entry.completionQualified === true &&
             entry.servedModel !== null &&
             (entry.servedModel === this.model ||
@@ -154,7 +197,7 @@ export class RepairProvider {
     const enabled =
       configured &&
       this.enabled &&
-      (!capped || this.store.committedSpend("nebius") < MAX_SPEND_USD) &&
+      (!capped || this.store.committedSpend("nebius") < this.nebiusBudgetUsd) &&
       !exhausted;
     return {
       configured,
@@ -163,10 +206,11 @@ export class RepairProvider {
       runtimeQualified,
       provider: this.provider,
       purpose: capped ? "submission" : "development",
-      budgetUsd: capped ? MAX_SPEND_USD : null,
+      budgetUsd: capped ? this.nebiusBudgetUsd : null,
       committedUsd: usage.committedUsd,
       model: this.model,
       baseUrl: this.baseUrl,
+      ...(modelRoute ? { generation: requestedGeneration(modelRoute), generationProfileFingerprint: fingerprint } : {}),
       reason: !this.key
         ? `Set ${this.route.keyEnvironment} on the API server to enable this route.`
         : !modelRoute
@@ -181,12 +225,12 @@ export class RepairProvider {
                 : exhausted
                   ? `${this.route.label} reported insufficient credit. After restoring funding, explicitly reset the active route's credit-error flag through POST /v1/provider/reset-credit-error.`
                   : capped &&
-                      this.store.committedSpend("nebius") >= MAX_SPEND_USD
-                    ? "The authorized $2 Passage development budget has been reached."
+                      this.store.committedSpend("nebius") >= this.nebiusBudgetUsd
+                    ? `The configured $${this.nebiusBudgetUsd} Passage Nebius admission budget has been reached.`
                     : !runtimeQualified
                       ? `${this.route.label} lists this exact model in its verified catalog; runtime completion qualification is pending. Explicit selection never falls back to another model.`
                       : capped
-                        ? "The Nebius NVIDIA submission route is available within its separate $2 authorization."
+                        ? `The Nebius NVIDIA submission route is available within its separate $${this.nebiusBudgetUsd} configured admission allowance.`
                         : `The ${this.route.label} NVIDIA development route is available. Usage is charged with no authorized development dollar cap.`,
     };
   }
@@ -194,6 +238,10 @@ export class RepairProvider {
     return Object.hasOwn(this.route.models, this.model)
       ? this.route.models[this.model]
       : undefined;
+  }
+  private profileFingerprint(route: ModelRoute): string {
+    return sha256(canonicalProfile({ provider: this.provider, baseUrl: this.baseUrl, model: this.model,
+      settings: effectiveSettings(route), timeoutMs: route.timeoutMs, maxResponseBytes: route.maxResponseBytes ?? 250000 }));
   }
   get label() {
     return this.route.label;
@@ -209,7 +257,7 @@ export class RepairProvider {
   }
   usage(): ProviderUsageData {
     const providers = {
-      nebius: this.store.providerUsage("nebius"),
+      nebius: { ...this.store.providerUsage("nebius"), budgetUsd: this.nebiusBudgetUsd },
       fireworks: this.store.providerUsage("fireworks"),
       together: this.store.providerUsage("together"),
     };
@@ -238,32 +286,6 @@ export class RepairProvider {
     return next;
   }
   private async perform(input: ModelInput): Promise<GeneratedRepair> {
-    input.signal.throwIfAborted();
-    this.assertAvailable();
-    const modelRoute = this.modelRoute()!;
-    const pricing = modelRoute.pricing;
-    const generation = {
-      responseFormat: ((
-        modelRoute.requestFields.response_format as
-          { type?: string } | undefined
-      )?.type === "json_object"
-        ? "json_object"
-        : "prompt_schema") as "json_object" | "prompt_schema",
-      maxOutputTokens: modelRoute.maxOutputTokens,
-      timeoutMs: modelRoute.timeoutMs,
-      ...(typeof modelRoute.requestFields.reasoning_effort === "string"
-        ? { reasoningEffort: modelRoute.requestFields.reasoning_effort }
-        : {}),
-      ...(modelRoute.requestFields.chat_template_kwargs
-        ? {
-            thinkingEnabled: (
-              modelRoute.requestFields.chat_template_kwargs as {
-                enable_thinking: boolean;
-              }
-            ).enable_thinking,
-          }
-        : {}),
-    };
     const messages = [
       {
         role: "system",
@@ -294,6 +316,46 @@ export class RepairProvider {
         }),
       },
     ];
+    return this.performRequest(input, messages, PROMPT_VERSION, parseFinalComponent);
+  }
+  completeStructured<T>(input: StructuredModelInput<T>): Promise<{ value: T; receipt: ModelReceipt }> {
+    const next = this.tail.then(async () => {
+      const result = await this.performRequest(input, [
+        { role: "system", content: input.system },
+        { role: "user", content: JSON.stringify(input.payload) },
+      ], input.promptVersion, (context) => ({ value: parseFinalStructured(context, input.schema) }));
+      return result;
+    });
+    this.tail = next.catch(() => undefined);
+    return next;
+  }
+  get singleSourceOutputAvailable(): boolean {
+    const route = this.modelRoute();
+    return Boolean(route && !route.requestFields.response_format);
+  }
+  completeSingleSource(input: Omit<StructuredModelInput<never>, "schema">): Promise<{ source: string; receipt: ModelReceipt }> {
+    if (!this.singleSourceOutputAvailable)
+      throw new AppError("UNSUPPORTED_SOURCE_PROTOCOL", "This selected route requires structured JSON; its output protocol was not silently changed.", 409);
+    const next = this.tail.then(() => this.performRequest(input, [
+      { role: "system", content: input.system },
+      { role: "user", content: JSON.stringify(input.payload) },
+    ], input.promptVersion, parseFinalSingleSource, "single-source"));
+    this.tail = next.catch(() => undefined);
+    return next;
+  }
+  private async performRequest<T extends object>(
+    input: { runId: string; signal: AbortSignal },
+    messages: { role: string; content: string }[],
+    promptVersion: string,
+    parse: (context: FinalOutputInput) => T,
+    outputProtocol: "structured-json" | "single-source" = "structured-json",
+  ): Promise<T & { receipt: ModelReceipt }> {
+    input.signal.throwIfAborted();
+    this.assertAvailable();
+    const modelRoute = this.modelRoute()!;
+    const pricing = modelRoute.pricing;
+    const generation = requestedGeneration(modelRoute);
+    const generationProfileFingerprint = this.profileFingerprint(modelRoute);
     // One UTF-8 byte per input token plus framing is deliberately conservative for admission.
     const estimatedInputTokens =
       Buffer.byteLength(JSON.stringify(messages), "utf8") + 2048;
@@ -325,16 +387,20 @@ export class RepairProvider {
       pricing,
       servedModel: null,
       generation,
+      generationProfileFingerprint,
+      outputProtocol,
+      baseUrl: this.baseUrl,
+      admissionBudgetUsd: this.provider === "nebius" ? this.nebiusBudgetUsd : null,
     };
     this.store.transaction(() => {
       if (
         this.provider === "nebius" &&
         (reservedUsd === null ||
-          this.store.committedSpend("nebius") + reservedUsd > MAX_SPEND_USD)
+          this.store.committedSpend("nebius") + reservedUsd > this.nebiusBudgetUsd)
       )
         throw new AppError(
           "BUDGET_EXCEEDED",
-          "This request would exceed the authorized $2 Passage budget.",
+          `This request would exceed the configured $${this.nebiusBudgetUsd} Passage Nebius admission budget.`,
           402,
         );
       this.store.saveUsage(entry);
@@ -357,9 +423,7 @@ export class RepairProvider {
         body: JSON.stringify({
           model: this.model,
           messages,
-          temperature: 0.2,
-          max_tokens: modelRoute.maxOutputTokens,
-          ...modelRoute.requestFields,
+          ...effectiveSettings(modelRoute),
         }),
       });
       entry.requestId = response.headers.get("x-request-id");
@@ -449,13 +513,16 @@ export class RepairProvider {
         purpose: this.provider === "nebius" ? "submission" : "development",
         servedModel: entry.servedModel,
         generation,
+        generationProfileFingerprint,
+        outputProtocol,
+        baseUrl: this.baseUrl,
         ...(entry.reasoningTokens !== undefined
           ? { reasoningTokens: entry.reasoningTokens }
           : {}),
         model: this.model,
         requestId: entry.requestId,
-        promptVersion: PROMPT_VERSION,
-        temperature: 0.2,
+        promptVersion,
+        temperature: generation.temperature!,
         inputTokens: entry.inputTokens,
         outputTokens: entry.outputTokens,
         durationMs: Date.now() - started,
@@ -463,7 +530,7 @@ export class RepairProvider {
         completedAt: entry.completedAt!,
         live: true,
       };
-      const parsed = parseFinalComponent({
+      const parsed = parse({
         content: choice?.message?.content,
         finishReason: choice?.finish_reason,
         refusal: choice?.message?.refusal,
