@@ -1881,6 +1881,41 @@ export function RepositoryJourneyWorkspace() {
                     </div>
                     <ShieldCheck size={27} />
                   </div>
+                  <div className="compiler-export repository-export">
+                    <div>
+                      <p className="eyebrow">REVIEWABLE, PORTABLE EVIDENCE</p>
+                      <h3>Keep the contract and its source history.</h3>
+                      <p>
+                        Export the immutable source manifest, reviewed contract,
+                        patch attempts, and observed replays as JSON.
+                      </p>
+                    </div>
+                    <div className="compiler-export-actions">
+                      <button
+                        className="button button-secondary"
+                        onClick={() => void exportEvidence()}
+                        disabled={busy}
+                      >
+                        <Download size={16} />
+                        Evidence JSON
+                      </button>
+                      {journey.review ? (
+                        <a
+                          className="button"
+                          href={`/v1${endpoint(journey.id, "guard.zip")}`}
+                          download
+                        >
+                          <Download size={16} />
+                          Runnable guard
+                        </a>
+                      ) : (
+                        <button className="button" disabled>
+                          <Download size={16} />
+                          Runnable guard
+                        </button>
+                      )}
+                    </div>
+                  </div>
                   <div className="compiler-control-row">
                     <label>
                       Source under test
@@ -1947,41 +1982,6 @@ export function RepositoryJourneyWorkspace() {
                       </p>
                     </div>
                   )}
-                  <div className="compiler-export">
-                    <div>
-                      <p className="eyebrow">REVIEWABLE, PORTABLE EVIDENCE</p>
-                      <h3>Keep the contract and its source history.</h3>
-                      <p>
-                        Export the immutable source manifest, reviewed contract,
-                        patch attempts, and observed replays as JSON.
-                      </p>
-                    </div>
-                    <div className="compiler-export-actions">
-                      <button
-                        className="button button-secondary"
-                        onClick={() => void exportEvidence()}
-                        disabled={busy}
-                      >
-                        <Download size={16} />
-                        Evidence JSON
-                      </button>
-                      {journey.review ? (
-                        <a
-                          className="button"
-                          href={`/v1${endpoint(journey.id, "guard.zip")}`}
-                          download
-                        >
-                          <Download size={16} />
-                          Runnable guard
-                        </a>
-                      ) : (
-                        <button className="button" disabled>
-                          <Download size={16} />
-                          Runnable guard
-                        </button>
-                      )}
-                    </div>
-                  </div>
                   <details className="compiler-disclosure">
                     <summary>
                       Check a later immutable source manifest{" "}

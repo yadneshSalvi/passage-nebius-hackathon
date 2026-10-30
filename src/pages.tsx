@@ -129,17 +129,25 @@ export function Welcome() {
 }
 
 export function JourneyGallery() {
-  const { data, loading, repository } = useStore();
+  const { data, loading, refresh, repository } = useStore();
   const [query, setQuery] = useState("");
   const [family, setFamily] = useState("all");
+  const search = query.trim().toLowerCase();
+  const hasFilters = Boolean(search) || family !== "all";
+  const initialLoading = loading && !data;
+  const unavailable = !loading && !data;
   const fixtures =
     data?.fixtures.filter(
       (item) =>
         (family === "all" || item.family === family) &&
         `${item.name} ${item.description} ${item.organization}`
           .toLowerCase()
-          .includes(query.toLowerCase()),
+          .includes(search),
     ) ?? [];
+  function resetFilters() {
+    setQuery("");
+    setFamily("all");
+  }
   return (
     <div className="page">
       <PageHead eyebrow="THE JOURNEY LIBRARY" title="Find a way through.">
@@ -150,7 +158,11 @@ export function JourneyGallery() {
         </p>
       </PageHead>
       <div className="filter-bar">
-        <div className="filter-buttons" aria-label="Filter interaction family">
+        <div
+          className="filter-buttons"
+          role="group"
+          aria-label="Filter interaction family"
+        >
           {[["all", "All journeys"], ...Object.entries(familyLabel)].map(
             ([value, label]) => (
               <button
@@ -165,16 +177,39 @@ export function JourneyGallery() {
           )}
         </div>
         <label className="search-field compact-search">
-          <Search size={17} />
+          <Search size={17} aria-hidden="true" />
           <input
+            type="search"
             aria-label="Search samples"
+            aria-describedby="journey-results-summary"
             placeholder="Find a journey…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </label>
       </div>
-      <div className="fixture-grid">
+      <div className="section-heading">
+        <span
+          id="journey-results-summary"
+          className="muted"
+          role="status"
+          aria-atomic="true"
+        >
+          {initialLoading
+            ? "Loading journeys…"
+            : unavailable
+              ? "Journeys are unavailable while the local service is disconnected."
+              : hasFilters
+                ? `${fixtures.length} of ${data?.fixtures.length ?? 0} journeys match your filters.`
+                : `${fixtures.length} ${fixtures.length === 1 ? "journey" : "journeys"} in the library.`}
+        </span>
+        {hasFilters && fixtures.length > 0 ? (
+          <button className="text-link" onClick={resetFilters}>
+            Reset filters
+          </button>
+        ) : null}
+      </div>
+      <div className="fixture-grid" aria-busy={initialLoading}>
         {fixtures.map((fixture, index) => (
           <Link
             className="fixture-card"
@@ -211,22 +246,37 @@ export function JourneyGallery() {
       </div>
       {!fixtures.length ? (
         <Empty
-          title={loading ? "Loading the library" : "No matching journeys"}
+          title={
+            initialLoading
+              ? "Loading the library"
+              : unavailable
+                ? "The library is unavailable."
+                : hasFilters
+                  ? "No matching journeys"
+                  : "No journeys are available yet."
+          }
           action={
-            <button
-              className="button button-secondary"
-              onClick={() => {
-                setQuery("");
-                setFamily("all");
-              }}
-            >
-              Reset filters
-            </button>
+            unavailable ? (
+              <button
+                className="button button-secondary"
+                onClick={() => void refresh()}
+              >
+                Retry connection
+              </button>
+            ) : hasFilters && !initialLoading ? (
+              <button className="button button-secondary" onClick={resetFilters}>
+                Reset filters
+              </button>
+            ) : undefined
           }
         >
-          {loading
+          {initialLoading
             ? "Retrieving the sample applications from the local service."
-            : "Try a different interaction family or clear your search."}
+            : unavailable
+              ? "Reconnect to the local service to load the sample applications."
+              : hasFilters
+                ? "Try a different interaction family or clear your search."
+                : "The local service has not returned any sample applications."}
         </Empty>
       ) : null}
       <div className="library-bottom">
@@ -410,9 +460,13 @@ export function NewJourney() {
 }
 
 export function RunLibrary({ evidence = false }: { evidence?: boolean }) {
-  const { data, loading } = useStore();
+  const { data, loading, refresh } = useStore();
   const [filter, setFilter] = useState("all");
   const [query, setQuery] = useState("");
+  const search = query.trim().toLowerCase();
+  const hasFilters = Boolean(search) || filter !== "all";
+  const initialLoading = loading && !data;
+  const unavailable = !loading && !data;
   const runs =
     data?.runs.filter(
       (run) =>
@@ -424,8 +478,12 @@ export function RunLibrary({ evidence = false }: { evidence?: boolean }) {
               : run.status === filter)) &&
         `${data.fixtures.find((f) => f.id === run.fixtureId)?.name} ${run.id}`
           .toLowerCase()
-          .includes(query.toLowerCase()),
+          .includes(search),
     ) ?? [];
+  function resetFilters() {
+    setQuery("");
+    setFilter("all");
+  }
   return (
     <div className="page">
       <PageHead
@@ -445,7 +503,7 @@ export function RunLibrary({ evidence = false }: { evidence?: boolean }) {
         </p>
       </PageHead>
       <div className="filter-bar">
-        <div className="filter-buttons">
+        <div className="filter-buttons" role="group" aria-label="Filter run status">
           {[
             ["all", "All runs"],
             ["needs-review", "Needs review"],
@@ -463,16 +521,39 @@ export function RunLibrary({ evidence = false }: { evidence?: boolean }) {
           ))}
         </div>
         <label className="search-field compact-search">
-          <Search size={17} />
+          <Search size={17} aria-hidden="true" />
           <input
+            type="search"
             aria-label="Search runs"
+            aria-describedby="run-results-summary"
             placeholder="Find a repair…"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
           />
         </label>
       </div>
-      <div className="run-list">
+      <div className="section-heading">
+        <span
+          id="run-results-summary"
+          className="muted"
+          role="status"
+          aria-atomic="true"
+        >
+          {initialLoading
+            ? "Loading saved runs…"
+            : unavailable
+              ? "Saved runs are unavailable while the local service is disconnected."
+              : hasFilters
+                ? `${runs.length} of ${data?.runs.length ?? 0} saved runs match your filters.`
+                : `${runs.length} saved ${runs.length === 1 ? "run" : "runs"}.`}
+        </span>
+        {hasFilters && runs.length > 0 ? (
+          <button className="text-link" onClick={resetFilters}>
+            Reset filters
+          </button>
+        ) : null}
+      </div>
+      <div className="run-list" aria-busy={initialLoading}>
         {runs.map((run) => {
           const fixture = data?.fixtures.find((f) => f.id === run.fixtureId);
           const candidate = candidateFor(run);
@@ -516,21 +597,39 @@ export function RunLibrary({ evidence = false }: { evidence?: boolean }) {
       {!runs.length ? (
         <Empty
           title={
-            loading
+            initialLoading
               ? "Loading saved evidence"
-              : evidence
-                ? "The evidence starts with a journey."
-                : "Your first repair begins here."
+              : unavailable
+                ? "Saved runs are unavailable."
+                : hasFilters
+                  ? "No matching runs"
+                  : evidence
+                    ? "The evidence starts with a journey."
+                    : "Your first repair begins here."
           }
           action={
-            <Link className="button" to="/journeys">
-              Explore the sample library <ArrowRight size={17} />
-            </Link>
+            initialLoading ? undefined : unavailable ? (
+              <button className="button button-secondary" onClick={() => void refresh()}>
+                Retry connection
+              </button>
+            ) : hasFilters ? (
+              <button className="button button-secondary" onClick={resetFilters}>
+                Reset filters
+              </button>
+            ) : (
+              <Link className="button" to="/journeys">
+                Explore the sample library <ArrowRight size={17} />
+              </Link>
+            )
           }
         >
-          {query || filter !== "all"
-            ? "No runs match these filters. Adjust the search to see your saved work."
-            : "Choose a blocked sample. Passage will record its baseline before you decide how to repair it."}
+          {initialLoading
+            ? "Retrieving saved runs from the local service."
+            : unavailable
+              ? "Reconnect to the local service to load your saved work."
+              : hasFilters
+                ? "No runs match these filters. Reset them to see all your saved work."
+                : "Choose a blocked sample. Passage will record its baseline before you decide how to repair it."}
         </Empty>
       ) : null}
     </div>

@@ -111,6 +111,7 @@ export default function App() {
   const [commandOpen, setCommandOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [mobileOpen, setMobileOpen] = useState(false);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
   const location = useLocation();
   const navigate = useNavigate();
   const refresh = useCallback(async () => {
@@ -153,6 +154,18 @@ export default function App() {
     document.getElementById("main-content")?.focus({ preventScroll: true });
     window.scrollTo(0, 0);
   }, [location.pathname]);
+  useEffect(() => {
+    if (!mobileOpen || commandOpen || repoOpen) return;
+    const dismiss = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && !event.defaultPrevented) {
+        event.preventDefault();
+        setMobileOpen(false);
+        menuTrigger.current?.focus();
+      }
+    };
+    window.addEventListener("keydown", dismiss);
+    return () => window.removeEventListener("keydown", dismiss);
+  }, [mobileOpen, commandOpen, repoOpen]);
   useEffect(() => {
     document.documentElement.dataset.contrast = data?.settings.highContrast
       ? "high"
@@ -204,6 +217,7 @@ export default function App() {
           </span>
         </Link>
         <nav
+          id="primary-navigation"
           className={mobileOpen ? "primary-nav mobile-open" : "primary-nav"}
           aria-label="Primary navigation"
         >
@@ -239,6 +253,8 @@ export default function App() {
           </Link>
           <button
             className="icon-button mobile-menu"
+            ref={menuTrigger}
+            aria-controls="primary-navigation"
             aria-expanded={mobileOpen}
             aria-label="Toggle navigation"
             onClick={() => setMobileOpen((v) => !v)}

@@ -8200,6 +8200,9 @@ html[data-contrast="high"] .negative p {
   flex: 1;
   min-width: 230px;
 }
+.repository-export {
+  margin: 0 0 28px;
+}
 .compiler-export .eyebrow {
   font-size: 9px;
 }

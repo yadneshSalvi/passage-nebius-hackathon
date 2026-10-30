@@ -147,6 +147,15 @@ test("the studio has responsive layouts and no serious automated accessibility v
       ),
     ).toBe(true);
   }
+  await page.setViewportSize({ width: 390, height: 960 });
+  const menu = page.getByRole("button", { name: "Toggle navigation" });
+  await menu.click();
+  await expect(menu).toHaveAttribute("aria-expanded", "true");
+  await page.getByRole("navigation", { name: "Primary navigation" })
+    .getByRole("link", { name: "Journeys", exact: true }).focus();
+  await page.keyboard.press("Escape");
+  await expect(menu).toHaveAttribute("aria-expanded", "false");
+  await expect(menu).toBeFocused();
   await page.setViewportSize({ width: 1440, height: 1000 });
   const results = await new AxeBuilder({ page })
     .exclude("iframe")

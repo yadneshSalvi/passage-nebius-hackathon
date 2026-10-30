@@ -8,6 +8,8 @@ This is a local engineering product for the **Coding and Agentic Engineering** t
 
 Read the [current upgrade evidence and limits](docs/journey-compiler.md) before interpreting a passing check as broader accessibility acceptance.
 
+For a short presentation from the prepared workspace, follow the [three-minute demo walkthrough](docs/DEMO.md).
+
 ## Run locally
 
 Requires Node.js **22.12 or newer** (tested with 22.22.3), npm, and Chromium. Node's built-in SQLite experimental warning is expected on Node 22.
