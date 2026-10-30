@@ -1,5 +1,7 @@
 # Passage
 
+**Submission demo:** [Watch on YouTube](https://www.youtube.com/watch?v=k6dw6w1Zuvk).
+
 **Every journey deserves a way through.**
 
 Passage turns a blocked task into a reviewed temporal contract, a source repair, and a runnable regression guard. Its Journey Compiler records actual browser events, separates observations from inferred requirements, asks **NVIDIA Nemotron** to inspect and patch bounded React source, and independently replays the frozen requirements.
